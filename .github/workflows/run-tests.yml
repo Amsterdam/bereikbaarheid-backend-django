@@ -20,7 +20,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: Dockerfile_pgrouting
+          context: "{{defaultContext}}:Dockerfile_pgrouting"
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
