@@ -4,10 +4,6 @@ on:
   pull_request:
     branches: main
 
-env:
-  repo_name: amsterdam
-  project_name: bereikbaarheid
-
 jobs:
   build-db-container:
     name: Build DB container
@@ -28,10 +24,10 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ghcr.io/${{ env.repo_name }}/${{ env.project_name }}-db:latest
+          tags: ghcr.io/amsterdam/bereikbaarheid-db:latest
 
   linting-and-tests:
     uses: amsterdam/opdrachten-team-github-workflows/.github/workflows/CI.yml@v1
     with:
-      repo_name: ${{ env.repo_name }}
-      project_name: ${{ env.project_name }}
+      repo_name: amsterdam
+      project_name: bereikbaarheid
