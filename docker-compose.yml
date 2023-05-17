@@ -11,6 +11,7 @@ services:
       POSTGRES_PASSWORD: insecure
     build:
       dockerfile: Dockerfile_pgrouting
+    image: ghcr.io/amsterdam/bereikbaarheid-db:latest
     networks:
       - backend
 
@@ -46,6 +47,7 @@ services:
     <<: *app
     build:
       target: tests
+    image: ghcr.io/amsterdam/bereikbaarheid:latest
     environment:
       - DEBUG=true
       - SECRET_KEY=123456
