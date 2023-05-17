@@ -27,6 +27,7 @@ jobs:
           tags: ghcr.io/amsterdam/bereikbaarheid-db:latest
 
   linting-and-tests:
+    needs: build-db-container
     uses: amsterdam/opdrachten-team-github-workflows/.github/workflows/CI.yml@v1
     with:
       repo_name: amsterdam
