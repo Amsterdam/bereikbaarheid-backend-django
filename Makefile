@@ -3,11 +3,17 @@
 #
 # VERSION = 2020.01.29
 
-PYTHON = python3
-
 dc = docker compose
 run = $(dc) run --rm
 manage = $(run) dev python manage.py
+
+ENVIRONMENT ?= local
+VERSION = latest
+HELM_ARGS = manifests/chart \
+	-f manifests/values.yaml \
+	-f manifests/env/${ENVIRONMENT}.yaml \
+	--set image.tag=${VERSION} \
+	--set image.registry=${REGISTRY}
 
 help:                               ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
@@ -75,12 +81,6 @@ trivy: 	    						## Detect image vulnerabilities
 	$(dc) build app
 	trivy image --ignore-unfixed 127.0.0.1:5001/bereikbaarheid/api
 
-kustomize:
-	kustomize build manifests/overlays/local | kubectl apply -f -
-
-undeploy_kustomize:
-	kustomize build manifests/overlays/local | kubectl delete -f -
-
 lintfix:                            ## Execute lint fixes
 	$(run) test black /app/src/$(APP) /app/tests/$(APP)
 	$(run) test autoflake /app --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
@@ -90,3 +90,14 @@ lintfix:                            ## Execute lint fixes
 lint:                               ## Execute lint checks
 	$(run) test autoflake /app --check --recursive --quiet
 	$(run) test isort --diff --check /app/src/$(APP) /app/tests/$(APP)
+
+deploy: manifests
+	helm upgrade --install --atomic meetbouten $(HELM_ARGS) $(ARGS)
+
+manifests:
+	helm template meetbouten $(HELM_ARGS) $(ARGS)
+
+update-chart:
+	rm -rf manifests/chart
+	git clone --branch 1.4.3 --depth 1 git@github.com:Amsterdam/helm-application.git manifests/chart
+	rm -rf manifests/chart/.git

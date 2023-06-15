@@ -1,0 +1,73 @@
+image:
+  registry: saks01weuacrpgpgo5qvmwo.azurecr.io
+  repository: opdrachten/bereikbaarheid
+  tag: latest
+
+labels:
+  app: bereikbaarheid
+
+network:
+  allow-ingress:
+    selector: app == 'bereikbaarheid'
+    ingress:
+      - action: Allow
+    egress:
+      - action: Allow
+
+deployments:
+  app:
+    containers:
+      - name: main
+        volumes:
+          - name: tmp
+            mountPath: /tmp
+        secrets:
+          - app
+        ports:
+          - port: 8080
+            name: http
+    volumes:
+      - name: tmp
+        spec:
+          emptyDir: {}
+
+jobs:
+  certificate-init:
+    secrets:
+      - certificate
+    annotations:
+      helm.sh/hook: post-install,post-upgrade
+    containers:
+      - name: main
+        command:
+          - sleep
+        args:
+          - "1"
+
+services:
+  app:
+    ports:
+      - name: http
+        port: 80
+        targetPort: 8000
+    selector:
+      app: bereikbaarheid
+
+ingress:
+  app:
+    paths:
+    - path: /
+      service: app
+      port: 80
+    className: nginx
+    tls: certificate
+
+secrets:
+  certificate:
+    type: keyvault
+    tls: bereikbaarheid
+  app:
+    type: opaque
+    secrets:
+      cow: moo
+      secret-key: secret-value

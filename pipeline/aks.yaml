@@ -1,0 +1,34 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  tags:
+    include:
+      - "*.*.*"
+
+variables:
+  # Debugging
+  System.Debug: true
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: opdrachten/templates
+      ref: main
+
+extends:
+  template: pipelines/aks/template.yaml@templates
+  parameters:
+    name: opdr-backend
+    dev:
+      pool: Opdrachten
+      namespace: ns-ccc-opdr-ont-01-bereikbaarheid
+      kubernetesServiceConnection: "SCN-K8S-ns-ccc-opdr-ont-01-bereikbaarheid"
+      preSteps:
+        - script: helm uninstall bereikbaarheid -n ns-ccc-opdr-ont-01-bereikbaarheid
+          displayName: Remove previous installation
+        - script: kubectl get secrets
+          displayName: kubectl get secrets
+
