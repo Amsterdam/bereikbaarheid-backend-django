@@ -17,6 +17,10 @@ resources:
       type: git
       name: opdrachten/templates
       ref: main
+    - repository: frontend
+      type: git
+      name: opdrachten/bereikbaarheid-frontend
+      ref: main
 
 extends:
   template: pipelines/aks/template.yaml@templates
@@ -27,7 +31,7 @@ extends:
       namespace: ns-ccc-opdr-ont-01-bereikbaarheid
       kubernetesServiceConnection: "SCN-K8S-ns-ccc-opdr-ont-01-bereikbaarheid"
       preSteps:
-        - script: helm uninstall bereikbaarheid -n ns-ccc-opdr-ont-01-bereikbaarheid
+        - script: helm uninstall bereikbaarheid -n ns-ccc-opdr-ont-01-bereikbaarheid || true
           displayName: Remove previous installation
         - script: kubectl get secrets
           displayName: kubectl get secrets
