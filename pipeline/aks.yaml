@@ -17,10 +17,10 @@ resources:
       type: git
       name: opdrachten/templates
       ref: main
-    - repository: frontend
-      type: git
-      name: opdrachten/bereikbaarheid-frontend
-      ref: main
+#    - repository: frontend
+#      type: git
+#      name: opdrachten/bereikbaarheid-frontend
+#      ref: main
 
 extends:
   template: pipelines/aks/template.yaml@templates
