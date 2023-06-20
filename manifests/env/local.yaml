@@ -1,5 +1,8 @@
 host: localhost
 
+image:
+  imagePullPolicy: Always
+
 jobs:
   certificate-init:
     enabled: false
