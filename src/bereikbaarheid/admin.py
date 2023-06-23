@@ -257,7 +257,7 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
         context.update(self.admin_site.each_context(request))
 
-        context["title"] = _("Import")
+        context["title"] = "Import"
         context["form"] = import_form
         context["opts"] = self.model._meta
         context["media"] = self.media + import_form.media
