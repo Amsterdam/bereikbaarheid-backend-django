@@ -1,11 +1,11 @@
 from django.contrib.gis.geos import GEOSGeometry
 from import_export.resources import ModelResource
 
-from bereikbaarheid.models import Gebieden
+from bereikbaarheid.models import Gebied
 from bereikbaarheid.resources.utils import refresh_materialized
 
 
-class GebiedenResource(ModelResource):
+class GebiedResource(ModelResource):
     def before_import_row(self, row, row_number, **kwargs):
         row["geom"] = GEOSGeometry(str(row["geometry"]))
 
@@ -17,6 +17,6 @@ class GebiedenResource(ModelResource):
             refresh_materialized("bereikbaarheid_out_vma_node")
 
     class Meta:
-        model = Gebieden
-        exclude = ("xid",)
+        model = Gebied
+        exclude = ("id",)
         import_id_fields = ("geom",)

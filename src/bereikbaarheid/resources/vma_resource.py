@@ -33,7 +33,7 @@ class VmaResource(ModelResource):
 
     class Meta:
         model = Vma
-        exclude = ("gid",)
+        exclude = ("id",)
         import_id_fields = ("link_nr",)
         fields = (
             "link_nr",

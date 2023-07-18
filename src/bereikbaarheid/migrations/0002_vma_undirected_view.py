@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
             b.frc,
             '4.50'::text AS vma_netwerk_versie
            FROM bereikbaarheid_vma v
-             LEFT JOIN bereikbaarheid_gebieden p ON st_dwithin(p.geom, v.geom, 50::double precision) = true
+             LEFT JOIN bereikbaarheid_gebied p ON st_dwithin(p.geom, v.geom, 50::double precision) = true
              LEFT JOIN bereikbaarheid_verrijking b ON v.link_nr = b.link_nr::double precision
           WHERE st_intersects(p.geom, v.geom) = true AND (v.wegtypeab::text <> ALL (ARRAY['voedingslink'::character varying, 'BTM'::character varying, 'loop en fietsveer'::character varying, 'trein'::character varying, 'loopverbinding_halte'::character varying, 'tram'::character varying, 'loopverbinding_knoop'::character varying]::text[])) OR st_intersects(p.geom, v.geom) = true AND (v.wegtypeba::text <> ALL (ARRAY['voedingslink'::character varying, 'BTM'::character varying, 'loop en fietsveer'::character varying, 'trein'::character varying, 'loopverbinding_halte'::character varying, 'tram'::character varying, 'loopverbinding_knoop'::character varying]::text[]));
           """

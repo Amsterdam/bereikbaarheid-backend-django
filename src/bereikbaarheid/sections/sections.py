@@ -109,7 +109,7 @@ raw_query = """
             vma.geom,
             vma.name
 
-            from bereikbaarheid_venstertijdwegen bd
+            from bereikbaarheid_venstertijdweg bd
 
             left join bereikbaarheid_out_vma_undirected vma
                 on abs(bd.link_nr) = vma.link_nr

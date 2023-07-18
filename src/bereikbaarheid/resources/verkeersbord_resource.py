@@ -3,11 +3,11 @@ from datetime import datetime
 from django.contrib.gis.geos import GEOSGeometry
 from import_export.resources import ModelResource
 
-from bereikbaarheid.models import VerkeersBorden
+from bereikbaarheid.models import VerkeersBord
 from bereikbaarheid.resources.utils import refresh_materialized
 
 
-class VerkeersBordenResource(ModelResource):
+class VerkeersBordResource(ModelResource):
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         col_mapping = {
             "script_linknr": "link_nr",
@@ -44,8 +44,8 @@ class VerkeersBordenResource(ModelResource):
             refresh_materialized("bereikbaarheid_out_vma_node")
 
     class Meta:
-        model = VerkeersBorden
+        model = VerkeersBord
         skip_unchanged = True
         report_skipped = False
-        exclude = ("p_id",)
+        exclude = ("id",)
         import_id_fields = ("bord_id",)

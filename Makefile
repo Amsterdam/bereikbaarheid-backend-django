@@ -46,11 +46,14 @@ push_semver:
 clean:                              ## Clean docker stuff
 	$(dc) down -v --remove-orphans
 
-test: lint                               ## Execute tests
+test:                               ## Execute tests
 	$(dc) run --rm test pytest /app/tests $(ARGS)
 
+# the name option is explicitly set, so the back- and frontend can communicate
+# with eachother while on the same docker network. The frontend docker-compose
+# file contains a reference to the set name
 dev: migrate						## Run the development app (and run extra migrations first)
-	$(run) --service-ports dev
+	$(run) --name bereikbaarheid-backend-django-dev --service-ports dev
 
 loadtest: migrate
 	$(manage) make_partitions $(ARGS)
@@ -78,8 +81,9 @@ migrations:
 	$(manage) makemigrations $(ARGS)
 
 trivy: 	    						## Detect image vulnerabilities
-	$(dc) build app
-	trivy image --ignore-unfixed 127.0.0.1:5001/bereikbaarheid/api
+	$(dc) build --no-cache app
+	trivy image --ignore-unfixed docker-registry.secure.amsterdam.nl/datapunt/bereikbaarheid-backend
+
 
 lintfix:                            ## Execute lint fixes
 	$(run) test black /app/src/$(APP) /app/tests/$(APP)

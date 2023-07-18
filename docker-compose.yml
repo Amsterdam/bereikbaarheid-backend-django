@@ -4,14 +4,14 @@ services:
 
   database:
     ports:
-      - "5409:5432"
+      - "5432"
     environment:
       POSTGRES_DB: bereikbaarheid
       POSTGRES_USER: bereikbaarheid
       POSTGRES_PASSWORD: insecure
     build:
       dockerfile: Dockerfile_pgrouting
-    image: ghcr.io/amsterdam/bereikbaarheid-db:latest
+#    image: ghcr.io/amsterdam/bereikbaarheid-db:latest  # TODO: Uncomment when Jenkins is no longer used
     networks:
       - backend
 
@@ -19,13 +19,15 @@ services:
     build:
       context: .
       target: app
-    image: docker-registry.secure.amsterdam.nl/datapunt/bereikbaarheid-backend:${VERSION:-latest}
+
+    image: docker-registry.data.amsterdam.nl/datapunt/bereikbaarheid-backend-django:${VERSION:-latest}
     volumes:
       - ./src:/app/src
       - ./tests:/app/tests
       - ./deploy:/deploy
     depends_on:
       - database
+    entrypoint: /app/deploy/wait-for-it.sh database:5432 --
 
   dev:
     <<: *app
@@ -47,7 +49,7 @@ services:
     <<: *app
     build:
       target: tests
-    image: ghcr.io/amsterdam/bereikbaarheid:latest
+#    image: ghcr.io/amsterdam/bereikbaarheid:latest  # TODO: Uncomment when Jenkins is no longer used
     environment:
       - DEBUG=true
       - SECRET_KEY=123456

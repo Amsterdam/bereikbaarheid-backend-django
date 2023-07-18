@@ -1,4 +1,8 @@
 
+## Bereikbaarheid backend django
+Dit is de backend voor de bereikbaarheid website (https://bereikbaarheid.amsterdam.nl/). 
+De frontend is te vinden op https://github.com/Amsterdam/bereikbaarheid-frontend.
+
 ## Getting Started
 Om lokaal te kunnen ontwikkelen wordt gebruik gemaakt van Docker-compose. 
 

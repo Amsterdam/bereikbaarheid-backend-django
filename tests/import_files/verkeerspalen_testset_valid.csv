@@ -1,0 +1,21 @@
+"linknr","paalnummer","verkeersbord","dagen","begin_tijd","eind_tijd","geometry","type","standplaats","jaar_aanleg","venstertijden","toegangssysteem","camera","beheerorganisatie","bijzonderheden"
+32912,NB geen gemeente,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (124466.95205121834 490231.00884038454),"",Buikslotermeerplein 235,0,"","","","",""
+32912,NB geen gemeente,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (124534.94575068756 490186.9711998508),"",Buikslotermeerplein 301,0,"","","","",""
+32912,NB geen gemeente,,"{ma,di,wo,do,vr}",00:00:00,23:59:00,POINT (124485.00730904161 490036.0664333772),"",Buikslotermeerplein 320,0,"","","","",""
+32912,NB geen gemeente,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (124392.94833464369 490096.0541156081),"",Buikslotermeerplein 152,0,"","","","",""
+32912,NB geen gemeente,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:54:00,POINT (124366.00623480325 490295.05776568234),"",Buikslotermeerplein 120,0,"","","","",""
+203405,Niet in beheer V&OR,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (121960.9916462986 486541.1462722449),"",Nieuwe Herengracht/Amstel,0,"",Anders,"",Hermitage,Niet in beheer V&OR
+203405,Niet in beheer V&OR,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (121995.24898316342 486435.6910165001),"",Nieuwe Keizersgracht/Amstel,0,"",Anders,Toezicht,Hermitage,Niet in beheer V&OR
+203405,Niet in beheer V&OR,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (122154.9651128104 486488.11223641253),"",Nieuwe Keizersgracht/Weesperstraat,0,"",Anders,"",Hermitage,Niet in beheer V&OR
+466865,NVT,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (122961.6466991478 487365.0757906512),"Poller, in behee",NVT,0,geen,Anders,"",Marineterrein/Rijksoverheid,"Deze staat op eigen terrein, Bureau Marineterrein, locatie Achterwerf.
+factureren aan de gemeente Amsterdam, Grond & Ontwikkeling Marin.
+
+contactpersoon is ..., Hoofd Beheer, "
+21159,Poller in beheer van p,,"{ma,di,wo,do,vr,za,zo}",00:00:00,23:59:00,POINT (120018.77546871231 488243.361414585),NVT,NVT,0,NVT,Anders,"",VvE Meander 1,"Verwijs melders naar website: www.meander1.nl
+mail: paaltje@meander1.nl
+
+Bij spoedgevallen: 
+0612345678
+of
+0612345678
+"

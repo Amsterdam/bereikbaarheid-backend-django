@@ -36,10 +36,10 @@ select
         end traffic_obstructions
 from bereikbaarheid_out_vma_undirected t1
 
-left join bereikbaarheid_verkeerstellingen t2
+left join bereikbaarheid_verkeerstelling t2
     on t1.link_nr = t2.link_nr
 
-left join bereikbaarheid_stremmingen t3
+left join bereikbaarheid_stremming t3
     on t1.link_nr = t3.link_nr
     and now() < t3.end_date
 

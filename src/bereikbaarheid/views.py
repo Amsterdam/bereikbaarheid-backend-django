@@ -1,6 +1,8 @@
 from django.http import HttpRequest, JsonResponse
 from django.views import View
 
+from bereikbaarheid.bollards import get_bollards
+from bereikbaarheid.bollards.serializer import BollardsSerializer
 from bereikbaarheid.elements import get_elements
 from bereikbaarheid.isochrones import get_isochrones
 from bereikbaarheid.isochrones.serializer import IsochronesSerializer
@@ -14,6 +16,24 @@ from bereikbaarheid.sections import get_sections
 from bereikbaarheid.traffic_signs import get_traffic_signs
 from bereikbaarheid.traffic_signs.serializers import TrafficSignsSerializer
 from bereikbaarheid.wrapper import geo_json_response, validate_data
+
+
+class BollardsView(View):
+    """
+    return Bollards
+    """
+
+    @geo_json_response
+    def handle(self, request, data: dict, *args, **kwargs):
+        return get_bollards(data)
+
+    @validate_data(BollardsSerializer)
+    def get(self, request, serialized_data: dict, *args, **kwargs):
+        return self.handle(request, serialized_data)
+
+    @validate_data(BollardsSerializer)
+    def post(self, request: HttpRequest, serialized_data: dict, *args, **kwargs):
+        return self.handle(request, serialized_data)
 
 
 class TrafficSignsView(View):

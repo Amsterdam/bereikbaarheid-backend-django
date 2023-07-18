@@ -107,13 +107,19 @@ def refresh_materialized(db_table: str):
 # -------------------------------------------
 
 
-def convert_to_date(date: str = None, format: str = "%d/%m/%y %H:%M"):
+def convert_to_date(date: str = None, format: str = "%d/%m/%y %H:%M") -> datetime:
     """Convert string format to datetime"""
 
     try:
         _date = datetime.datetime.strptime(date, format)
-    except ValueError:
-        print(f"verkeerd datumformat voor {date}, gewenst format is {format}")
+    except:
+        try:
+            format = "%Y-%m-%d %H:%M:%S.%f"
+            _date = datetime.datetime.strptime(date, format)
+        except:
+            raise ValueError(
+                f"verkeerd datumformat voor {date}, gewenst format is '%d/%m/%y %H:%M' of '%Y-%m-%d %H:%M:%S.%f'"
+            )
 
     return _date
 
@@ -131,16 +137,28 @@ def convert_to_time(in_time: str = None):
             tlist.append(0)  # aanvullen seconden
 
         _time = datetime.time(*map(int, tlist))
-
-    except ValueError:
-        print(f"verkeerd datumformat voor {in_time}, gewenst format is H:M:S of H:M")
+    except:
+        raise ValueError(
+            f"verkeerd datumformat voor {in_time}, gewenst format is H:M:S of H:M"
+        )
 
     return _time
 
 
 def convert_str(value: str, to: str = "float"):
+    """Convert string-value to format 'to'"""
     if "float" == to:
         try:
             value = float(value)
         finally:
             return value
+    else:
+        return value
+
+
+def remove_chars_from_value(value: str, chars: list) -> str:
+    """Removes all characters in list chars from value"""
+    v = value
+    for c in chars:
+        v = v.replace(c, "")
+    return v

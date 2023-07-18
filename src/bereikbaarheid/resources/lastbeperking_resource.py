@@ -23,7 +23,7 @@ class LastbeperkingResource(ModelResource):
         row["lastbeperking_in_kg"] = convert_str(row["lastbeperking_in_kg"], "float")
 
     def skip_row(self, instance, original, row, import_validation_errors=None):
-        if row["lastbeperking_in_kg"] == None:
+        if not row["lastbeperking_in_kg"]:
             return True
 
         return super().skip_row(instance, original, row, import_validation_errors)
@@ -39,5 +39,5 @@ class LastbeperkingResource(ModelResource):
         model = Lastbeperking
         skip_unchanged = True
         report_skipped = True
-        exclude = ("p_id",)
+        exclude = ("id",)
         import_id_fields = ("link_nr",)

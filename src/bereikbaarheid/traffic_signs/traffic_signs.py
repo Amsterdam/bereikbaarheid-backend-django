@@ -19,7 +19,7 @@ select m.bord_id,
                      st_transform(ST_SetSRID(st_makepoint(rd_x, rd_y), 28992), 4326)
                  )  as geom,
              x.name as straatnaam
-            from bereikbaarheid_verkeersborden m
+            from bereikbaarheid_verkeersbord m
             left join bereikbaarheid_out_vma_directed x
                          on m.link_gevalideerd = x.id
       where m.link_gevalideerd <> 0

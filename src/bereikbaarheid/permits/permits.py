@@ -133,7 +133,7 @@ raw_query = """
         group by abs(n.id), g.geom4326,g.zone_7_5, g.milieuzone
         order by abs(n.id)) v
 
-        left join bereikbaarheid_venstertijdwegen as ven
+        left join bereikbaarheid_venstertijdweg as ven
         on v.id = abs(ven.link_nr)
 
         left join bereikbaarheid_out_vma_undirected as tiles

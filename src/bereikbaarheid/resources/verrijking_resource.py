@@ -26,5 +26,5 @@ class VerrijkingResource(ModelResource):
         model = Verrijking
         skip_unchanged = True
         report_skipped = True
-        exclude = ("p_id",)
+        exclude = ("id",)
         import_id_fields = ("link_nr",)

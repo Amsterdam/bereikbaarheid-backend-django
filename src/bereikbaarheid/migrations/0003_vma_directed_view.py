@@ -12,124 +12,127 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             """
          CREATE MATERIALIZED VIEW bereikbaarheid_out_vma_directed AS SELECT netwerk.link_nr AS id,
-    netwerk.name,
-    netwerk.source,
-    netwerk.target,
-    st_linemerge(netwerk.geom)::geometry(LineString,28992) AS geom,
-    st_linemerge(st_transform(netwerk.geom, 4326))::geometry(LineString,4326) AS geom4326,
-    st_linemerge(st_snaptogrid(st_transform(st_simplifypreservetopology(netwerk.geom, 3::double precision), 4326), 0.00001::double precision))::geometry(LineString,4326) AS geom4326simply,
-    netwerk.cost,
-    netwerk.binnen_amsterdam,
-    netwerk.milieuzone,
-    netwerk.zone_zwaar_verkeer_detail,
-        CASE
-            WHEN netwerk.zone_zwaar_verkeer_detail::text = ANY (ARRAY['binnen'::character varying, 'binnen - breed opgezette wegen'::character varying]::text[]) THEN true
-            ELSE false
-        END AS zone_7_5,
-    netwerk.frc,
-        CASE
-            WHEN bordc07.c07 = 1 THEN true
-            WHEN bordc07.c07 = 0 THEN false
-            ELSE false
-        END AS c07,
-        CASE
-            WHEN bordc07a.c07a = 1 THEN true
-            WHEN bordc07a.c07a = 0 THEN false
-            ELSE false
-        END AS c07a,
-        CASE
-            WHEN bordc01.c01 = 1 THEN true
-            WHEN bordc01.c01 = 0 THEN false
-            ELSE false
-        END AS c01,
-        CASE
-            WHEN bordc10.c10 = 1 THEN true
-            WHEN bordc10.c10 = 0 THEN false
-            ELSE false
-        END AS c10,
-    borden17_21.c17,
-    borden17_21.c18,
-    borden17_21.c19,
-    borden17_21.c20,
-        CASE
-            WHEN borden17_21.c21 IS NULL AND l.lastbeperking_in_kg IS NOT NULL THEN l.lastbeperking_in_kg
-            WHEN l.lastbeperking_in_kg < borden17_21.c21 THEN l.lastbeperking_in_kg
-            ELSE borden17_21.c21
-        END AS c21,
-    borden17_21.c21 AS c21_borden,
-    l.lastbeperking_in_kg
-   FROM ( SELECT bereikbaarheid_out_vma_undirected.link_nr,
-            bereikbaarheid_out_vma_undirected.name,
-            bereikbaarheid_out_vma_undirected.source,
-            bereikbaarheid_out_vma_undirected.target,
-            bereikbaarheid_out_vma_undirected.geom,
-            bereikbaarheid_out_vma_undirected.cost,
-            bereikbaarheid_out_vma_undirected.binnen_amsterdam,
-            bereikbaarheid_out_vma_undirected.milieuzone,
-            bereikbaarheid_out_vma_undirected.zone_zwaar_verkeer_detail,
-            bereikbaarheid_out_vma_undirected.frc
-           FROM bereikbaarheid_out_vma_undirected
-        UNION ALL
-         SELECT bereikbaarheid_out_vma_undirected.link_nr * '-1'::integer AS link_nr,
-            bereikbaarheid_out_vma_undirected.name,
-            bereikbaarheid_out_vma_undirected.target,
-            bereikbaarheid_out_vma_undirected.source,
-            st_reverse(bereikbaarheid_out_vma_undirected.geom) AS st_reverse,
-            bereikbaarheid_out_vma_undirected.reverse_cost,
-            bereikbaarheid_out_vma_undirected.binnen_amsterdam,
-            bereikbaarheid_out_vma_undirected.milieuzone,
-            bereikbaarheid_out_vma_undirected.zone_zwaar_verkeer_detail,
-            bereikbaarheid_out_vma_undirected.frc
-           FROM bereikbaarheid_out_vma_undirected) netwerk
-     LEFT JOIN ( SELECT vb.link_gevalideerd AS link_nr,
-            min(
+            netwerk.name,
+            netwerk.source,
+            netwerk.target,
+            st_linemerge(netwerk.geom)::geometry(LineString,28992) AS geom,
+            st_linemerge(st_transform(netwerk.geom, 4326))::geometry(LineString,4326) AS geom4326,
+            st_linemerge(st_snaptogrid(st_transform(st_simplifypreservetopology(netwerk.geom, 3::double precision), 4326), 0.00001::double precision))::geometry(LineString,4326) AS geom4326simply,
+            netwerk.cost,
+            netwerk.binnen_amsterdam,
+            netwerk.milieuzone,
+            netwerk.zone_zwaar_verkeer_detail,
+            netwerk.car_network,
                 CASE
-                    WHEN vb.rvv_modelnummer::text = 'C17'::text THEN vb.tekst_waarde
-                    ELSE NULL::double precision
-                END) AS c17,
-            min(
+                    WHEN netwerk.zone_zwaar_verkeer_detail::text = ANY (ARRAY['binnen'::character varying, 'binnen - breed opgezette wegen'::character varying]::text[]) THEN true
+                    ELSE false
+                END AS zone_7_5,
+            netwerk.frc,
                 CASE
-                    WHEN vb.rvv_modelnummer::text = 'C18'::text THEN vb.tekst_waarde
-                    ELSE NULL::double precision
-                END) AS c18,
-            min(
+                    WHEN bordc07.c07 = 1 THEN true
+                    WHEN bordc07.c07 = 0 THEN false
+                    ELSE false
+                END AS c07,
                 CASE
-                    WHEN vb.rvv_modelnummer::text = 'C19'::text THEN vb.tekst_waarde
-                    ELSE NULL::double precision
-                END) AS c19,
-            min(
+                    WHEN bordc07a.c07a = 1 THEN true
+                    WHEN bordc07a.c07a = 0 THEN false
+                    ELSE false
+                END AS c07a,
                 CASE
-                    WHEN vb.rvv_modelnummer::text = 'C20'::text THEN vb.tekst_waarde
-                    ELSE NULL::double precision
-                END) AS c20,
-            min(
+                    WHEN bordc01.c01 = 1 THEN true
+                    WHEN bordc01.c01 = 0 THEN false
+                    ELSE false
+                END AS c01,
                 CASE
-                    WHEN vb.rvv_modelnummer::text = 'C21'::text OR vb.rvv_modelnummer::text = 'C21_ZB'::text THEN vb.tekst_waarde
-                    ELSE NULL::double precision
-                END) AS c21
-           FROM bereikbaarheid_verkeersborden vb
-          WHERE vb.link_gevalideerd <> 0 AND vb.geldigheid::text = 'verbod'::text AND vb.verkeersbesluit::text <> 'stcrt-2021-24726'::text
-          GROUP BY vb.link_gevalideerd) borden17_21 ON netwerk.link_nr = borden17_21.link_nr
-     LEFT JOIN ( SELECT bereikbaarheid_lastbeperking.link_nr,
-            min(bereikbaarheid_lastbeperking.lastbeperking_in_kg) AS lastbeperking_in_kg
-           FROM bereikbaarheid_lastbeperking
-          GROUP BY bereikbaarheid_lastbeperking.link_nr) l ON abs(netwerk.link_nr) = l.link_nr
-     LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
-            1 AS c07
-           FROM bereikbaarheid_verkeersborden vb
-          WHERE vb.rvv_modelnummer::text = 'C07'::text AND vb.geldigheid::text = 'verbod'::text OR vb.rvv_modelnummer::text = 'C07ZB'::text AND vb.geldigheid::text = 'verbod'::text OR vb.rvv_modelnummer::text = 'C07B'::text AND vb.geldigheid::text = 'verbod'::text) bordc07 ON netwerk.link_nr = bordc07.link_gevalideerd
-     LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
-            1 AS c01
-           FROM bereikbaarheid_verkeersborden vb
-          WHERE vb.rvv_modelnummer::text = 'C01'::text AND vb.geldigheid::text = 'verbod'::text) bordc01 ON netwerk.link_nr = bordc01.link_gevalideerd
-     LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
-            1 AS c07a
-           FROM bereikbaarheid_verkeersborden vb
-          WHERE vb.rvv_modelnummer::text = 'C07A'::text AND vb.geldigheid::text = 'verbod'::text OR vb.rvv_modelnummer::text = 'C07B'::text AND vb.geldigheid::text = 'verbod'::text) bordc07a ON netwerk.link_nr = bordc07a.link_gevalideerd
-     LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
-            1 AS c10
-           FROM bereikbaarheid_verkeersborden vb
-          WHERE vb.rvv_modelnummer::text = 'C10'::text AND vb.geldigheid::text = 'verbod'::text) bordc10 ON netwerk.link_nr = bordc10.link_gevalideerd;
+                    WHEN bordc10.c10 = 1 THEN true
+                    WHEN bordc10.c10 = 0 THEN false
+                    ELSE false
+                END AS c10,
+            borden17_21.c17,
+            borden17_21.c18,
+            borden17_21.c19,
+            borden17_21.c20,
+                CASE
+                    WHEN borden17_21.c21 IS NULL AND l.lastbeperking_in_kg IS NOT NULL THEN l.lastbeperking_in_kg
+                    WHEN l.lastbeperking_in_kg < borden17_21.c21 THEN l.lastbeperking_in_kg
+                    ELSE borden17_21.c21
+                END AS c21,
+            borden17_21.c21 AS c21_borden,
+            l.lastbeperking_in_kg
+        FROM ( SELECT bereikbaarheid_out_vma_undirected.link_nr,
+                    bereikbaarheid_out_vma_undirected.name,
+                    bereikbaarheid_out_vma_undirected.source,
+                    bereikbaarheid_out_vma_undirected.target,
+                    bereikbaarheid_out_vma_undirected.geom,
+                    bereikbaarheid_out_vma_undirected.cost,
+                    bereikbaarheid_out_vma_undirected.binnen_amsterdam,
+                    bereikbaarheid_out_vma_undirected.milieuzone,
+                    bereikbaarheid_out_vma_undirected.zone_zwaar_verkeer_detail,
+                    bereikbaarheid_out_vma_undirected.frc,
+                    bereikbaarheid_out_vma_undirected.car_network
+                FROM bereikbaarheid_out_vma_undirected
+                UNION ALL
+                SELECT bereikbaarheid_out_vma_undirected.link_nr * '-1'::integer AS link_nr,
+                    bereikbaarheid_out_vma_undirected.name,
+                    bereikbaarheid_out_vma_undirected.target,
+                    bereikbaarheid_out_vma_undirected.source,
+                    st_reverse(bereikbaarheid_out_vma_undirected.geom) AS st_reverse,
+                    bereikbaarheid_out_vma_undirected.reverse_cost,
+                    bereikbaarheid_out_vma_undirected.binnen_amsterdam,
+                    bereikbaarheid_out_vma_undirected.milieuzone,
+                    bereikbaarheid_out_vma_undirected.zone_zwaar_verkeer_detail,
+                    bereikbaarheid_out_vma_undirected.frc,
+                    bereikbaarheid_out_vma_undirected.car_network
+                FROM bereikbaarheid_out_vma_undirected) netwerk
+            LEFT JOIN ( SELECT vb.link_gevalideerd AS link_nr,
+                    min(
+                        CASE
+                            WHEN vb.rvv_modelnummer::text = 'C17'::text THEN vb.tekst_waarde
+                            ELSE NULL::double precision
+                        END) AS c17,
+                    min(
+                        CASE
+                            WHEN vb.rvv_modelnummer::text = 'C18'::text THEN vb.tekst_waarde
+                            ELSE NULL::double precision
+                        END) AS c18,
+                    min(
+                        CASE
+                            WHEN vb.rvv_modelnummer::text = 'C19'::text THEN vb.tekst_waarde
+                            ELSE NULL::double precision
+                        END) AS c19,
+                    min(
+                        CASE
+                            WHEN vb.rvv_modelnummer::text = 'C20'::text THEN vb.tekst_waarde
+                            ELSE NULL::double precision
+                        END) AS c20,
+                    min(
+                        CASE
+                            WHEN vb.rvv_modelnummer::text = 'C21'::text OR vb.rvv_modelnummer::text = 'C21_ZB'::text THEN vb.tekst_waarde
+                            ELSE NULL::double precision
+                        END) AS c21
+                FROM bereikbaarheid_verkeersbord vb
+                WHERE vb.link_gevalideerd <> 0 AND vb.geldigheid::text = 'verbod'::text AND vb.verkeersbesluit::text <> 'stcrt-2021-24726'::text
+                GROUP BY vb.link_gevalideerd) borden17_21 ON netwerk.link_nr = borden17_21.link_nr
+            LEFT JOIN ( SELECT bereikbaarheid_lastbeperking.link_nr,
+                    min(bereikbaarheid_lastbeperking.lastbeperking_in_kg) AS lastbeperking_in_kg
+                FROM bereikbaarheid_lastbeperking
+                GROUP BY bereikbaarheid_lastbeperking.link_nr) l ON abs(netwerk.link_nr) = l.link_nr
+            LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
+                    1 AS c07
+                FROM bereikbaarheid_verkeersbord vb
+                WHERE vb.rvv_modelnummer::text = 'C07'::text AND vb.geldigheid::text = 'verbod'::text OR vb.rvv_modelnummer::text = 'C07ZB'::text AND vb.geldigheid::text = 'verbod'::text OR vb.rvv_modelnummer::text = 'C07B'::text AND vb.geldigheid::text = 'verbod'::text) bordc07 ON netwerk.link_nr = bordc07.link_gevalideerd
+            LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
+                    1 AS c01
+                FROM bereikbaarheid_verkeersbord vb
+                WHERE vb.rvv_modelnummer::text = 'C01'::text AND vb.geldigheid::text = 'verbod'::text) bordc01 ON netwerk.link_nr = bordc01.link_gevalideerd
+            LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
+                    1 AS c07a
+                FROM bereikbaarheid_verkeersbord vb
+                WHERE vb.rvv_modelnummer::text = 'C07A'::text AND vb.geldigheid::text = 'verbod'::text OR vb.rvv_modelnummer::text = 'C07B'::text AND vb.geldigheid::text = 'verbod'::text) bordc07a ON netwerk.link_nr = bordc07a.link_gevalideerd
+            LEFT JOIN ( SELECT DISTINCT vb.link_gevalideerd,
+                    1 AS c10
+                FROM bereikbaarheid_verkeersbord vb
+                WHERE vb.rvv_modelnummer::text = 'C10'::text AND vb.geldigheid::text = 'verbod'::text) bordc10 ON netwerk.link_nr = bordc10.link_gevalideerd;
                 """
         )
     ]

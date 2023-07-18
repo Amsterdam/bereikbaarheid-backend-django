@@ -9,30 +9,28 @@ help_text is the original table name
 """
 
 
-class Gebieden(models.Model):
+class Gebied(models.Model):
     """
-    bereikbaarheid.bd_gebieden
+    naam oude db-tabel: bereikbaarheid.bd_gebieden
     """
 
     class Meta:
         verbose_name = "Gebied"
         verbose_name_plural = "Gebieden"
 
-    xid = models.BigAutoField(primary_key=True)
     geom = PolygonField(srid=28992)
 
 
-class Stremmingen(models.Model):
+class Stremming(models.Model):
     """
-    bereikbaarheid.bd_stremmingen
-
+    naam oude db-tabel: bereikbaarheid.bd_stremming
+    help_text = kolomnaam oude db-tabel
     """
 
     class Meta:
         verbose_name = "Stremming"
         verbose_name_plural = "Stremmingen"
 
-    p_id = models.BigAutoField(primary_key=True, help_text="Added by opdrachtenteam")
     link_nr = models.IntegerField(db_index=True, help_text="vma_linknr")
     werkzaamheden = models.CharField(max_length=255)
     opmerking = models.CharField(max_length=1000, blank=True, null=True)
@@ -42,16 +40,16 @@ class Stremmingen(models.Model):
     end_date = models.DateTimeField()
 
 
-class VenstertijdWegen(models.Model):
+class VenstertijdWeg(models.Model):
     """
-    bereikbaarheid.bd_venstertijdwegen
+    naam oude db-tabel: bereikbaarheid.bd_venstertijdwegen
+    help_text = kolomnaam oude db-tabel
     """
 
     class Meta:
-        verbose_name = "Venstertijd"
+        verbose_name = "Venstertijdweg"
         verbose_name_plural = "Venstertijdwegen"
 
-    id = models.BigAutoField(primary_key=True)
     link_nr = models.IntegerField(help_text="linknr")
     name = models.CharField(max_length=255, blank=True, null=True)
     e_type = models.CharField(max_length=255, blank=True, null=True)
@@ -61,16 +59,16 @@ class VenstertijdWegen(models.Model):
     eind_tijd = models.TimeField(blank=True, null=True)
 
 
-class VerkeersBorden(models.Model):
+class VerkeersBord(models.Model):
     """
-    bereikbaarheid.bd_verkeersborden
+    naam oude db-tabel: bereikbaarheid.bd_verkeersborden
+    help_text = kolomnaam oude db-tabel
     """
 
     class Meta:
         verbose_name = "Verkeersbord"
         verbose_name_plural = "Verkeersborden"
 
-    p_id = models.BigAutoField(primary_key=True)
     bord_id = models.IntegerField(unique=True)
     geldigheid = models.CharField(max_length=99)
     rvv_modelnummer = models.CharField(max_length=25)
@@ -78,38 +76,31 @@ class VerkeersBorden(models.Model):
     kijkrichting = models.IntegerField()
     link_nr = models.IntegerField(help_text="script_link_nr")
     link_gevalideerd = models.IntegerField()
-    tekst_waarde = models.FloatField(
-        blank=True,
-        null=True,
-    )
+    tekst_waarde = models.FloatField(blank=True, null=True)
     onderbord_tekst = models.CharField(max_length=299, blank=True, null=True)
-    verkeersbesluit = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True,
-    )
+    verkeersbesluit = models.CharField(max_length=50, blank=True, null=True)
     versie = models.DateField()
     rd_x = models.IntegerField()
     rd_y = models.IntegerField()
     link_validated_2 = models.IntegerField()
     panorama = models.CharField(max_length=500, blank=True, null=True)
-    geometry = PointField(srid=28992)
+    geometry = PointField(srid=28992, blank=True)
 
     def save(self, *args, **kwargs):
         self.geometry = f"POINT({self.rd_x} {self.rd_y})"
         return super().save(*args, **kwargs)
 
 
-class VerkeersTellingen(models.Model):
+class VerkeersTelling(models.Model):
     """
-    bereikbaarheid.bd_verkeerstellingen
+    naam oude db-tabel: bereikbaarheid.bd_verkeerstellingen
+    help_text = kolomnaam oude db-tabel
     """
 
     class Meta:
         verbose_name = "Verkeerstelling"
         verbose_name_plural = "Verkeerstellingen"
 
-    xid = models.BigAutoField(primary_key=True)
     volg_nummer = models.IntegerField(help_text="Volgnummer")
     lat = models.FloatField(help_text="Latitude")
     lon = models.FloatField(help_text="Longitude")
@@ -130,15 +121,15 @@ class VerkeersTellingen(models.Model):
 
 class Verrijking(models.Model):
     """
-    bereikbaarheid.bd_vma_beleidsmatige_verrijking
+    naam oude db-tabel: bereikbaarheid.bd_vma_beleidsmatige_verrijking
+    help_text = kolomnaam oude db-tabel
     """
 
     class Meta:
         verbose_name = "Verrijking"
         verbose_name_plural = "Verrijkingen"
 
-    p_id = models.BigAutoField(primary_key=True, help_text="Added by opdrachtenteam")
-    link_nr = models.IntegerField()
+    link_nr = models.IntegerField(help_text="linknr")
     binnen_amsterdam = models.BooleanField(blank=True, null=True)
     binnen_polygoon_awb = models.BooleanField(blank=True, null=True)
     milieuzone = models.BooleanField(
@@ -174,28 +165,27 @@ class Verrijking(models.Model):
 
 class Lastbeperking(models.Model):
     """
-    bereikbaarheid.lastbeperking_in_zzv_zonder_vb
+    naam oude db-tabel: bereikbaarheid.lastbeperking_in_zzv_zonder_vb
     """
 
     class Meta:
         verbose_name = "Lastbeperking"
         verbose_name_plural = "Lastbeperkingen"
 
-    p_id = models.BigAutoField(primary_key=True)
     link_nr = models.IntegerField()
     lastbeperking_in_kg = models.FloatField(blank=True, null=True)
 
 
 class Vma(models.Model):
     """
-    bereikbaarheid.bd_vma_latest
+    naam oude db-tabel: bereikbaarheid.bd_vma_latest
+    help_text = kolomnaam oude db-tabel
     """
 
     class Meta:
         verbose_name = "Vma"
         verbose_name_plural = "Vma"
 
-    gid = models.BigAutoField(primary_key=True)
     link_nr = models.FloatField()  # blank=True, null=True)
     name = models.CharField(max_length=50, blank=True, null=True)
     direction = models.FloatField(blank=True, null=True)
@@ -209,3 +199,32 @@ class Vma(models.Model):
     wegtype_ab = models.CharField(max_length=50, blank=True, null=True)
     wegtype_ba = models.CharField(max_length=50, blank=True, null=True)
     geom = MultiLineStringField(srid=28992)
+
+
+class VerkeersPaal(models.Model):
+    """
+    naam oude db-tabel: bereikbaarheid.bd_verkeerspalen
+    help_text = kolomnaam oude db-tabel
+    """
+
+    class Meta:
+        verbose_name = "Verkeerspaal"
+        verbose_name_plural = "Verkeerspalen"
+
+    link_nr = models.IntegerField(help_text="linknr")
+    paal_nr = models.CharField(
+        max_length=255, blank=True, null=True, help_text="paalnummer"
+    )
+    verkeersbord = models.CharField(max_length=255, blank=True, null=True)
+    dagen = ArrayField(models.CharField(max_length=10))
+    begin_tijd = models.TimeField()
+    eind_tijd = models.TimeField()
+    geometry = PointField(srid=28992)
+    type = models.CharField(max_length=255, blank=True, null=True)
+    standplaats = models.CharField(max_length=255, blank=True, null=True)
+    jaar_aanleg = models.IntegerField(blank=True, null=True)
+    venstertijden = models.CharField(max_length=255, blank=True, null=True)
+    toegangssysteem = models.CharField(max_length=255, blank=True, null=True)
+    camera = models.CharField(max_length=255, blank=True, null=True)
+    beheerorganisatie = models.CharField(max_length=255, blank=True, null=True)
+    bijzonderheden = models.CharField(max_length=500, blank=True, null=True)

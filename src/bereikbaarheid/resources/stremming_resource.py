@@ -1,13 +1,14 @@
 from import_export.resources import ModelResource
 
-from bereikbaarheid.models import Stremmingen
+from bereikbaarheid.models import Stremming
 from bereikbaarheid.resources.utils import convert_to_date
 
 
-class StremmingenResource(ModelResource):
+class StremmingResource(ModelResource):
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         col_mapping = {
             "vma-linknr": "link_nr",
+            "vma_linknr": "link_nr",
             "opmerk/beschrijving/": "opmerking",
             "wior_nr": "kenmerk",
             "gsu": "start_date",
@@ -24,10 +25,10 @@ class StremmingenResource(ModelResource):
         row["end_date"] = convert_to_date(row["end_date"])
 
     class Meta:
-        model = Stremmingen
+        model = Stremming
         skip_unchanged = True
         report_skipped = True
-        exclude = ("p_id",)
+        exclude = ("id",)
         import_id_fields = (
             "link_nr",
             "start_date",

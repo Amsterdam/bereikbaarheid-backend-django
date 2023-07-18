@@ -10,7 +10,7 @@ defusedxml==0.7.1
     # via odfpy
 diff-match-patch==20230430
     # via django-import-export
-django==4.1.9
+django==4.1.10
     # via
     #   -r requirements.in
     #   django-import-export
@@ -25,7 +25,7 @@ markuppy==1.14
     # via tablib
 marshmallow==3.19.0
     # via -r requirements.in
-numpy==1.24.3
+numpy==1.25.1
     # via pandas
 odfpy==1.4.1
     # via tablib
@@ -33,7 +33,7 @@ openpyxl==3.1.2
     # via tablib
 packaging==23.1
     # via marshmallow
-pandas==2.0.2
+pandas==2.0.3
     # via -r requirements.in
 psycopg2==2.9.6
     # via -r requirements.in

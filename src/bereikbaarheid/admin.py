@@ -10,29 +10,62 @@ from import_export.forms import ImportExportFormBase
 from leaflet.admin import LeafletGeoAdminMixin
 
 from bereikbaarheid.models import (
-    Gebieden,
+    Gebied,
     Lastbeperking,
-    Stremmingen,
-    VenstertijdWegen,
-    VerkeersBorden,
-    VerkeersTellingen,
+    Stremming,
+    VenstertijdWeg,
+    VerkeersBord,
+    VerkeersPaal,
+    VerkeersTelling,
     Verrijking,
     Vma,
 )
-from bereikbaarheid.resources.gebieden_resource import GebiedenResource
+from bereikbaarheid.resources.gebied_resource import GebiedResource
 from bereikbaarheid.resources.lastbeperking_resource import LastbeperkingResource
-from bereikbaarheid.resources.stremmingen_resource import StremmingenResource
+from bereikbaarheid.resources.stremming_resource import StremmingResource
 from bereikbaarheid.resources.utils import GEOJSON, SCSV
-from bereikbaarheid.resources.venstertijdwegen_resource import VenstertijdWegenResource
-from bereikbaarheid.resources.verkeersborden_resource import VerkeersBordenResource
+from bereikbaarheid.resources.venstertijdweg_resource import VenstertijdWegResource
+from bereikbaarheid.resources.verkeersbord_resource import VerkeersBordResource
+from bereikbaarheid.resources.verkeerspaal_resource import VerkeersPaalResource
+from bereikbaarheid.resources.verkeerstelling_resource import VerkeersTellingResource
 from bereikbaarheid.resources.verrijking_resource import VerrijkingResource
 from bereikbaarheid.resources.vma_resource import VmaResource
 
-admin.site.register(VerkeersTellingen)
+from .validation import days_of_the_week_abbreviated
 
 
-@admin.register(VenstertijdWegen)
-class VenstertijdWegenAdmin(ImportExportMixin, admin.ModelAdmin):
+class ArrayDagenListFilter(admin.SimpleListFilter):
+    """This is a list filter based on the values
+    from a model's `keywords` ArrayField."""
+
+    title = "dagen"
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = "dagen"
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples.
+        (lookup_value, human-readable value). These
+        appear in the admin's right sidebar
+        """
+        return [(d, d) for d in days_of_the_week_abbreviated]
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        lookup_value = self.value()  # The clicked keyword. It can be None!
+        if lookup_value:
+            # the __contains lookup expects a list, so...
+            queryset = queryset.filter(dagen__contains=[lookup_value])
+        return queryset
+
+
+@admin.register(VenstertijdWeg)
+class VenstertijdWegAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
         "link_nr",
         "name",
@@ -41,26 +74,26 @@ class VenstertijdWegenAdmin(ImportExportMixin, admin.ModelAdmin):
         "begin_tijd",
         "eind_tijd",
     ]
-    list_filter = ["verkeersbord", "dagen", "begin_tijd", "eind_tijd"]
-    resource_classes = [VenstertijdWegenResource]
+    list_filter = ["verkeersbord", ArrayDagenListFilter, "begin_tijd", "eind_tijd"]
+    resource_classes = [VenstertijdWegResource]
 
     def get_import_formats(self):
         """Returns available import formats."""
-        formats = [SCSV, base_formats.XLSX]
+        formats = [SCSV, base_formats.XLSX, base_formats.CSV]
         return formats
 
 
-@admin.register(Gebieden)
-class GebiedenAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    list_display = ["xid"]
-    resource_classes = [GebiedenResource]
+@admin.register(Gebied)
+class GebiedAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+    list_display = ["id"]
+    resource_classes = [GebiedResource]
     modifiable = False  # Make the leaflet map read-only
 
     def get_import_formats(self):
         """Returns available import formats."""
         return [GEOJSON]
 
-    # This will help you to disbale add functionality
+    # disable add functionality
     def has_add_permission(self, request):
         return False
 
@@ -70,33 +103,56 @@ class GebiedenAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
 @admin.register(Lastbeperking)
 class LastbeperkingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["p_id", "link_nr", "lastbeperking_in_kg"]
+    list_display = ["id", "link_nr", "lastbeperking_in_kg"]
     resource_classes = [LastbeperkingResource]
 
 
-@admin.register(Stremmingen)
-class StremmingenAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["p_id", "link_nr", "werkzaamheden", "kenmerk"]
+@admin.register(Stremming)
+class StremmingAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["id", "link_nr", "werkzaamheden", "kenmerk"]
     list_filter = ["start_date", "end_date"]
-    resource_classes = [StremmingenResource]
+    resource_classes = [StremmingResource]
 
 
-@admin.register(VerkeersBorden)
-class VerkeersBordenAdmin(ImportExportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    list_display = ["p_id", "bord_id", "geldigheid", "rvv_modelnummer"]
+@admin.register(VerkeersBord)
+class VerkeersBordAdmin(ImportExportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+    list_display = ["id", "bord_id", "geldigheid", "rvv_modelnummer"]
     list_filter = ["geldigheid", "rvv_modelnummer"]
-    resource_classes = [VerkeersBordenResource]
+    resource_classes = [VerkeersBordResource]
     modifiable = False  # Make the leaflet map read-only
 
-    # This will help you to disbale add functionality
+
+@admin.register(VerkeersPaal)
+class VerkeersPalenAdmin(ImportExportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+    list_display = ["paal_nr", "link_nr", "standplaats", "dagen"]
+    list_filter = [
+        "type",
+        "toegangssysteem",
+        ArrayDagenListFilter,
+        "beheerorganisatie",
+        "verkeersbord",
+        "jaar_aanleg",
+    ]
+    resource_classes = [VerkeersPaalResource]
+    modifiable = False  # Make the leaflet map read-only
+    ordering = ["link_nr", "standplaats"]
+
+    # disable add functionality
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(VerkeersTelling)
+class VerkeersTellingAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ["volg_nummer", "telpunt_naam", "link_nr", "jaar"]
+    list_filter = ["jaar", "type_verkeer", "meet_methode"]
+    resource_classes = [VerkeersTellingResource]
 
 
 @admin.register(Verrijking)
 class VerrijkingAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
-        "p_id",
+        "id",
         "link_nr",
         "binnen_amsterdam",
         "zone_zwaar_verkeer_bus",
@@ -105,14 +161,14 @@ class VerrijkingAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ["binnen_amsterdam", "wegcategorie_actueel"]
     resource_classes = [VerrijkingResource]
 
-    # This will help you to disbale add functionality
+    # disable add functionality
     def has_add_permission(self, request):
         return False
 
 
 @admin.register(Vma)
 class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    list_display = ["gid", "link_nr", "name"]
+    list_display = ["id", "link_nr", "name"]
     resource_classes = [VmaResource]
     modifiable = False  # Make the leaflet map read-only
     skip_admin_log = True
@@ -205,8 +261,6 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
                         continue
                     data["features"].append(json.loads(s_line))
 
-                print(type(data))
-
                 return data
 
             # This setting means we are going to skip the import confirmation step.
@@ -249,7 +303,7 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
         context.update(self.admin_site.each_context(request))
 
-        context["title"] = _("Import")
+        context["title"] = "Import"
         context["form"] = import_form
         context["opts"] = self.model._meta
         context["media"] = self.media + import_form.media
