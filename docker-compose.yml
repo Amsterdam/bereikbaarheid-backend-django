@@ -19,7 +19,7 @@ services:
     build:
       context: .
       target: app
-    image: ${REGISTRY:-docker-registry.data.amsterdam.nl}/${REPOSITORY:-datapunt/bereikbaarheid-backend-django}:${VERSION:-latest}
+    image: ${REGISTRY:-docker-registry.data.amsterdam.nl}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
     volumes:
       - ./src:/app/src
       - ./tests:/app/tests
