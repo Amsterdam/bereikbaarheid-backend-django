@@ -37,7 +37,6 @@ services:
     <<: *app
     build:
       target: dev 
-    image: docker-registry.data.amsterdam.nl/datapunt/bereikbaarheid-backend-django:${VERSION:-latest}          
     environment:
       - DEBUG=true
       - SECRET_KEY=123456
