@@ -2,7 +2,7 @@ from bereikbaarheid.utils import django_query_db
 
 raw_query = """
 select
-     ST_Transform(t1.geom, 4326)::json as geometry,
+     ST_Transform(t1.geom, 4326) as geometry,
      t1.link_nr as id,
      t1.lengte::int as length_in_m,
      t1.wettelijke_snelheid_actueel,
