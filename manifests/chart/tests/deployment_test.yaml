@@ -122,82 +122,6 @@ tests:
           value:
             - command2
 
-  - it: should set env from secrets
-    set:
-      image:
-        repository: defaultrepo
-      secrets:
-        mysecrets:
-          type: opaque
-          secrets:
-            secret1: value1
-            secret2: value2
-      deployments:
-        main:
-          containers:
-            - name: main
-              secrets:
-                - mysecrets
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[?(@.name=='main')].env
-          value:
-            - name: "SECRET1"
-              valueFrom:
-                secretKeyRef:
-                  name: "mysecrets-test"
-                  key: "secret1"
-            - name: "SECRET2"
-              valueFrom:
-                secretKeyRef:
-                  name: "mysecrets-test"
-                  key: "secret2"
-
-  - it: should use env defined on deployment level
-    set:
-      image:
-        repository: defaultrepo
-      secrets:
-        mysecrets:
-          type: opaque
-          secrets:
-            secret1: value1
-            secret2: value2
-      deployments:
-        main:
-          secrets:
-            - mysecrets
-          containers:
-            - name: main
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[?(@.name=='main')].env
-          value:
-            - name: "SECRET1"
-              valueFrom:
-                secretKeyRef:
-                  name: "mysecrets-test"
-                  key: "secret1"
-            - name: "SECRET2"
-              valueFrom:
-                secretKeyRef:
-                  name: "mysecrets-test"
-                  key: "secret2"
-
-  - it: should give an error if the reference to a secret does not exist
-    set:
-      image:
-        repository: defaultrepo
-      deployments:
-        main:
-          containers:
-            - name: main
-              secrets:
-                - mysecret
-    asserts:
-      - failedTemplate:
-          errorMessage: "Secret mysecret does not exist"
-
   - it: should use env vars defined at the deployment in the container
     set:
       image:
@@ -252,8 +176,37 @@ tests:
               cpu: 4
               memory: 512Mi
 
-  - it: should have securityContext in pods and containers
+  - it: should use the default serviceAccount
     set:
+      image:
+        repository: defaultrepo
+      serviceAccount: foo
+      deployments:
+        main:
+          containers:
+            - name: main
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: foo-test
+
+  - it: should be possible to override the serviceaccount per pod
+    set:
+      image:
+        repository: defaultrepo
+      deployments:
+        main:
+          serviceAccount: foo
+          containers:
+            - name: main
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: foo-test
+
+  - it: should inject labels to use workload identity
+    set:
+      workloadIdentity: default-client-id
       image:
         repository: defaultrepo
       deployments:
@@ -261,43 +214,7 @@ tests:
           containers:
             - name: main
     asserts:
-      - equal:
-          path: spec.template.spec.securityContext
-          value:
-            runAsNonRoot: true
-            runAsUser: 1000
-      - equal:
-          path: spec.template.spec.containers[?(@.name=='main')].securityContext
-          value: 
-            privileged: false
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-
-  - it: should allow for securityContext to overWrite
-    set:
-      image:
-        repository: defaultrepo
-
-      deployments:
-        main:
-          securityContext:
-            runAsNonRoot: false
-            runAsUser: 2000
-          containers:
-            - name: main
-              securityContext:
-                allowPrivilegeEscalation: true
-                privileged: true
-                readOnlyRootFilesystem: false
-    asserts:
-      - equal:
-          path: spec.template.spec.securityContext
-          value:
-            runAsNonRoot: false
-            runAsUser: 2000
-      - equal:
-          path: spec.template.spec.containers[?(@.name=='main')].securityContext
-          value: 
-            allowPrivilegeEscalation: true
-            privileged: true
-            readOnlyRootFilesystem: false
+      - isSubset:
+          path: spec.template.metadata.labels
+          content:
+            azure.workload.identity/use: "true"

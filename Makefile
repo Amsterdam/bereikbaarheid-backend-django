@@ -2,6 +2,7 @@
 # https://git.datapunt.amsterdam.nl/Datapunt/python-best-practices/blob/master/dependency_management/
 #
 # VERSION = 2020.01.29
+.PHONY: help pip-tools install requirements update test init manifests deploy
 
 dc = docker compose
 run = $(dc) run --rm
@@ -96,12 +97,12 @@ lint:                               ## Execute lint checks
 	$(run) test isort --diff --check /app/src/$(APP) /app/tests/$(APP)
 
 deploy: manifests
-	helm upgrade --install --atomic meetbouten $(HELM_ARGS) $(ARGS)
+	helm upgrade --install backend $(HELM_ARGS) $(ARGS)
 
 manifests:
-	helm template meetbouten $(HELM_ARGS) $(ARGS)
+	helm template backend $(HELM_ARGS) $(ARGS)
 
 update-chart:
 	rm -rf manifests/chart
-	git clone --branch 1.4.3 --depth 1 git@github.com:Amsterdam/helm-application.git manifests/chart
+	git clone --branch 1.7.0 --depth 1 git@github.com:Amsterdam/helm-application.git manifests/chart
 	rm -rf manifests/chart/.git
