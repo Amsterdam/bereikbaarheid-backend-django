@@ -1,6 +1,6 @@
 image:
   registry: saks01weuacrpgpgo5qvmwo.azurecr.io
-  repository: opdrachten/bereikbaarheid
+  repository: opdrachten/bereikbaarheid-backend-django
   tag: latest
 
 labels:
