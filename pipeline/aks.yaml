@@ -21,7 +21,7 @@ resources:
 extends:
   template: pipelines/aks/template.yaml@templates
   parameters:
-    name: opdr-backend
+    name: bereikbaarheid-backend
     dev:
       pool: Opdrachten
       namespace: ns-ccc-opdr-ont-01-bereikbaarheid
