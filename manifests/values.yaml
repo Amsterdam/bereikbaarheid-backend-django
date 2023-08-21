@@ -4,11 +4,11 @@ image:
   tag: latest
 
 labels:
-  app: bereikbaarheid
+  app: bereikbaarheid-backend
 
 network:
   allow-ingress:
-    selector: app == 'bereikbaarheid'
+    selector: app == 'bereikbaarheid-backend'
     ingress:
       - action: Allow
     egress:
@@ -21,8 +21,6 @@ deployments:
         volumes:
           - name: tmp
             mountPath: /tmp
-        secrets:
-          - app
         ports:
           - port: 8080
             name: http
@@ -51,12 +49,12 @@ services:
         port: 80
         targetPort: 8000
     selector:
-      app: bereikbaarheid
+      app: bereikbaarheid-backend
 
 ingress:
   app:
     paths:
-    - path: /
+    - path: /api
       service: app
       port: 80
     className: nginx
@@ -66,8 +64,3 @@ secrets:
   certificate:
     type: keyvault
     tls: bereikbaarheid
-  app:
-    type: opaque
-    secrets:
-      cow: moo
-      secret-key: secret-value
