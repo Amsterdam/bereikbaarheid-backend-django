@@ -23,7 +23,7 @@ extends:
   parameters:
     name: bereikbaarheid-backend
     build:
-      analyzeImages:
+      producedImages:
       - opdrachten/bereikbaarheid-backend-django
     dev:
       pool: Opdrachten
