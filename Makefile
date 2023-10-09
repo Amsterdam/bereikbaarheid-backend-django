@@ -9,7 +9,7 @@ run = $(dc) run --rm
 manage = $(run) dev python manage.py
 
 ENVIRONMENT ?= local
-VERSION = latest
+VERSION ?= latest
 HELM_ARGS = manifests/chart \
 	-f manifests/values.yaml \
 	-f manifests/env/${ENVIRONMENT}.yaml \
