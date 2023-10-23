@@ -3,7 +3,7 @@ import json
 from django.test.client import RequestFactory
 from marshmallow import Schema, fields
 
-from bereikbaarheid.wrapper import _extract_parameters, geo_json_response, validate_data
+from bereikbaarheid.wrapper import extract_parameters, geo_json_response, validate_data
 
 
 class MockValidation(Schema):
@@ -58,7 +58,7 @@ class TestWrappers:
             content_type="application/json",
         )
 
-        result = _extract_parameters(request)
+        result = extract_parameters(request)
         assert result == data
 
     def test_extract_parameters_get_request(self):
@@ -70,7 +70,7 @@ class TestWrappers:
         data = {"message": "test", "code": "111"}
         request = RequestFactory().get("/?message=test&code=111")
 
-        result = _extract_parameters(request)
+        result = extract_parameters(request)
         assert result == data
 
     def test_geo_json_response(self):
