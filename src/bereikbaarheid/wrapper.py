@@ -25,7 +25,7 @@ def fix_traffic_sign_categories(request) -> dict:
     return values
 
 
-def _extract_parameters(request: HttpRequest) -> dict:
+def extract_parameters(request: HttpRequest) -> dict:
     """
     Extract the parameters from either a get or post request
     and transform them to a dict
@@ -49,18 +49,16 @@ def validate_data(serializer):
     :param serializer:
     :return:
     """
-
     def decorator(func):
         def wrapper(view, request, *args, **kwargs):
             try:
-                data = serializer().load(_extract_parameters(request))
+                data = serializer().load(extract_parameters(request))
                 kwargs["serialized_data"] = data
                 return func(view, request, *args, **kwargs)
             except ValidationError as err:
                 return JsonResponse(status=400, data=err.messages)
             except json.JSONDecodeError as e:
                 return JsonResponse(status=400, data={"error": str(e)})
-
         return wrapper
 
     return decorator

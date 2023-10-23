@@ -242,33 +242,32 @@ def get_bollards(data: dict):
     :param data:
     :return:
     """
-
-    if data:
-        # required
-        _lat = data["lat"]
-        _lon = data["lon"]
-
-        # optional
-        _day_of_the_week = data.get("day_of_the_week", None)
-        _time_from = data.get("time_from", None)
-        _time_to = data.get("time_to", None)
-
-        results = django_query_db(
-            raw_query,
-            {
-                "pgr_dijkstra_cost_query": prepare_pgr_dijkstra_cost_query(
-                    _day_of_the_week, _time_from, _time_to
-                ),
-                "lat": _lat,
-                "lon": _lon,
-                "day_of_the_week": _day_of_the_week,
-                "time_from": _time_from,
-                "time_to": _time_to,
-            },
-        )
-
-    else:
+    if not data:
         # return all bollard objects
         results = django_query_db(raw_query_all, None)
+        return _transform_results(results)
+
+    # required
+    _lat = data["lat"]
+    _lon = data["lon"]
+
+    # optional
+    _day_of_the_week = data.get("day_of_the_week", None)
+    _time_from = data.get("time_from", None)
+    _time_to = data.get("time_to", None)
+
+    results = django_query_db(
+        raw_query,
+        {
+            "pgr_dijkstra_cost_query": prepare_pgr_dijkstra_cost_query(
+                _day_of_the_week, _time_from, _time_to
+            ),
+            "lat": _lat,
+            "lon": _lon,
+            "day_of_the_week": _day_of_the_week,
+            "time_from": _time_from,
+            "time_to": _time_to,
+        },
+    )
 
     return _transform_results(results)

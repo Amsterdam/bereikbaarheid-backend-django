@@ -18,7 +18,7 @@ from bereikbaarheid.prohibitory.serializers import ProhibitorySerializer
 from bereikbaarheid.sections import get_sections
 from bereikbaarheid.traffic_signs import get_traffic_signs
 from bereikbaarheid.traffic_signs.serializers import TrafficSignsSerializer
-from bereikbaarheid.wrapper import _extract_parameters, geo_json_response, validate_data
+from bereikbaarheid.wrapper import extract_parameters, geo_json_response, validate_data
 
 
 class BollardsView(View):
@@ -32,7 +32,7 @@ class BollardsView(View):
 
     def get(self, request, *args, **kwargs):
         try:
-            _params = _extract_parameters(request)
+            _params = extract_parameters(request)
 
             if _params:
                 # if request with params -> validation:
