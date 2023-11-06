@@ -16,18 +16,13 @@ network:
 
 deployments:
   app:
+    tempdirs:
+      - /tmp
     containers:
       - name: main
-        volumes:
-          - name: tmp
-            mountPath: /tmp
         ports:
           - port: 8080
             name: http
-    volumes:
-      - name: tmp
-        spec:
-          emptyDir: {}
 
 jobs:
   certificate-init:

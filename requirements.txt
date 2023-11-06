@@ -10,7 +10,7 @@ antlr4-python3-runtime==4.9.3
     # via azure-cli
 applicationinsights==0.11.10
     # via azure-cli-telemetry
-argcomplete==3.1.2
+argcomplete==3.1.4
     # via
     #   azure-cli-core
     #   knack
@@ -20,9 +20,9 @@ azure-appconfiguration==1.1.1
     # via azure-cli
 azure-batch==14.0.0
     # via azure-cli
-azure-cli==2.53.0
+azure-cli==2.53.1
     # via -r requirements.in
-azure-cli-core==2.53.0
+azure-cli-core==2.53.1
     # via azure-cli
 azure-cli-telemetry==1.1.0
     # via azure-cli-core
@@ -103,7 +103,7 @@ azure-common==1.1.28
     #   azure-synapse-artifacts
     #   azure-synapse-managedprivateendpoints
     #   azure-synapse-spark
-azure-core==1.29.4
+azure-core==1.29.5
     # via
     #   -r requirements.in
     #   azure-appconfiguration
@@ -128,7 +128,7 @@ azure-datalake-store==0.0.53
     # via azure-cli
 azure-graphrbac==0.60.0
     # via azure-cli
-azure-identity==1.14.0
+azure-identity==1.14.1
     # via
     #   -r requirements.in
     #   opencensus-ext-azure
@@ -315,7 +315,7 @@ azure-mgmt-redis==14.1.0
     # via azure-cli
 azure-mgmt-resource==23.1.0b2
     # via azure-cli
-azure-mgmt-search==9.0.0
+azure-mgmt-search==9.1.0
     # via azure-cli
 azure-mgmt-security==5.0.0
     # via azure-cli
@@ -357,7 +357,7 @@ azure-synapse-spark==0.2.0
     # via azure-cli
 bcrypt==4.0.1
     # via paramiko
-cachetools==5.3.1
+cachetools==5.3.2
     # via google-auth
 certifi==2023.7.22
     # via
@@ -370,11 +370,11 @@ cffi==1.16.0
     #   pynacl
 chardet==3.0.4
     # via azure-cli
-charset-normalizer==3.3.0
+charset-normalizer==3.3.2
     # via requests
 colorama==0.4.6
     # via azure-cli
-cryptography==41.0.4
+cryptography==41.0.5
     # via
     #   adal
     #   azure-cli-core
@@ -392,7 +392,7 @@ deprecated==1.2.14
     # via pygithub
 diff-match-patch==20230430
     # via django-import-export
-django==4.1.12
+django==4.1.13
     # via
     #   -r requirements.in
     #   django-import-export
@@ -408,9 +408,9 @@ fabric==2.7.1
     # via azure-cli
 google-api-core==2.12.0
     # via opencensus
-google-auth==2.23.2
+google-auth==2.23.4
     # via google-api-core
-googleapis-common-protos==1.60.0
+googleapis-common-protos==1.61.0
     # via google-api-core
 humanfriendly==10.0
     # via azure-cli-core
@@ -440,6 +440,7 @@ isodate==0.6.1
     #   azure-mgmt-recoveryservicesbackup
     #   azure-mgmt-redhatopenshift
     #   azure-mgmt-resource
+    #   azure-mgmt-search
     #   azure-mgmt-security
     #   azure-mgmt-sql
     #   azure-synapse-artifacts
@@ -506,7 +507,6 @@ msrest==0.7.1
     #   azure-mgmt-policyinsights
     #   azure-mgmt-privatedns
     #   azure-mgmt-redis
-    #   azure-mgmt-search
     #   azure-mgmt-servicebus
     #   azure-mgmt-servicefabric
     #   azure-mgmt-servicefabricmanagedclusters
@@ -531,7 +531,7 @@ msrestazure==0.6.4
     #   azure-mgmt-devtestlabs
     #   azure-mgmt-kusto
     #   azure-mgmt-managedservices
-numpy==1.26.0
+numpy==1.26.1
     # via pandas
 oauthlib==3.2.2
     # via requests-oauthlib
@@ -546,7 +546,7 @@ opencensus==0.11.3
     #   opencensus-ext-requests
 opencensus-context==0.1.3
     # via opencensus
-opencensus-ext-azure==1.1.10
+opencensus-ext-azure==1.1.11
     # via -r requirements.in
 opencensus-ext-django==0.8.0
     # via -r requirements.in
@@ -564,7 +564,7 @@ packaging==23.2
     #   azure-cli-core
     #   knack
     #   marshmallow
-pandas==2.1.1
+pandas==2.1.2
     # via -r requirements.in
 paramiko==3.3.1
     # via
@@ -580,11 +580,11 @@ portalocker==2.8.2
     # via
     #   azure-cli-telemetry
     #   msal-extensions
-protobuf==4.24.4
+protobuf==4.25.0
     # via
     #   google-api-core
     #   googleapis-common-protos
-psutil==5.9.5
+psutil==5.9.6
     # via
     #   azure-cli-core
     #   opencensus-ext-azure
@@ -617,7 +617,7 @@ pynacl==1.5.0
     #   azure-cli
     #   paramiko
     #   pygithub
-pyopenssl==23.2.0
+pyopenssl==23.3.0
     # via azure-cli-core
 pysocks==1.7.1
     # via requests
@@ -687,7 +687,7 @@ typing-extensions==4.8.0
     #   azure-keyvault-secrets
 tzdata==2023.3
     # via pandas
-urllib3==2.0.6
+urllib3==2.0.7
     # via
     #   azure-cli
     #   requests
