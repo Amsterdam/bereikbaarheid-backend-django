@@ -10,6 +10,7 @@ x-app: &app
     - ./src:/src
     - ./tests:/tests
     - ./deploy:/deploy
+    - ./pyproject.toml:/pyproject.toml
   depends_on:
     - database
 
@@ -22,7 +23,7 @@ services:
       POSTGRES_DB: bereikbaarheid
       POSTGRES_USER: bereikbaarheid
       POSTGRES_PASSWORD: insecure
-    image: kartoza/postgis:11.0-2.5 #kartoza/postgis:14-3.2
+    image: postgis/postgis:15-3.4
     networks:
       - backend
 
@@ -31,8 +32,8 @@ services:
     environment:
       - DEBUG=false
       - SECRET_KEY=123456
-- DJANGO_SETTINGS_MODULE=main.settings
-    image: ${REGISTRY:-docker-registry.secure.amsterdam.nl}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
+      - DJANGO_SETTINGS_MODULE=main.settings
+    image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
     command: /deploy/docker-run.sh
 
   dev:
