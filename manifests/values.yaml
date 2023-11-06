@@ -16,7 +16,7 @@ network:
 
 deployments:
   app:
-    tempdirs:
+    tempDirs:
       - /tmp
     containers:
       - name: main
