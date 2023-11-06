@@ -11,7 +11,7 @@ parameters:
   - name: versionOverride
     displayName: "[OPTIONAL] Build/deploy version override"
     type: string
-    default: ''
+    default: ' '
 
 variables:
   # Debugging
@@ -28,11 +28,11 @@ extends:
   template: pipelines/aks/template.yaml@templates
   parameters:
     name: bereikbaarheid-backend
+    ${{ if ne(parameters.versionOverride, ' ') }}:
+      version: ${{ parameters.versionOverride }}
     build:
       producedImages:
       - opdrachten/bereikbaarheid-backend-django
-    ${{ if ne(parameters.versionOverride, '') }}:
-      version: ${{ parameters.versionOverride }}
     dev:
       pool: Opdrachten
       namespace: ns-ccc-opdr-ont-01-bereikbaarheid
