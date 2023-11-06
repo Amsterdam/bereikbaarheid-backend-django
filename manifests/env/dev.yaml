@@ -17,6 +17,13 @@ secrets:
   certificate:
     keyVaultName: shared-o-yhqbd6yktpphi
 
+  database:
+    type: opaque
+    secrets:
+      database-host: bereikbaarheid-o-byef6yr.postgres.database.azure.com  # Environment specific
+      database-name: main
+      database-user: bereikbaarheid-app-o  # Environment specific
+
 ingress:
   app:
     className: nginx-internal
