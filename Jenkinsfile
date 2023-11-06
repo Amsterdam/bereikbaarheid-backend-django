@@ -1,8 +1,8 @@
 #!groovy
-def PROJECT_NAME = "bereikbaarheid-backend"
+def PROJECT_NAME = "bereikbaarheid-backend-secure"
 def SLACK_CHANNEL = '#opdrachten-deployments'
 def PLAYBOOK = 'deploy.yml'
-def CMDB_ID = 'app_bereikbaarheid-backend'
+def CMDB_ID = 'app_bereikbaarheid-backend-secure'
 def SLACK_MESSAGE = [
     "title_link": BUILD_URL,
     "fields": [
@@ -22,9 +22,11 @@ pipeline {
     }
 
     environment {
-        SHORT_UUID = sh( script: "head /dev/urandom | tr -dc a-z0-9 | head -c10", returnStdout: true).trim()
+        SHORT_UUID = sh( script: "uuidgen | cut -d '-' -f1", returnStdout: true).trim()
         COMPOSE_PROJECT_NAME = "${PROJECT_NAME}-${env.SHORT_UUID}"
-        VERSION = env.BRANCH_NAME.replace('main', 'latest')
+        VERSION = env.BRANCH_NAME.replace('/', '-').toLowerCase().replace(
+            'main', 'latest'
+        )
     }
 
     stages {
@@ -40,67 +42,63 @@ pipeline {
             }
         }
 
-        stage('Push') {
+        stage('Push and deploy') {
             when {
                 anyOf {
-                    buildingTag()
                     branch 'main'
+                    buildingTag()
                 }
             }
-            steps {
-                retry(3) {
-                    sh 'make push'
+            stages {
+                stage('Push') {
+                    steps {
+                        retry(3) {
+                            sh 'make push'
+                        }
+                    }
+                }
+
+                stage('Deploy to acceptance') {
+                    when {
+                        branch 'main'
+                    }
+                    steps {
+                        sh 'VERSION=acceptance make push'
+                        build job: 'Subtask_Openstack_Playbook', parameters: [
+                            string(name: 'PLAYBOOK', value: PLAYBOOK),
+                            string(name: 'INVENTORY', value: "acceptance"),
+                            string(
+                                name: 'PLAYBOOKPARAMS',
+                                value: "-e 'deployversion=${VERSION} cmdb_id=${CMDB_ID}'"
+                            )
+                        ], wait: true
+                    }
+                }
+
+                stage('Deploy to production') {
+                    when { buildingTag() }
+                    steps {
+                        sh 'VERSION=production make push'
+                        build job: 'Subtask_Openstack_Playbook', parameters: [
+                            string(name: 'PLAYBOOK', value: PLAYBOOK),
+                            string(name: 'INVENTORY', value: "production"),
+                            string(
+                                name: 'PLAYBOOKPARAMS',
+                                value: "-e 'deployversion=${VERSION} cmdb_id=${CMDB_ID}'"
+                            )
+                        ], wait: true
+                    }
                 }
             }
         }
 
-        stage('Deploy to acceptance') {
-            when {
-                branch 'main'
-            }
-            steps {
-                sh 'VERSION=acceptance make push'
-                build job: 'Subtask_Openstack_Playbook', parameters: [
-                    string(name: 'PLAYBOOK', value: PLAYBOOK),
-                    string(name: 'INVENTORY', value: "acceptance"),
-                    string(
-                        name: 'PLAYBOOKPARAMS',
-                        value: "-e 'deployversion=${VERSION} cmdb_id=${CMDB_ID}'"
-                    )
-                ], wait: true
-            }
-        }
-
-        stage('Deploy to production') {
-            when {
-                tag pattern: "^(?i)\\d+\\.\\d+\\.\\d+(?!-rc.*)", comparator: "REGEXP"
-            }
-            steps {
-                sh 'VERSION=production make push'
-                build job: 'Subtask_Openstack_Playbook', parameters: [
-                    string(name: 'PLAYBOOK', value: PLAYBOOK),
-                    string(name: 'INVENTORY', value: "production"),
-                    string(
-                        name: 'PLAYBOOKPARAMS',
-                        value: "-e 'deployversion=${VERSION} cmdb_id=${CMDB_ID}'"
-                    )
-                ], wait: true
-
-                slackSend(channel: SLACK_CHANNEL, attachments: [SLACK_MESSAGE <<
-                    [
-                        "color": "#36a64f",
-                        "title": "Deploy to production succeeded :rocket:",
-                    ]
-                ])
-            }
-        }
     }
     post {
         always {
             sh 'make clean'
         }
         failure {
-            slackSend(channel: SLACK_CHANNEL, attachments: [SLACK_MESSAGE << 
+            slackSend(channel: SLACK_CHANNEL, attachments: [SLACK_MESSAGE <<
                 [
                     "color": "#D53030",
                     "title": "Build failed :fire:",

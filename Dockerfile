@@ -1,48 +1,65 @@
-FROM python:3.11-slim-bullseye as app
-
-WORKDIR /app
+FROM python:3.11-buster as app
+MAINTAINER datapunt@amsterdam.nl
 
 ENV PYTHONUNBUFFERED 1 \
     PIP_NO_CACHE_DIR=off
 
-RUN apt-get update -y\
-    && apt upgrade -y \
-    && apt autoremove -y
+RUN apt-get update \
+    && apt-get dist-upgrade -y \
+    && apt-get install --no-install-recommends -y \
+	&& apt-get install -y gdal-bin libgeos-dev netcat \
+    && pip install --upgrade pip \
+    && pip install uwsgi \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt install -y \
-    gdal-bin \
-    libpq-dev \
-    gcc
+RUN adduser --system datapunt
 
-COPY deploy deploy
+RUN mkdir -p /src && chown datapunt /src
+RUN mkdir -p /deploy && chown datapunt /deploy
+RUN mkdir -p /var/log/uwsgi && chown datapunt /var/log/uwsgi
 
-WORKDIR /app/src
-COPY requirements.txt requirements.txt
-COPY src .
-
+WORKDIR /install
+ADD requirements.txt .
 RUN pip install -r requirements.txt
-RUN python manage.py collectstatic --no-input
+RUN chmod -R a+r /install
 
+WORKDIR /src
+
+COPY src .
+COPY deploy /deploy
+
+USER datapunt
 
 CMD ["/deploy/docker-run.sh"]
 
+# devserver
 FROM app as dev
-COPY requirements_dev.txt requirements_dev.txt
+
+USER root
+WORKDIR /install
+ADD requirements_dev.txt .
 RUN pip install -r requirements_dev.txt
 
+WORKDIR /src
+USER datapunt
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Any process that requires to write in the home dir
+# we write to /tmp since we have no home dir
+ENV HOME /tmp
 
+CMD ["python manage.py runserver 0.0.0.0"]
+
+# tests
 FROM dev as tests
 
-WORKDIR /app/tests
-COPY tests .
-COPY pyproject.toml /app/.
+USER datapunt
+WORKDIR /tests
+ADD tests .
+COPY pyproject.toml /.
 
-ENV COVERAGE_FILE=/tmp/.coverage
-ENV PYTHONPATH=/app/src
-ENV DJANGO_SETTINGS_MODULE=main.settings
-
-WORKDIR /app/
+# ENV COVERAGE_FILE=/tmp/.coverage
+ENV PYTHONPATH=/src
+# ENV USE_JWKS_TEST_KEY=True
 
 CMD ["pytest"]

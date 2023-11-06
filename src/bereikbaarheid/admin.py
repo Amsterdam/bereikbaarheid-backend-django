@@ -2,11 +2,14 @@ import json
 import warnings
 
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from import_export.admin import ImportExportMixin, ImportMixin
 from import_export.formats import base_formats
 from import_export.forms import ImportExportFormBase
+from import_export.tmp_storages import CacheStorage
 from leaflet.admin import LeafletGeoAdminMixin
 
 from bereikbaarheid.models import (
@@ -32,6 +35,39 @@ from bereikbaarheid.resources.verrijking_resource import VerrijkingResource
 from bereikbaarheid.resources.vma_resource import VmaResource
 
 from .validation import days_of_the_week_abbreviated
+
+admin.site.unregister(User)
+
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    """Custum UsterAdmin"""
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        is_superuser = request.user.is_superuser
+        disabled_fields = set()
+
+        if not is_superuser:
+            disabled_fields |= {
+                "is_superuser",
+                "user_permissions",
+            }
+
+        # Prevent non-superusers from editing their own permissions
+        if not is_superuser and obj is not None and obj == request.user:
+            disabled_fields |= {
+                "is_staff",
+                "is_superuser",
+                "groups",
+                "user_permissions",
+            }
+
+        for f in disabled_fields:
+            if f in form.base_fields:
+                form.base_fields[f].disabled = True
+
+        return form
 
 
 class ArrayDagenListFilter(admin.SimpleListFilter):
@@ -64,8 +100,23 @@ class ArrayDagenListFilter(admin.SimpleListFilter):
         return queryset
 
 
+class ImportExportFormatsMixin(ImportExportMixin):
+    """overwrites the standard get_import_formats and get_export_formats from the ImportExportMixin"""
+
+    def get_import_formats(self):
+        """Returns available import formats."""
+        formats = [SCSV, base_formats.XLSX, base_formats.CSV]
+        return formats
+
+    def get_export_formats(self):
+        """Returns available import formats."""
+        formats = [SCSV, base_formats.XLSX, base_formats.CSV]
+        return formats
+
+
 @admin.register(VenstertijdWeg)
-class VenstertijdWegAdmin(ImportExportMixin, admin.ModelAdmin):
+class VenstertijdWegAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
     list_display = [
         "link_nr",
         "name",
@@ -73,18 +124,16 @@ class VenstertijdWegAdmin(ImportExportMixin, admin.ModelAdmin):
         "dagen",
         "begin_tijd",
         "eind_tijd",
+        "created_at",
+        "updated_at",
     ]
-    list_filter = ["verkeersbord", ArrayDagenListFilter, "begin_tijd", "eind_tijd"]
+    list_filter = ["verkeersbord", ArrayDagenListFilter, "created_at", "updated_at"]
     resource_classes = [VenstertijdWegResource]
-
-    def get_import_formats(self):
-        """Returns available import formats."""
-        formats = [SCSV, base_formats.XLSX, base_formats.CSV]
-        return formats
 
 
 @admin.register(Gebied)
 class GebiedAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
     list_display = ["id"]
     resource_classes = [GebiedResource]
     modifiable = False  # Make the leaflet map read-only
@@ -102,29 +151,62 @@ class GebiedAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Lastbeperking)
-class LastbeperkingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["id", "link_nr", "lastbeperking_in_kg"]
+class LastbeperkingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
+    list_display = ["id", "link_nr", "lastbeperking_in_kg", "created_at", "updated_at"]
+    list_filter = ["created_at", "updated_at"]
     resource_classes = [LastbeperkingResource]
 
 
 @admin.register(Stremming)
-class StremmingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["id", "link_nr", "werkzaamheden", "kenmerk"]
-    list_filter = ["start_date", "end_date"]
+class StremmingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
+    list_display = [
+        "id",
+        "link_nr",
+        "werkzaamheden",
+        "kenmerk",
+        "created_at",
+        "updated_at",
+    ]
+    list_filter = ["start_date", "end_date", "created_at", "updated_at"]
     resource_classes = [StremmingResource]
 
 
 @admin.register(VerkeersBord)
-class VerkeersBordAdmin(ImportExportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    list_display = ["id", "bord_id", "geldigheid", "rvv_modelnummer"]
-    list_filter = ["geldigheid", "rvv_modelnummer"]
+class VerkeersBordAdmin(
+    ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin
+):
+    tmp_storage_class = CacheStorage
+    list_display = [
+        "id",
+        "bord_id",
+        "geldigheid",
+        "rvv_modelnummer",
+        "created_at",
+        "updated_at",
+    ]
+    list_filter = ["geldigheid", "rvv_modelnummer", "created_at", "updated_at"]
     resource_classes = [VerkeersBordResource]
     modifiable = False  # Make the leaflet map read-only
+    ordering = ("bord_id",)
+    search_help_text = "search by bord id"
+    search_fields = ["bord_id"]
 
 
 @admin.register(VerkeersPaal)
-class VerkeersPalenAdmin(ImportExportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    list_display = ["paal_nr", "link_nr", "standplaats", "dagen"]
+class VerkeersPalenAdmin(
+    ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin
+):
+    tmp_storage_class = CacheStorage
+    list_display = [
+        "paal_nr",
+        "link_nr",
+        "standplaats",
+        "dagen",
+        "created_at",
+        "updated_at",
+    ]
     list_filter = [
         "type",
         "toegangssysteem",
@@ -132,6 +214,8 @@ class VerkeersPalenAdmin(ImportExportMixin, LeafletGeoAdminMixin, admin.ModelAdm
         "beheerorganisatie",
         "verkeersbord",
         "jaar_aanleg",
+        "created_at",
+        "updated_at",
     ]
     resource_classes = [VerkeersPaalResource]
     modifiable = False  # Make the leaflet map read-only
@@ -143,22 +227,44 @@ class VerkeersPalenAdmin(ImportExportMixin, LeafletGeoAdminMixin, admin.ModelAdm
 
 
 @admin.register(VerkeersTelling)
-class VerkeersTellingAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ["volg_nummer", "telpunt_naam", "link_nr", "jaar"]
-    list_filter = ["jaar", "type_verkeer", "meet_methode"]
+class VerkeersTellingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
+    list_display = [
+        "volg_nummer",
+        "telpunt_naam",
+        "link_nr",
+        "jaar",
+        "created_at",
+        "updated_at",
+    ]
+    list_filter = ["jaar", "type_verkeer", "meet_methode", "created_at", "updated_at"]
     resource_classes = [VerkeersTellingResource]
 
 
 @admin.register(Verrijking)
-class VerrijkingAdmin(ImportExportMixin, admin.ModelAdmin):
+class VerrijkingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
     list_display = [
         "id",
         "link_nr",
         "binnen_amsterdam",
+        "binnen_polygoon_awb",
+        "milieuzone",
         "zone_zwaar_verkeer_bus",
+        "zone_zwaar_verkeer_non_bus",
         "frc",
+        "created_at",
+        "updated_at",
     ]
-    list_filter = ["binnen_amsterdam", "wegcategorie_actueel"]
+    list_filter = [
+        "binnen_amsterdam",
+        "binnen_polygoon_awb",
+        "milieuzone",
+        "zone_zwaar_verkeer_bus",
+        "zone_zwaar_verkeer_non_bus",
+        "created_at",
+        "updated_at",
+    ]
     resource_classes = [VerrijkingResource]
 
     # disable add functionality
@@ -168,6 +274,7 @@ class VerrijkingAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Vma)
 class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
     list_display = ["id", "link_nr", "name"]
     resource_classes = [VmaResource]
     modifiable = False  # Make the leaflet map read-only
@@ -175,7 +282,7 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
     def get_import_formats(self):
         """Returns available import formats."""
-        return [GEOJSON]
+        return [GEOJSON, base_formats.CSV]
 
     # This will help you to disbale add functionality
     def has_add_permission(self, request):
@@ -271,7 +378,12 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
                 # validation errors. If this is not done validation errors would be
                 # silently skipped.
 
-                data = _read_data(import_file)
+                if input_format.get_title() == "geojson":
+                    data = _read_data(import_file)
+                else:  # read other formats
+                    data = bytes()
+                    for chunk in import_file.chunks():
+                        data += chunk
 
                 try:
                     dataset = input_format.create_dataset(data)

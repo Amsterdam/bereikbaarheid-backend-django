@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.gis.geos import GEOSGeometry
 from import_export.resources import ModelResource
 
@@ -32,9 +30,8 @@ class VerkeersBordResource(ModelResource):
             "POINT(%s %s)" % (row["rd_x"], row["rd_y"]), srid=28992
         )
 
-    def after_import_instance(self, instance, new, row_number=None, **kwargs):
-        # set versie on now() @TODO kan ook via model.py versie = models.DateField(auto_now=True) wat heeft voorkeur?
-        instance.versie = datetime.now()
+    def before_save_instance(self, instance, using_transactions, dry_run):
+        instance.dry_run = dry_run  # set a temporal flag for dry-run mode
 
     def after_import(self, dataset, result, using_transactions, dry_run, **kwargs):
         # refresh materialized vieuws when dry_run = False
@@ -47,5 +44,5 @@ class VerkeersBordResource(ModelResource):
         model = VerkeersBord
         skip_unchanged = True
         report_skipped = False
-        exclude = ("id",)
+        exclude = ("id", "created_at", "updated_at")
         import_id_fields = ("bord_id",)

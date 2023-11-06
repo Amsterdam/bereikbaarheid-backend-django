@@ -4,7 +4,7 @@ raw_query = """
 select 
     abs(sub.id) as id,
     min(totalcost)::int as totalcost,
-    geom::json as geometry
+    ST_AsgeoJson(geom)::json as geometry
 from (
     select id,
     (0.5 * cost+source.agg_cost) * 3600 as totalcost

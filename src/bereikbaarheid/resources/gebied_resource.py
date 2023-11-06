@@ -7,7 +7,7 @@ from bereikbaarheid.resources.utils import refresh_materialized
 
 class GebiedResource(ModelResource):
     def before_import_row(self, row, row_number, **kwargs):
-        row["geom"] = GEOSGeometry(str(row["geometry"]))
+        row["geom"] = GEOSGeometry(str(row["geom"]))
 
     def after_import(self, dataset, result, using_transactions, dry_run, **kwargs):
         # refresh materialized vieuws when dry_run = False

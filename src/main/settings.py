@@ -14,6 +14,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urljoin
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +35,13 @@ DEBUG = bool(os.getenv("DEBUG", False))
 ALLOWED_HOSTS = ["*"]
 X_FRAME_OPTIONS = "ALLOW-FROM *"
 INTERNAL_IPS = ("127.0.0.1", "0.0.0.0")
+
+_setting = bool(os.getenv("DEBUG", False))
+# flip in development = True, production = False
+_setting ^= _setting
+CSRF_COOKIE_SECURE = _setting
+SESSION_COOKIE_SECURE = _setting
+SECURE_SSL_REDIRECT = _setting
 
 # Application definition
 
@@ -59,6 +70,15 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "main.urls"
+BASE_URL = os.getenv("BASE_URL", "")
+FORCE_SCRIPT_NAME = BASE_URL
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.1/howto/static-files/
+
+STATIC_URL = urljoin(f"{BASE_URL}/", "static/")
+STATIC_ROOT = "static"
+
 
 TEMPLATES = [
     {
@@ -127,17 +147,18 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-STATIC_URL = "static/"
-STATIC_ROOT = "static/"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+    }
+}
 
 # TODO: leaflet lijkt alleen te werken met CRS WebMercator. Misschien is mogelijk SRID/CRS om te zetten naar RD 28992?
 LEAFLET_CONFIG = {
@@ -202,6 +223,15 @@ LOGGING = {
         },
     },
 }
+
+SENTRY_DSN = os.getenv("SENTRY_DSN")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        ignore_errors=["ExpiredSignatureError"],
+    )
+
 
 APPLICATIONINSIGHTS_CONNECTION_STRING = os.getenv(
     'APPLICATIONINSIGHTS_CONNECTION_STRING'

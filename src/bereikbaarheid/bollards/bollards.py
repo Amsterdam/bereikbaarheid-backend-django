@@ -84,7 +84,7 @@ raw_query = """
         )
 
         select json_build_object(
-            'geometry', ST_Transform(bollards.geometry, 4326)::json,
+            'geometry', ST_AsGeoJson( ST_Transform(bollards.geometry, 4326))::json,
             'properties', json_build_object(
                 'id', bollards.paal_nr,
                 'type', bollards.type,
@@ -192,11 +192,12 @@ def prepare_pgr_dijkstra_cost_query(day_of_the_week, time_from, time_to):
         "time_to": time_to,
     }
 
-    cursor = connection.cursor()
+    with connection.cursor() as cursor:
+        result = cursor.mogrify(
+            pgr_dijkstra_cost_query, pgr_dijkstra_cost_query_params
+        ).decode("utf-8")
 
-    return cursor.mogrify(
-        pgr_dijkstra_cost_query, pgr_dijkstra_cost_query_params
-    ).decode("utf-8")
+    return result
 
 
 def _transform_results(results: list) -> list[dict]:
@@ -218,17 +219,27 @@ def get_bollards(data: dict):
     :param data:
     :return:
     """
+
+    # required
+    _lat = data["lat"]
+    _lon = data["lon"]
+
+    # optional
+    _day_of_the_week = data.get("day_of_the_week", None)
+    _time_from = data.get("time_from", None)
+    _time_to = data.get("time_to", None)
+
     results = django_query_db(
         raw_query,
         {
             "pgr_dijkstra_cost_query": prepare_pgr_dijkstra_cost_query(
-                data["day_of_the_week"], data["time_from"], data["time_to"]
+                _day_of_the_week, _time_from, _time_to
             ),
-            "lat": data["lat"],
-            "lon": data["lon"],
-            "day_of_the_week": data["day_of_the_week"],
-            "time_from": data["time_from"],
-            "time_to": data["time_to"],
+            "lat": _lat,
+            "lon": _lon,
+            "day_of_the_week": _day_of_the_week,
+            "time_from": _time_from,
+            "time_to": _time_to,
         },
     )
 

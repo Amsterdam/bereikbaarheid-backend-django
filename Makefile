@@ -47,14 +47,17 @@ push_semver:
 clean:                              ## Clean docker stuff
 	$(dc) down -v --remove-orphans
 
-test:                               ## Execute tests
-	$(dc) run --rm test pytest /app/tests $(ARGS)
+app:
+	$(dc) up app
 
 # the name option is explicitly set, so the back- and frontend can communicate
 # with eachother while on the same docker network. The frontend docker-compose
 # file contains a reference to the set name
-dev: migrate						## Run the development app (and run extra migrations first)
+dev: migrate
 	$(run) --name bereikbaarheid-backend-django-dev --service-ports dev
+
+test: lint							## Execute tests
+	$(run) test pytest $(ARGS)
 
 loadtest: migrate
 	$(manage) make_partitions $(ARGS)
@@ -85,16 +88,18 @@ trivy: 	    						## Detect image vulnerabilities
 	$(dc) build --no-cache app
 	trivy image --ignore-unfixed docker-registry.secure.amsterdam.nl/datapunt/bereikbaarheid-backend
 
-
 lintfix:                            ## Execute lint fixes
-	$(run) test black /app/src/$(APP) /app/tests/$(APP)
-	$(run) test autoflake /app --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
-	$(run) test isort /app/src/$(APP) /app/tests/$(APP)
+	$(run) test black /src/$(APP) /tests/$(APP)
+	$(run) test autoflake /src --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
+	$(run) test isort /src/$(APP) /tests/$(APP)
 
 
 lint:                               ## Execute lint checks
 	$(run) test autoflake /app --check --recursive --quiet
 	$(run) test isort --diff --check /app/src/$(APP) /app/tests/$(APP)
+
+diff:
+	@python3 ./deploy/diff.py
 
 deploy: manifests
 	helm upgrade --install backend $(HELM_ARGS) $(ARGS)

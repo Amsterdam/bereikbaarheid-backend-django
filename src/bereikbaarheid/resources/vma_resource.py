@@ -22,7 +22,7 @@ class VmaResource(ModelResource):
             truncate(Vma)
 
     def before_import_row(self, row, row_number, **kwargs):
-        row["geom"] = GEOSGeometry(row["geometry"], srid=28992)
+        row["geom"] = GEOSGeometry(row["geom"], srid=28992)
 
     def after_import(self, dataset, result, using_transactions, dry_run, **kwargs):
         # refresh materialized vieuws when dry_run = False

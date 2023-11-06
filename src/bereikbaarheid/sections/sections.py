@@ -118,7 +118,7 @@ raw_query = """
         )
 
         select
-        ST_Transform(load_unload.geom, 4326)::json as geometry,
+        ST_AsgeoJson(ST_Transform(load_unload.geom, 4326))::json as geometry,
         load_unload.linknr_abs as id,
         load_unload.name as street_name,
         json_agg(json_build_object(

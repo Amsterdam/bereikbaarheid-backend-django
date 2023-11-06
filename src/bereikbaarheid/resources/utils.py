@@ -45,7 +45,8 @@ class GEOJSON(TablibFormat):
             geometry["crs"] = crs
             tmp_list.append(str(geometry))
 
-        df_properties["geometry"] = tmp_list
+        # json-field "geometry" is saved in tablib-field "geom"
+        df_properties["geom"] = tmp_list
 
         _dset = tablib.Dataset()
         _dset.dict = df_properties.to_dict(orient="records")
@@ -58,15 +59,31 @@ class SCSV(CSV):
         return "semicolon_csv"
 
     def create_dataset(self, in_stream, **kwargs):
+        if isinstance(in_stream, bytes) and self.encoding:
+            in_stream = in_stream.decode(self.encoding)
+
         delimiter = csv.Sniffer().sniff(in_stream, delimiters=";,").delimiter
+
         if delimiter != ";":
             raise ValidationError(
-                f"CSV format is using `{delimiter}` delimiter,"
-                + " but it should be `;` delimiter"
+                f"file is using `{delimiter}` delimiter,"
+                + " but semicolon_csv format is with `;` delimiter"
             )
         kwargs["delimiter"] = delimiter
         kwargs["format"] = "csv"
         return tablib.import_set(in_stream, **kwargs)
+
+    def export_data(self, dataset, **kwargs):
+        """overwrite export_data from import_export.formats.base_formats for setting delimiter"""
+        # kwargs rewrite is necessery for being able to use dataset.export("csv")
+        kwargs.pop("escape_output", None)
+        if kwargs.pop("escape_html", None):
+            self._escape_html(dataset)
+        if kwargs.pop("escape_formulae", None):
+            self._escape_formulae(dataset)
+
+        kwargs["delimiter"] = ";"
+        return dataset.export("csv", **kwargs)
 
 
 # --------------------------------------
@@ -107,21 +124,26 @@ def refresh_materialized(db_table: str):
 # -------------------------------------------
 
 
-def convert_to_date(date: str = None, format: str = "%d/%m/%y %H:%M") -> datetime:
-    """Convert string format to datetime"""
+def convert_to_date(date: str = None) -> datetime:
+    """Convert string format %d/%m/%y %H:%M or %Y-%m-%d %H:%M:%S.%f to datetime"""
 
-    try:
-        _date = datetime.datetime.strptime(date, format)
-    except:
+    formats_allowed = ["%d/%m/%y %H:%M", "%Y-%m-%d %H:%M:%S.%f"]
+
+    _date = None
+
+    for format in formats_allowed:
         try:
-            format = "%Y-%m-%d %H:%M:%S.%f"
             _date = datetime.datetime.strptime(date, format)
-        except:
-            raise ValueError(
-                f"verkeerd datumformat voor {date}, gewenst format is '%d/%m/%y %H:%M' of '%Y-%m-%d %H:%M:%S.%f'"
-            )
+            break
+        except ValueError:
+            pass
 
-    return _date
+    if _date == None:
+        raise ValueError(
+            f"verkeerd datumformat voor {date}, toegestane formats zijn {formats_allowed}"
+        )
+    else:
+        return _date
 
 
 def convert_to_time(in_time: str = None):

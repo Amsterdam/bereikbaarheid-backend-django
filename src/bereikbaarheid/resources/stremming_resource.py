@@ -28,7 +28,7 @@ class StremmingResource(ModelResource):
         model = Stremming
         skip_unchanged = True
         report_skipped = True
-        exclude = ("id",)
+        exclude = ("id", "created_at", "updated_at")
         import_id_fields = (
             "link_nr",
             "start_date",

@@ -1,7 +1,20 @@
 version: "3.7"
 
-services:
+x-app: &app
+  build:
+    context: .
+    target: app
+  ports:
+    - "8000:8000"
+  volumes:
+    - ./src:/src
+    - ./tests:/tests
+    - ./deploy:/deploy
+  depends_on:
+    - database
 
+
+services:
   database:
     ports:
       - "5432"
@@ -9,23 +22,18 @@ services:
       POSTGRES_DB: bereikbaarheid
       POSTGRES_USER: bereikbaarheid
       POSTGRES_PASSWORD: insecure
-    build:
-      dockerfile: Dockerfile_pgrouting
+    image: kartoza/postgis:11.0-2.5 #kartoza/postgis:14-3.2
     networks:
       - backend
 
-  app: &app
-    build:
-      context: .
-      target: app
-    image: ${REGISTRY:-docker-registry.data.amsterdam.nl}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
-    volumes:
-      - ./src:/app/src
-      - ./tests:/app/tests
-      - ./deploy:/deploy
-    depends_on:
-      - database
-    entrypoint: /app/deploy/wait-for-it.sh database:5432 --
+  app:
+    <<: *app
+    environment:
+      - DEBUG=false
+      - SECRET_KEY=123456
+- DJANGO_SETTINGS_MODULE=main.settings
+    image: ${REGISTRY:-docker-registry.secure.amsterdam.nl}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
+    command: /deploy/docker-run.sh
 
   dev:
     <<: *app
@@ -38,6 +46,7 @@ services:
       - DATABASE_NAME=bereikbaarheid
       - DATABASE_USER=bereikbaarheid
       - DATABASE_PASSWORD=insecure
+    entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       python manage.py runserver 0.0.0.0:8000
     networks:
@@ -54,6 +63,7 @@ services:
       - DATABASE_NAME=bereikbaarheid
       - DATABASE_USER=bereikbaarheid
       - DATABASE_PASSWORD=insecure
+    entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       pytest
     networks:
@@ -62,3 +72,4 @@ services:
 networks:
   backend:
     name: amsterdam-bereikbaarheid
+

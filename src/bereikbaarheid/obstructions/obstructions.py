@@ -4,7 +4,7 @@ from bereikbaarheid.utils import django_query_db
 
 raw_query = """
     select 
-        ST_Transform(t1.geom, 4326)::json as geometry,
+        ST_AsgeoJson(ST_Transform(t1.geom, 4326))::json as geometry,
         t1.link_nr as road_element_id,
         t1.name as road_element_street_name,
         t2."bereikbaar_status_code" as road_element_accessibility_code,
@@ -148,11 +148,12 @@ def prepare_pgr_dijkstra_cost_query(time_from, time_to):
         "time_to": time_to,
     }
 
-    cursor = connection.cursor()
+    with connection.cursor() as cursor:
+        result = cursor.mogrify(
+            pgr_dijkstra_cost_query, pgr_dijkstra_cost_query_params
+        ).decode("utf-8")
 
-    return cursor.mogrify(
-        pgr_dijkstra_cost_query, pgr_dijkstra_cost_query_params
-    ).decode("utf-8")
+    return result
 
 
 def _transform_results(results: list) -> list[dict]:

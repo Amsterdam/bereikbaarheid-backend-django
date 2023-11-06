@@ -9,7 +9,6 @@ log = logging.getLogger(__name__)
 
 def health(request):
     # check debug
-    print(settings.DEBUG)
     if settings.DEBUG:
         log.exception("Debug mode not allowed in production")
         return HttpResponse(

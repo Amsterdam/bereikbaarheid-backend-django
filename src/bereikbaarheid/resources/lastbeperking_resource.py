@@ -28,6 +28,9 @@ class LastbeperkingResource(ModelResource):
 
         return super().skip_row(instance, original, row, import_validation_errors)
 
+    def before_save_instance(self, instance, using_transactions, dry_run):
+        instance.dry_run = dry_run  # set a temporal flag for dry-run mode
+
     def after_import(self, dataset, result, using_transactions, dry_run, **kwargs):
         # refresh materialized vieuws when dry_run = False
         if not dry_run:
@@ -39,5 +42,5 @@ class LastbeperkingResource(ModelResource):
         model = Lastbeperking
         skip_unchanged = True
         report_skipped = True
-        exclude = ("id",)
+        exclude = ("id", "created_at", "updated_at")
         import_id_fields = ("link_nr",)

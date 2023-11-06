@@ -36,9 +36,9 @@ raw_query = """
         else 'true'
     end as boolean_in_amsterdam,
 
-    ST_closestpoint(
+    ST_AsgeoJson(ST_closestpoint(
         v.geom,st_setsrid(ST_MakePoint(%(lon)s, %(lat)s), 4326)
-    )::json as geom,
+    ))::json as geom,
 
     st_length(
         st_transform(
@@ -141,7 +141,7 @@ raw_query = """
             where v.id = (
                 SELECT id
                 from bereikbaarheid_out_vma_directed a
-                where id > 0
+                where id > 0 and car_network is true
                 order by st_length(
                     st_transform(
                         st_shortestline(
@@ -165,19 +165,25 @@ def _transform_results(result: tuple) -> dict:
     :param result:
     :return:
     """
-    return {
-        "id": result[0],  # id
-        "attributes": {
-            "heavy_goods_vehicle_zone": convert_to_bool(result[2]),  # zone_7_5_boolean
-            "in_amsterdam": convert_to_bool(result[4]),  # boolean_in_amsterdam
-            "low_emission_zone": convert_to_bool(result[1]),  # miliezone_boolean
-            "rvv_permit_needed": convert_to_bool(result[3]),  # rvv_boolean
-            "time_window": result[7],  # venstertijd
-            "wide_road": convert_to_bool(result[8]),  # zone_7_5_detail
-            "distance_to_destination_in_m": result[6],  # afstand_in_m
-            "geom": result[5],  # geom
-        },
-    }
+
+    if result:
+        return {
+            "id": result[0],  # id
+            "attributes": {
+                "heavy_goods_vehicle_zone": convert_to_bool(
+                    result[2]
+                ),  # zone_7_5_boolean
+                "in_amsterdam": convert_to_bool(result[4]),  # boolean_in_amsterdam
+                "low_emission_zone": convert_to_bool(result[1]),  # miliezone_boolean
+                "rvv_permit_needed": convert_to_bool(result[3]),  # rvv_boolean
+                "time_window": result[7],  # venstertijd
+                "wide_road": convert_to_bool(result[8]),  # zone_7_5_detail
+                "distance_to_destination_in_m": result[6],  # afstand_in_m
+                "geom": result[5],  # geom
+            },
+        }
+    else:
+        return {}
 
 
 def get_permits(data: dict) -> dict:
