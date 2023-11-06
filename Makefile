@@ -4,8 +4,11 @@
 # VERSION = 2020.01.29
 .PHONY: help pip-tools install requirements update test init manifests deploy
 
+UID:=$(shell id --user)
+GID:=$(shell id --group)
+
 dc = docker compose
-run = $(dc) run --rm
+run = $(dc) run --rm -u ${UID}:${GID}
 manage = $(run) dev python manage.py
 
 ENVIRONMENT ?= local
@@ -95,8 +98,8 @@ lintfix:                            ## Execute lint fixes
 
 
 lint:                               ## Execute lint checks
-	$(run) test autoflake /app --check --recursive --quiet
-	$(run) test isort --diff --check /app/src/$(APP) /app/tests/$(APP)
+	$(run) test autoflake /src --check --recursive --quiet
+	$(run) test isort --diff --check /src/$(APP) /app/tests/$(APP)
 
 diff:
 	@python3 ./deploy/diff.py
