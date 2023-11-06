@@ -18,6 +18,7 @@ deployments:
   app:
     tempDirs:
       - /tmp
+      - /src/static
     containers:
       - name: main
         ports:
