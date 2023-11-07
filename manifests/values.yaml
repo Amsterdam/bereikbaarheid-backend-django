@@ -50,7 +50,7 @@ services:
 ingress:
   app:
     paths:
-    - path: /api
+    - path: /admin
       service: app
       port: 80
     className: nginx
