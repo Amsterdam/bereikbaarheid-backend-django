@@ -19,6 +19,8 @@ deployments:
     tempDirs:
       - /tmp
       - /src/static
+    secrets:
+      - vault
     containers:
       - name: main
         ports:
@@ -60,3 +62,14 @@ secrets:
   certificate:
     type: keyvault
     tls: bereikbaarheid
+
+  vault:
+    type: keyvault
+    annotations:
+      helm.sh/hook-weight: "-5"
+    secrets:
+      - secret-key
+      - oidc-base-url
+      - oidc-rp-client-id
+      - oidc-rp-client-secret
+      - applicationinsights-connection-string
