@@ -1,9 +1,6 @@
 version: "3.7"
 
 x-app: &app
-  build:
-    context: .
-    target: app
   ports:
     - "8000:8000"
   volumes:
@@ -11,6 +8,13 @@ x-app: &app
     - ./tests:/tests
     - ./deploy:/deploy
     - ./pyproject.toml:/pyproject.toml
+  environment: &base-app-env
+    SECRET_KEY: "insecure"
+    DEBUG: "true"
+    OIDC_BASE_URL: "https://login.microsoftonline.com/72fca1b1-2c2e-4376-a445-294d80196804"
+    OIDC_RP_CLIENT_ID:
+    OIDC_RP_CLIENT_SECRET:
+    APPLICATIONINSIGHTS_CONNECTION_STRING:
   depends_on:
     - database
 
@@ -29,24 +33,19 @@ services:
 
   app:
     <<: *app
-    environment:
-      - DEBUG=false
-      - SECRET_KEY=123456
-      - DJANGO_SETTINGS_MODULE=main.settings
+    build:
+      context: .
+      target: app
     image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
     command: /deploy/docker-run.sh
 
   dev:
     <<: *app
     build:
+      context: .
       target: dev
     environment:
-      - DEBUG=true
-      - SECRET_KEY=123456
-      - DJANGO_SETTINGS_MODULE=main.settings
-      - DATABASE_NAME=bereikbaarheid
-      - DATABASE_USER=bereikbaarheid
-      - DATABASE_PASSWORD=insecure
+      <<: *base-app-env
     entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       python manage.py runserver 0.0.0.0:8000
@@ -56,14 +55,13 @@ services:
   test:
     <<: *app
     build:
+      context: .
       target: tests
     environment:
-      - DEBUG=true
-      - SECRET_KEY=123456
-      - DJANGO_SETTINGS_MODULE=main.settings
-      - DATABASE_NAME=bereikbaarheid
-      - DATABASE_USER=bereikbaarheid
-      - DATABASE_PASSWORD=insecure
+      <<: *base-app-env
+      DJANGO_SETTINGS_MODULE: "main.settings"
+      OIDC_RP_CLIENT_ID: tests
+      OIDC_RP_CLIENT_SECRET: tests
     entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       pytest

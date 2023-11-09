@@ -383,6 +383,8 @@ cryptography==41.0.5
     #   azure-keyvault-keys
     #   azure-multiapi-storage
     #   azure-storage-common
+    #   josepy
+    #   mozilla-django-oidc
     #   msal
     #   paramiko
     #   pyjwt
@@ -398,6 +400,7 @@ django==4.1.13
     #   -r requirements.in
     #   django-import-export
     #   django-leaflet
+    #   mozilla-django-oidc
     #   opencensus-ext-django
 django-import-export==3.3.1
     # via -r requirements.in
@@ -452,6 +455,8 @@ jmespath==1.0.1
     # via
     #   azure-cli-core
     #   knack
+josepy==1.14.0
+    # via mozilla-django-oidc
 jsondiff==2.0.0
     # via azure-cli
 knack==0.11.0
@@ -459,6 +464,8 @@ knack==0.11.0
 markuppy==1.14
     # via tablib
 marshmallow==3.20.1
+    # via -r requirements.in
+mozilla-django-oidc==3.0.0
     # via -r requirements.in
 msal[broker]==1.24.0b2
     # via
@@ -619,7 +626,9 @@ pynacl==1.5.0
     #   paramiko
     #   pygithub
 pyopenssl==23.3.0
-    # via azure-cli-core
+    # via
+    #   azure-cli-core
+    #   josepy
 pysocks==1.7.1
     # via requests
 python-dateutil==2.8.2
@@ -647,6 +656,7 @@ requests[socks]==2.31.0
     #   azure-multiapi-storage
     #   azure-storage-common
     #   google-api-core
+    #   mozilla-django-oidc
     #   msal
     #   msrest
     #   opencensus-ext-azure

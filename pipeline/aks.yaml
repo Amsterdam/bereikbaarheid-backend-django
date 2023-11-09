@@ -38,13 +38,13 @@ extends:
       namespace: ns-ccc-opdr-ont-01-bereikbaarheid
       kubernetesServiceConnection: "SCN-K8S-ns-ccc-opdr-ont-01-bereikbaarheid"
       preSteps:
-        - script: helm uninstall meetbouten -n ns-ccc-opdr-ont-01-bereikbaarheid || true
+        - script: helm uninstall backend -n ns-ccc-opdr-ont-01-bereikbaarheid || true
     test:
       pool: Opdrachten
       namespace: ns-ccc-opdr-tst-01-bereikbaarheid
       kubernetesServiceConnection: "SCN-K8S-ns-ccc-opdr-tst-01-bereikbaarheid"
       preSteps:
-        - script: helm uninstall meetbouten -n ns-ccc-opdr-tst-01-bereikbaarheid || true
+        - script: helm uninstall backend -n ns-ccc-opdr-tst-01-bereikbaarheid || true
     acc:
       pool: Opdrachten
       namespace: ns-ccc-opdr-acc-01-bereikbaarheid

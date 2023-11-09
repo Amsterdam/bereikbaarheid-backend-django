@@ -29,6 +29,11 @@ WORKDIR /src
 COPY src .
 COPY deploy /deploy
 
+ARG SECRET_KEY=not-used
+ARG OIDC_RP_CLIENT_ID=not-used
+ARG OIDC_RP_CLIENT_SECRET=not-used
+RUN python manage.py collectstatic --no-input
+
 USER datapunt
 
 CMD ["/deploy/docker-run.sh"]

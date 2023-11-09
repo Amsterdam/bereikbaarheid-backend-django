@@ -15,6 +15,13 @@ secrets:
   certificate:
     enabled: false
 
+  database:
+    type: opaque
+    secrets:
+      database-host: database
+      database-name: bereikbaarheid
+      database-user: bereikbaarheid
+
 network:
   allow-ingress:
     enabled: false

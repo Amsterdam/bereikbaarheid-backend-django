@@ -11,6 +11,7 @@ sentry-sdk
 Django<4.2  # Django 4.2 does not support Postgres 11 anymore
 django-import-export>= 3.1.0
 django-leaflet
+mozilla-django-oidc
 
 # Azure
 azure-cli
