@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 import sentry_sdk
+from django.http.request import urljoin
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .azure_settings import Azure
@@ -46,11 +47,22 @@ CSRF_COOKIE_SECURE = _setting
 SESSION_COOKIE_SECURE = _setting
 SECURE_SSL_REDIRECT = _setting
 
+
+def make_url_path(url_path):
+    """
+    url paths should have trailing slash, unless its for the root
+    """
+    return (url_path.strip().strip("/") + "/").lstrip("/")
+
+
+API_PATH = make_url_path(os.getenv("API_PATH", ""))
+
+ADMIN_ENABLED = os.getenv("ADMIN_ENABLED", "false").lower() == "true"
+ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
+
+
 # Application definition
-
-
 DJANGO_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -58,11 +70,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
 ]
-THIRD_PARTY_APPS = [
-    "import_export",
-    "leaflet",
-    "mozilla_django_oidc",  # load after django.contrib.auth!
-]
+THIRD_PARTY_APPS = ["import_export", "leaflet"]
 LOCAL_APPS = ["main", "bereikbaarheid"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -74,22 +82,18 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "mozilla_django_oidc.middleware.SessionRefresh",
 ]
 
 AUTHENTICATION_BACKENDS = [
     "main.auth.OIDCAuthenticationBackend",
 ]
 
+# Only enabled the plugin if admin is enabled
+if ADMIN_ENABLED:
+    INSTALLED_APPS += ("django.contrib.admin",)
+    THIRD_PARTY_APPS += ("mozilla_django_oidc",)
+    MIDDLEWARE += ("mozilla_django_oidc.middleware.SessionRefresh",)
 
-def make_url_path(url_path):
-    """
-    url paths should have trailing slash, unless its for the root
-    """
-    return (url_path.strip().strip("/") + "/").lstrip("/")
-
-
-ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
@@ -115,7 +119,7 @@ FORCE_SCRIPT_NAME = BASE_URL
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = BASE_URL + "/static/"
+STATIC_URL = urljoin(f"{BASE_URL}/", "static/")
 STATIC_ROOT = "/static/"
 
 

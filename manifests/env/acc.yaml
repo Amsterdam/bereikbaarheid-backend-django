@@ -23,8 +23,3 @@ secrets:
       database-host: bereikbaarheid-a-7dcqgs5.postgres.database.azure.com  # Environment specific
       database-name: main
       database-user: bereikbaarheid-app-a  # Environment specific
-
-
-ingress:
-  app:
-    className: nginx-external

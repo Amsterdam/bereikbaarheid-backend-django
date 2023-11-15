@@ -2,16 +2,16 @@ FROM python:3.11-buster as app
 MAINTAINER datapunt@amsterdam.nl
 
 ENV PYTHONUNBUFFERED 1 \
-    PIP_NO_CACHE_DIR=off
+  PIP_NO_CACHE_DIR=off
 
 RUN apt-get update \
-    && apt-get dist-upgrade -y \
-    && apt-get install --no-install-recommends -y \
-	&& apt-get install -y gdal-bin libgeos-dev netcat \
-    && pip install --upgrade pip \
-    && pip install uwsgi \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && apt-get dist-upgrade -y \
+  && apt-get install --no-install-recommends -y \
+  && apt-get install -y gdal-bin libgeos-dev netcat \
+  && pip install --upgrade pip \
+  && pip install uwsgi \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN adduser --system datapunt
 
@@ -32,6 +32,7 @@ COPY deploy /deploy
 ARG SECRET_KEY=not-used
 ARG OIDC_RP_CLIENT_ID=not-used
 ARG OIDC_RP_CLIENT_SECRET=not-used
+ARG ADMIN_ENABLED=true
 RUN python manage.py collectstatic --no-input
 
 USER datapunt

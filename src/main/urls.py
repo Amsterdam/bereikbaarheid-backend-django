@@ -7,9 +7,15 @@ from . import auth
 
 urlpatterns = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += [
-    path("", include("bereikbaarheid.urls")),
+    path(settings.API_PATH, include("bereikbaarheid.urls")),
     path("status/", include("health.urls")),
-    path(settings.ADMIN_PATH + "login/", auth.oidc_login),
-    path(settings.ADMIN_PATH + "oidc/", include("mozilla_django_oidc.urls")),
-    path(settings.ADMIN_PATH, admin.site.urls),
 ]
+
+if settings.ADMIN_ENABLED:
+    urlpatterns.extend(
+        [
+            path(settings.ADMIN_PATH + "login/", auth.oidc_login),
+            path(settings.ADMIN_PATH + "oidc/", include("mozilla_django_oidc.urls")),
+            path(settings.ADMIN_PATH, admin.site.urls),
+        ]
+    )

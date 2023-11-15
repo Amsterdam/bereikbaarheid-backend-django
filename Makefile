@@ -11,6 +11,7 @@ dc = docker compose
 run = $(dc) run --rm -u ${UID}:${GID}
 manage = $(run) dev python manage.py
 
+REGISTRY ?= localhost:5000
 ENVIRONMENT ?= local
 VERSION ?= latest
 HELM_ARGS = manifests/chart \
