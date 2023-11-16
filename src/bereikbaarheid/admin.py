@@ -127,7 +127,7 @@ class VenstertijdWegAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
         "created_at",
         "updated_at",
     ]
-    list_filter = ["verkeersbord", ArrayDagenListFilter, "created_at", "updated_at"]
+    list_filter = [ArrayDagenListFilter, "created_at", "updated_at"]
     resource_classes = [VenstertijdWegResource]
 
 
