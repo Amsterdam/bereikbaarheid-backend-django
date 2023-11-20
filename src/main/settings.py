@@ -45,7 +45,7 @@ SECURE_SSL_REDIRECT = _setting
 # Application definition
 
 
-LOCAL_APPS = ["main", "bereikbaarheid"]
+LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
