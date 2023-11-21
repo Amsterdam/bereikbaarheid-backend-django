@@ -63,7 +63,7 @@ class VenstertijdWeg(TimeStampMixin):
     link_nr = models.IntegerField(help_text="linknr")
     name = models.CharField(max_length=255, blank=True, null=True)
     e_type = models.CharField(max_length=255, blank=True, null=True)
-    verkeersbord = models.CharField(max_length=255, blank=True, null=True)
+    verkeersbord = models.IntegerField()
     dagen = ArrayField(models.CharField(max_length=10, blank=True, null=True))
     begin_tijd = models.TimeField(blank=True, null=True)
     eind_tijd = models.TimeField(blank=True, null=True)
