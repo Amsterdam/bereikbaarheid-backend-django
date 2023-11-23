@@ -2,7 +2,7 @@ from import_export.instance_loaders import CachedInstanceLoader
 from import_export.resources import ModelResource
 
 from bereikbaarheid.models import Verrijking
-from bereikbaarheid.resources.utils import refresh_materialized
+from bereikbaarheid.resources.utils import clean_dataset_headers, refresh_materialized
 
 
 class VerrijkingResource(ModelResource):
@@ -11,10 +11,7 @@ class VerrijkingResource(ModelResource):
             "linknr": "link_nr",
         }
 
-        # all lower
-        dataset.headers = [x.strip().lower() for x in dataset.headers]
-        # mapping of the model.py columnnames
-        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
     def before_save_instance(self, instance, using_transactions, dry_run):
         instance.dry_run = dry_run  # set a temporal flag for dry-run mode

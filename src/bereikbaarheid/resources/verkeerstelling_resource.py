@@ -1,6 +1,7 @@
 from import_export.resources import ModelResource
 
 from bereikbaarheid.models import VerkeersTelling
+from bereikbaarheid.resources.utils import clean_dataset_headers
 
 
 class VerkeersTellingResource(ModelResource):
@@ -14,10 +15,7 @@ class VerkeersTellingResource(ModelResource):
             "meetmethode": "meet_methode",
         }
 
-        # all lower
-        dataset.headers = [x.strip().lower() for x in dataset.headers]
-        # mapping of the model.py columnnames
-        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
     class Meta:
         model = VerkeersTelling

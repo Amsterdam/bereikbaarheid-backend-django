@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from bereikbaarheid.resources.utils import (
+    clean_dataset_headers,
     convert_str,
     convert_to_date,
     convert_to_time,
@@ -76,3 +77,22 @@ class TestUtils:
     def test_remove_chars_from_value(self, test_input, charlist, expected):
         """Return: test_input without charlist-characters"""
         assert remove_chars_from_value(test_input, charlist) == expected
+
+    @pytest.mark.parametrize(
+        "test_headers, test_col_mapping, expected",
+        [
+            (
+                ["linknr", "banaan"],
+                {"linknr": "link_nr", "banaan": "appel"},
+                ["link_nr", "appel"],
+            ),
+            (
+                ["link", "BanaaN"],
+                {"linknr": "link_nr", "banaan": "appel"},
+                ["link", "appel"],
+            ),
+        ],
+    )
+    def test_(self, test_headers, test_col_mapping, expected):
+        """apply col_mapping and strip().lower() on list"""
+        assert clean_dataset_headers(test_headers, test_col_mapping) == expected
