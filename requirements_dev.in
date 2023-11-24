@@ -6,3 +6,4 @@ isort
 autoflake
 black
 geojson
+model-bakery
