@@ -23,7 +23,7 @@ from bereikbaarheid.wrapper import extract_parameters, geo_json_response, valida
 
 class BollardsView(View):
     """
-    return Bollards
+    return Bollards with and without params
     """
 
     @geo_json_response
