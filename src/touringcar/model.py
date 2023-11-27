@@ -41,7 +41,7 @@ class Bericht(TimeStampMixin):
     is_live = models.BooleanField(help_text= "Publiceren op Tour Buzz")
     lat = models.FloatField(help_text="Latitude", blank=True, null=True)
     lon = models.FloatField(help_text="Longitude",  blank=True, null=True)
-    geometry = PointField(srid=28992)
+    geometry = PointField(srid=28992, default=DEFAULT_GEOM)
 
     def save(self, *args, **kwargs):  
 
