@@ -1,11 +1,12 @@
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
 from import_export.tmp_storages import CacheStorage
 from leaflet.admin import LeafletGeoAdminMixin
 
 from bereikbaarheid.admin import ImportExportFormatsMixin
 from touringcar.model import Bericht
 from touringcar.resource import BerichtResource
+
 
 class BerichtenForm(forms.ModelForm): 
     class Meta:
