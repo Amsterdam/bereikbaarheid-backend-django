@@ -22,4 +22,4 @@ class BerichtResource(ModelResource):
         skip_unchanged = True
         report_skipped = True
         exclude = ("id", "created_at", "updated_at")
-        import_id_fields = ("title",)
+        import_id_fields = ("title","startdate", "enddate")
