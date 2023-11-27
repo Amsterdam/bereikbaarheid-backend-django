@@ -127,7 +127,12 @@ def refresh_materialized(db_table: str):
 def convert_to_date(date: str = None) -> datetime:
     """Convert string format %d/%m/%y %H:%M or %Y-%m-%d %H:%M:%S.%f to datetime"""
 
-    formats_allowed = ["%d/%m/%y %H:%M", "%Y-%m-%d %H:%M:%S.%f", "%d-%m-%Y %H:%M","%Y-%m-%d %H:%M:%S"]
+    formats_allowed = [
+        "%d/%m/%y %H:%M",
+        "%Y-%m-%d %H:%M:%S.%f",
+        "%d-%m-%Y %H:%M",
+        "%Y-%m-%d %H:%M:%S",
+    ]
 
     _date = None
 
@@ -184,3 +189,14 @@ def remove_chars_from_value(value: str, chars: list) -> str:
     for c in chars:
         v = v.replace(c, "")
     return v
+
+
+def clean_dataset_headers(headers: list, col_mapping: dict) -> list:
+    """apply: strip().lower() and col_mapping on headers_list"""
+
+    # all lower
+    _headers = [x.strip().lower() for x in headers]
+    # mapping of the model.py columnnames
+    _headers = [col_mapping.get(item, item) for item in _headers]
+
+    return _headers

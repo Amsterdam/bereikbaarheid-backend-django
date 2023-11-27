@@ -1,7 +1,7 @@
 from import_export.resources import ModelResource
 
 from bereikbaarheid.models import Stremming
-from bereikbaarheid.resources.utils import convert_to_date
+from bereikbaarheid.resources.utils import clean_dataset_headers, convert_to_date
 
 
 class StremmingResource(ModelResource):
@@ -15,10 +15,7 @@ class StremmingResource(ModelResource):
             "geu": "end_date",
         }
 
-        # all lower
-        dataset.headers = [x.strip().lower() for x in dataset.headers]
-        # mapping of the model.py columnnames
-        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
     def before_import_row(self, row, row_number=None, **kwargs):
         row["start_date"] = convert_to_date(row["start_date"])

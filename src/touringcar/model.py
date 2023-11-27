@@ -4,7 +4,7 @@ from django.db import models
 
 from bereikbaarheid.models import TimeStampMixin
 
-DEFAULT_GEOM = "SRID=28992;POINT(122025.80 488234.44)" #water Cantraal Station
+DEFAULT_GEOM = "SRID=28992;POINT (122025.8 488234.44)" #water Centraal Station
 
 
 class Bericht(TimeStampMixin):
@@ -41,20 +41,22 @@ class Bericht(TimeStampMixin):
     is_live = models.BooleanField(help_text= "Publiceren op Tour Buzz")
     lat = models.FloatField(help_text="Latitude", blank=True, null=True)
     lon = models.FloatField(help_text="Longitude",  blank=True, null=True)
-    geometry = PointField(default=DEFAULT_GEOM)
+    geometry = PointField(srid=28992, default=DEFAULT_GEOM)
 
     def save(self, *args, **kwargs):  
 
         if all( v is None for v in [self.geometry, self.lat, self.lon]):
-            # zet geometry op DEFAULT zodat handmatig aangepast kan worden
+            #geometry on DEFAULT so can changed by moving on the map
             self.geometry = DEFAULT_GEOM
 
         elif (self.lat and self.lon): #lat, lon exist
-            if self.geometry != DEFAULT_GEOM: #consistency: set lat long to (new) coordinates of geometry
+            if self.geometry and self.geometry != DEFAULT_GEOM: 
+                #consistency:  calculate lat,lon from given geometry
                 pnt = calc_lat_lon_from_geometry(self.geometry)
                 self.lat = pnt['lat']
                 self.lon = pnt['lon']
-            else: #not self.geometry: calculate geometry from given lat,lon
+            else: 
+                #geometry=None: calculate geometry from given lat,lon
                 self.geometry = calc_geometry_from_wgs(self.lat, self.lon)                
 
         return super().save(*args, **kwargs) 

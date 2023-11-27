@@ -1,7 +1,11 @@
 from import_export.resources import ModelResource
 
 from bereikbaarheid.models import Lastbeperking
-from bereikbaarheid.resources.utils import convert_str, refresh_materialized
+from bereikbaarheid.resources.utils import (
+    clean_dataset_headers,
+    convert_str,
+    refresh_materialized,
+)
 
 
 class LastbeperkingResource(ModelResource):
@@ -11,10 +15,7 @@ class LastbeperkingResource(ModelResource):
             "lastbeperking in kg": "lastbeperking_in_kg",
         }
 
-        # all lower
-        dataset.headers = [x.strip().lower() for x in dataset.headers]
-        # mapping of the model.py columnnames
-        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
     def before_import_row(self, row, row_number=None, **kwargs):
         if row["lastbeperking_in_kg"] == "NULL":
