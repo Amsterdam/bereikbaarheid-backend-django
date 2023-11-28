@@ -38,7 +38,7 @@ class Bericht(TimeStampMixin):
     link = models.URLField(max_length = 200, blank=True, null=True)
     image_url = models.ImageField(blank=True, null=True)
     important = models.BooleanField(help_text="Belangrijk bericht (Komt bovenaan de lijst te staan)")
-    is_live = models.BooleanField(help_text= "Publiceren op Tour Buzz")
+    is_live = models.BooleanField(default=True, help_text= "Publiceren op Tour Buzz")
     lat = models.FloatField(help_text="Latitude", blank=True, null=True)
     lon = models.FloatField(help_text="Longitude",  blank=True, null=True)
     geometry = PointField(srid=28992, default=DEFAULT_GEOM)
