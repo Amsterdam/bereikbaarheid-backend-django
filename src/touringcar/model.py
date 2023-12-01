@@ -36,7 +36,7 @@ class Bericht(TimeStampMixin):
     enddate = models.DateField(help_text="Publicatie einddatum")
     category = models.CharField(max_length=55, blank=True, null=True)
     link = models.URLField(max_length = 200, blank=True, null=True)
-    image_url = models.ImageField(blank=True, null=True)
+    image_url = models.ImageField(upload_to='touringcar', blank=True, null=True)
     important = models.BooleanField(help_text="Belangrijk bericht (Komt bovenaan de lijst te staan)")
     is_live = models.BooleanField(default=True, help_text= "Publiceren op Tour Buzz")
     lat = models.FloatField(help_text="Latitude", blank=True, null=True)

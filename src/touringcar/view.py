@@ -1,14 +1,35 @@
+import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from touringcar.serializer import BerichtSerializer
+from touringcar.serializer import BerichtSerializer, BerichtFilterSerializer
 from touringcar.model import Bericht
 
-from datetime import datetime
+from bereikbaarheid.wrapper import extract_parameters
+from marshmallow import ValidationError
+from django.http import JsonResponse
 
 class BerichtList(APIView):
 
     def get(self, request):
-        live_berichten = Bericht.objects.filter(enddate__gt = datetime.today().date(),is_live = True)
-        serializer = BerichtSerializer(live_berichten, many=True)
-        return Response(serializer.data)
+        try:
+            _params = extract_parameters(request)
+
+            if _params:
+                # if request with params -> validation:
+                serialized_data = BerichtFilterSerializer().load(_params)
+                #"Geeft een lijst terug met de berichten voor een dag"
+                berichten = Bericht.objects.filter(startdate__lte = serialized_data['datum'], enddate__gte = serialized_data['datum'], is_live = True)
+            else:
+                #Geeft een lijst terug met berichten die live mogen zijn op tourbuzz",
+                berichten = Bericht.objects.filter(is_live = True)
+
+            serializer = BerichtSerializer(berichten, many=True, context={"request":request})
+            return Response(serializer.data)   
+
+        except ValidationError as err:
+            return JsonResponse(status=400, data=err.messages)
+        except json.JSONDecodeError as e:
+            return JsonResponse(status=400, data={"error": str(e)})
+             
+    

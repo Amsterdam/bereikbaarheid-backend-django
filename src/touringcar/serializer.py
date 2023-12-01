@@ -2,11 +2,17 @@ from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from touringcar.model import Bericht
+from datetime import datetime
+
+import pytz
+from marshmallow import Schema, ValidationError, fields, post_load, validates_schema
+
+tz_amsterdam = pytz.timezone("Europe/Amsterdam")
+
 
 class BerichtSerializer(GeoFeatureModelSerializer):
 
-    #geometry = GeometryField(source='bericht.geometry')
-    serializers.ImageField(use_url=True, required=False, allow_null=True)
+    image_url = serializers.ImageField(use_url=True, required=False, allow_null=True)
 
     class Meta:
         model = Bericht
@@ -21,3 +27,12 @@ class BerichtSerializer(GeoFeatureModelSerializer):
             "startdate", "enddate", "category", 
             "link", "image_url", "important", "is_live"
          ]
+
+
+class BerichtFilterSerializer(Schema):
+    
+    datum = fields.Date(
+        format="%Y-%m-%d",
+        load_default=lambda: datetime.today().astimezone(tz_amsterdam),
+        required=False,
+    )

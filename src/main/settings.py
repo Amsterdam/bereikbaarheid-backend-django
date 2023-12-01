@@ -80,6 +80,8 @@ FORCE_SCRIPT_NAME = BASE_URL
 STATIC_URL = urljoin(f"{BASE_URL}/", "static/")
 STATIC_ROOT = "static"
 
+MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace("\\", "/")
+MEDIA_URL = "/media/"
 
 TEMPLATES = [
     {
