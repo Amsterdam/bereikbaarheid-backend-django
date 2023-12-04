@@ -1,11 +1,11 @@
+from datetime import datetime
+
+import pytz
+from marshmallow import Schema, fields
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from touringcar.model import Bericht
-from datetime import datetime
-
-import pytz
-from marshmallow import Schema, ValidationError, fields, post_load, validates_schema
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 

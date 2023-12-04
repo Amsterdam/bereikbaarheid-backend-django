@@ -1,13 +1,14 @@
 import json
+
+from django.http import JsonResponse
+from marshmallow import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from touringcar.serializer import BerichtSerializer, BerichtFilterSerializer
-from touringcar.model import Bericht
-
 from bereikbaarheid.wrapper import extract_parameters
-from marshmallow import ValidationError
-from django.http import JsonResponse
+from touringcar.model import Bericht
+from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
+
 
 class BerichtList(APIView):
 
