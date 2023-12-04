@@ -1,0 +1,56 @@
+import geojson
+import pytest
+from django.core.exceptions import ValidationError
+from model_bakery import baker
+
+from touringcar.model import Bericht
+from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
+
+
+@pytest.fixture
+def bericht():
+    return baker.prepare(Bericht, is_live=True, startdate="2023-11-15", enddate = "2023-11-30")
+
+@pytest.fixture
+def bericht_error():
+    return baker.prepare(Bericht, is_live=True, startdate="2023-11-15", enddate = "2023-11-04")
+
+
+@pytest.mark.django_db
+def test_error_start_enddate(bericht_error):
+    with pytest.raises(ValidationError) as e:
+        bericht_error.save()
+    assert "{'enddate': ['enddate can not be before startdate.']}" in str(e.value)
+     
+@pytest.mark.django_db
+def test_serialization(bericht):
+    bericht.save()
+    serializer = BerichtSerializer(bericht)
+    # Act
+    data = serializer.data
+    # Assert
+    assert data["properties"]["is_live"] == True
+
+@pytest.mark.django_db
+def test_get_status_code(client):
+        response = client.get("/v1/touringcar/berichten")
+        assert response.status_code == 200
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+        "test_input, expected",
+        [
+            (2023-11-28, 200), (2023, 400), (2023/11/28, 400), (28-11-2023, 400)
+        ],
+    )
+def test_get_status_code(client, test_input, expected):
+        response = client.get("/v1/touringcar/berichten?datum=")
+        assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_get_bericht_noparam(client, bericht):
+    bericht.save()
+    response = client.get("/v1/touringcar/berichten")
+    result = geojson.loads(response.content.decode("utf-8"))
+    assert result["features"][0]["properties"]["startdate"] == bericht.startdate.strftime("%Y-%m-%d")
+
