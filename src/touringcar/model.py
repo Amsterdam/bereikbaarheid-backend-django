@@ -1,5 +1,6 @@
 from django.contrib.gis.db.models import PointField
 from django.contrib.gis.geos import Point
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from bereikbaarheid.models import TimeStampMixin
@@ -43,20 +44,24 @@ class Bericht(TimeStampMixin):
     lon = models.FloatField(help_text="Longitude",  blank=True, null=True)
     geometry = PointField(srid=28992, default=DEFAULT_GEOM)
 
+    def clean(self):
+        # Don't allow enddate to be before startdate.
+        if self.enddate < self.startdate:
+            raise ValidationError(
+                {"enddate": ("enddate can not be before startdate.")}
+            )
+
     def save(self, *args, **kwargs):  
+        self.full_clean()
 
-        if all( v is None for v in [self.geometry, self.lat, self.lon]):
-            #geometry on DEFAULT so can changed by moving on the map
-            self.geometry = DEFAULT_GEOM
-
-        elif (self.lat and self.lon): #lat, lon exist
-            if self.geometry and self.geometry != DEFAULT_GEOM: 
+        if (self.lat and self.lon): #lat, lon exist
+            if self.geometry != DEFAULT_GEOM: 
                 #consistency:  calculate lat,lon from given geometry
                 pnt = calc_lat_lon_from_geometry(self.geometry)
                 self.lat = pnt['lat']
                 self.lon = pnt['lon']
             else: 
-                #geometry=None: calculate geometry from given lat,lon
+                #geometry=DEFAULT_GEOM: calculate geometry from given lat,lon
                 self.geometry = calc_geometry_from_wgs(self.lat, self.lon)                
 
         return super().save(*args, **kwargs) 
