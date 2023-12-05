@@ -15,17 +15,12 @@ class BerichtList(APIView):
     def get(self, request):
         try:
             _params = extract_parameters(request)
-
-            if _params:
-                # if request with params -> validation:
-                serialized_data = BerichtFilterSerializer().load(_params)
-                #"Geeft een lijst terug met de berichten voor een dag"
-                berichten = Bericht.objects.filter(startdate__lte = serialized_data['datum'], enddate__gte = serialized_data['datum'], is_live = True)
-            else:
-                #Geeft een lijst terug met berichten die live mogen zijn op tourbuzz",
-                berichten = Bericht.objects.filter(is_live = True)
-
+            serialized_data = BerichtFilterSerializer().load(_params)
+            
+            #"Geeft een lijst terug met de berichten voor een dag"
+            berichten = Bericht.objects.filter(startdate__lte = serialized_data['datum'], enddate__gte = serialized_data['datum'], is_live = True)
             serializer = BerichtSerializer(berichten, many=True, context={"request":request})
+
             return Response(serializer.data)   
 
         except ValidationError as err:

@@ -45,23 +45,21 @@ class Bericht(TimeStampMixin):
     geometry = PointField(srid=28992, default=DEFAULT_GEOM)
 
     def clean(self):
-        # Don't allow enddate to be before startdate.
-        if self.enddate < self.startdate:
-            raise ValidationError(
-                {"enddate": ("enddate can not be before startdate.")}
-            )
+        if self.enddate and self.startdate:
+            if self.enddate < self.startdate:
+                raise ValidationError(
+                    {"enddate": ("enddate can not be before startdate.")}
+                )
 
     def save(self, *args, **kwargs):  
         self.full_clean()
 
         if (self.lat and self.lon): #lat, lon exist
             if self.geometry != DEFAULT_GEOM: 
-                #consistency:  calculate lat,lon from given geometry
                 pnt = calc_lat_lon_from_geometry(self.geometry)
                 self.lat = pnt['lat']
                 self.lon = pnt['lon']
             else: 
-                #geometry=DEFAULT_GEOM: calculate geometry from given lat,lon
                 self.geometry = calc_geometry_from_wgs(self.lat, self.lon)                
 
         return super().save(*args, **kwargs) 

@@ -1,15 +1,21 @@
+import json
+from datetime import datetime
+
 import geojson
 import pytest
+import pytz
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
 from touringcar.model import Bericht
 from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
 
+tz_amsterdam = pytz.timezone("Europe/Amsterdam")
+
 
 @pytest.fixture
-def bericht():
-    return baker.prepare(Bericht, is_live=True, startdate="2023-11-15", enddate = "2023-11-30")
+def bericht_today():
+    return baker.prepare(Bericht, is_live=True, startdate=datetime.today().astimezone(tz_amsterdam), enddate = datetime.today().astimezone(tz_amsterdam))
 
 @pytest.fixture
 def bericht_error():
@@ -23,34 +29,30 @@ def test_error_start_enddate(bericht_error):
     assert "{'enddate': ['enddate can not be before startdate.']}" in str(e.value)
      
 @pytest.mark.django_db
-def test_serialization(bericht):
-    bericht.save()
-    serializer = BerichtSerializer(bericht)
-    # Act
+def test_serialization(bericht_today):
+    bericht_today.save()
+    serializer = BerichtSerializer(bericht_today)
     data = serializer.data
-    # Assert
     assert data["properties"]["is_live"] == True
-
-@pytest.mark.django_db
-def test_get_status_code(client):
-        response = client.get("/v1/touringcar/berichten")
-        assert response.status_code == 200
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
         "test_input, expected",
         [
-            (2023-11-28, 200), (2023, 400), (2023/11/28, 400), (28-11-2023, 400)
+            ("", 200),
+            ("?datum=2023-11-28", 200), ("?datum=",200),
+            ("?datum=2023", 400), ("?datum=2023/11/28", 400), ("?datum=28-11-2023", 400),
         ],
     )
 def test_get_status_code(client, test_input, expected):
-        response = client.get("/v1/touringcar/berichten?datum=")
-        assert response.status_code == 200
+    url_param = "/v1/touringcar/berichten" + f"{test_input}"
+    response = client.get(url_param)
+    assert response.status_code == expected
 
 @pytest.mark.django_db
-def test_get_bericht_noparam(client, bericht):
-    bericht.save()
+def test_get_bericht_noparam(client, bericht_today):
+    bericht_today.save()
     response = client.get("/v1/touringcar/berichten")
     result = geojson.loads(response.content.decode("utf-8"))
-    assert result["features"][0]["properties"]["startdate"] == bericht.startdate.strftime("%Y-%m-%d")
+    assert result["features"][0]["properties"]["startdate"] == bericht_today.startdate.strftime("%Y-%m-%d")
 
