@@ -45,11 +45,10 @@ class Bericht(TimeStampMixin):
     geometry = PointField(srid=28992, default=DEFAULT_GEOM)
 
     def clean(self):
-        if self.enddate and self.startdate:
-            if self.enddate < self.startdate:
-                raise ValidationError(
-                    {"enddate": ("enddate can not be before startdate.")}
-                )
+        if (self.enddate and self.startdate) and (self.enddate < self.startdate):
+            raise ValidationError(
+                {"enddate": ("enddate can not be before startdate.")}
+            )
 
     def save(self, *args, **kwargs):  
         self.full_clean()

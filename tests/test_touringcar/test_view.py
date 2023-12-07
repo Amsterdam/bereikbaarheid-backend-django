@@ -26,7 +26,7 @@ def bericht_error():
 def test_error_start_enddate(bericht_error):
     with pytest.raises(ValidationError) as e:
         bericht_error.save()
-    assert "{'enddate': ['enddate can not be before startdate.']}" in str(e.value)
+    assert "{'enddate': ['enddate can not be before startdate.']}" == e.value.__str__()
      
 @pytest.mark.django_db
 def test_serialization(bericht_today):
