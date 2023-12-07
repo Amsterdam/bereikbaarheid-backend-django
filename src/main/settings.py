@@ -63,6 +63,7 @@ ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
 
 # Application definition
 DJANGO_APPS = [
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -71,7 +72,7 @@ DJANGO_APPS = [
     "django.contrib.gis",
 ]
 THIRD_PARTY_APPS = ["import_export", "leaflet"]
-LOCAL_APPS = ["main", "bereikbaarheid"]
+LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [

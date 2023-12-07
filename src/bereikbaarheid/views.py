@@ -1,5 +1,8 @@
+import json
+
 from django.http import HttpRequest, JsonResponse
 from django.views import View
+from marshmallow import ValidationError
 
 from bereikbaarheid.bollards import get_bollards
 from bereikbaarheid.bollards.serializer import BollardsSerializer
@@ -15,21 +18,33 @@ from bereikbaarheid.prohibitory.serializers import ProhibitorySerializer
 from bereikbaarheid.sections import get_sections
 from bereikbaarheid.traffic_signs import get_traffic_signs
 from bereikbaarheid.traffic_signs.serializers import TrafficSignsSerializer
-from bereikbaarheid.wrapper import geo_json_response, validate_data
+from bereikbaarheid.wrapper import extract_parameters, geo_json_response, validate_data
 
 
 class BollardsView(View):
     """
-    return Bollards
+    return Bollards with and without params
     """
 
     @geo_json_response
     def handle(self, request, data: dict, *args, **kwargs):
         return get_bollards(data)
 
-    @validate_data(BollardsSerializer)
-    def get(self, request, serialized_data: dict, *args, **kwargs):
-        return self.handle(request, serialized_data)
+    def get(self, request, *args, **kwargs):
+        try:
+            _params = extract_parameters(request)
+
+            if _params:
+                # if request with params -> validation:
+                serialized_data = BollardsSerializer().load(_params)
+                return self.handle(request, serialized_data)
+            else:
+                return self.handle(request, None)
+
+        except ValidationError as err:
+            return JsonResponse(status=400, data=err.messages)
+        except json.JSONDecodeError as e:
+            return JsonResponse(status=400, data={"error": str(e)})
 
     @validate_data(BollardsSerializer)
     def post(self, request: HttpRequest, serialized_data: dict, *args, **kwargs):

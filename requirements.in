@@ -1,11 +1,12 @@
 # Define all requirements, only pin when necessary (and if so, add a comment explaining why).
 # See # https://git.datapunt.amsterdam.nl/Datapunt/python-best-practices/blob/master/dependency_management/
 
-psycopg2
+psycopg2-binary
 marshmallow
 pytz
 pandas
 sentry-sdk
+Pillow
 
 # Django
 Django<4.2  # Django 4.2 does not support Postgres 11 anymore

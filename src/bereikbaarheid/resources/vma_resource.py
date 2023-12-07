@@ -3,7 +3,11 @@ from import_export.instance_loaders import CachedInstanceLoader
 from import_export.resources import ModelResource
 
 from bereikbaarheid.models import Vma
-from bereikbaarheid.resources.utils import refresh_materialized, truncate
+from bereikbaarheid.resources.utils import (
+    clean_dataset_headers,
+    refresh_materialized,
+    truncate,
+)
 
 
 class VmaResource(ModelResource):
@@ -12,10 +16,7 @@ class VmaResource(ModelResource):
             "linknr": "link_nr",
         }
 
-        # all lower
-        dataset.headers = [x.strip().lower() for x in dataset.headers]
-        # mapping of the model.py columnnames
-        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
         # truncate table before import when dry_run = False
         if not dry_run:

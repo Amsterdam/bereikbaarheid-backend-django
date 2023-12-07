@@ -12,7 +12,7 @@ raw_query = """
                         )
                     ) < 45
                     then 'noord'
-
+                
                 when bd.link_nr > 0
                     and degrees(
                         st_azimuth(
@@ -21,7 +21,7 @@ raw_query = """
                         )
                     ) < 45 + 90
                     then 'oost'
-
+                
                 when bd.link_nr > 0
                     and degrees(
                         st_azimuth(
@@ -30,7 +30,7 @@ raw_query = """
                         )
                     ) < 45 + 180
                     then 'zuid'
-
+                
                 when bd.link_nr > 0
                     and degrees(
                         st_azimuth(
@@ -39,7 +39,7 @@ raw_query = """
                         )
                     ) < 45 + 270
                     then 'west'
-
+                
                 when bd.link_nr > 0
                     and degrees(
                         st_azimuth(
@@ -48,9 +48,9 @@ raw_query = """
                         )
                     ) > 45 + 270
                     then 'noord'
-
+                
                 when bd.link_nr > 0 then 'geen'
-
+                
                 when bd.link_nr < 0
                     and degrees(
                         st_azimuth(
@@ -59,7 +59,7 @@ raw_query = """
                         )
                     ) < 45
                     then 'noord'
-
+                
                 when bd.link_nr < 0
                     and degrees(
                         st_azimuth(
@@ -68,7 +68,7 @@ raw_query = """
                         )
                     ) < 45 + 90
                     then 'oost'
-
+                
                 when bd.link_nr < 0
                     and degrees(
                         st_azimuth(
@@ -77,7 +77,7 @@ raw_query = """
                         )
                     ) < 45 + 180
                     then 'zuid'
-
+                
                 when bd.link_nr < 0
                     and degrees(
                         st_azimuth(
@@ -86,7 +86,7 @@ raw_query = """
                         )
                     ) < 45 + 270
                     then 'west'
-
+                
                 when bd.link_nr < 0
                     and degrees(
                         st_azimuth(
@@ -96,27 +96,28 @@ raw_query = """
                     ) > 45 + 270
                     then 'noord'
                 else  'geen'
-
+            
             end as richting,
-
+            
             bd.link_nr,
             bd.e_type,
-            bd.verkeersbord,
+            
             bd.dagen,
             bd.begin_tijd,
             bd.eind_tijd,
             vma.car_network,
             vma.geom,
-            vma.name
-
+            vma.name,
+            bord.rvv_modelnummer,
+            bord.onderbord_tekst
             from bereikbaarheid_venstertijdweg bd
-
             left join bereikbaarheid_out_vma_undirected vma
                 on abs(bd.link_nr) = vma.link_nr
-
+            left join bereikbaarheid_verkeersbord bord
+                on bd.verkeersbord = bord.bord_id
             order by bd.link_nr
         )
-
+        
         select
         ST_AsgeoJson(ST_Transform(load_unload.geom, 4326))::json as geometry,
         load_unload.linknr_abs as id,
@@ -124,7 +125,8 @@ raw_query = """
         json_agg(json_build_object(
             'road_section_id', load_unload.link_nr,
             'direction', load_unload.richting,
-            'additional_info', load_unload.verkeersbord,
+            'additional_info', load_unload.rvv_modelnummer,
+            'text', load_unload.onderbord_tekst,
             'days', load_unload.dagen,
             'start_time', load_unload.begin_tijd,
             'end_time', load_unload.eind_tijd
@@ -134,7 +136,7 @@ raw_query = """
         load_unload.eind_tijd
         asc) as load_unload
         from load_unload
-
+        
         where load_unload.geom is not null
         group by load_unload.geom, load_unload.linknr_abs, load_unload.name
         order by load_unload.linknr_abs

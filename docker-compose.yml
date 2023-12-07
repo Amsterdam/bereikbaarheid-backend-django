@@ -31,6 +31,8 @@ services:
       POSTGRES_USER: bereikbaarheid
       POSTGRES_PASSWORD: insecure
     image: postgis/postgis:15-3.4
+#      POSTGRES_MULTIPLE_EXTENSIONS: postgis,pgrouting
+#    image: kartoza/postgis:12.1
     networks:
       - backend
 

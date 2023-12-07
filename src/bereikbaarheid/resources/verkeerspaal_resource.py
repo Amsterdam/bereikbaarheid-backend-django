@@ -1,7 +1,10 @@
 from import_export.resources import ModelResource
 
 from bereikbaarheid.models import VerkeersPaal
-from bereikbaarheid.resources.utils import remove_chars_from_value
+from bereikbaarheid.resources.utils import (
+    clean_dataset_headers,
+    remove_chars_from_value,
+)
 
 
 class VerkeersPaalResource(ModelResource):
@@ -11,10 +14,7 @@ class VerkeersPaalResource(ModelResource):
             "paalnummer": "paal_nr",
         }
 
-        # all lower
-        dataset.headers = [x.strip().lower() for x in dataset.headers]
-        # mapping of the model.py columnnames
-        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
         # remove [] or {} of array by import
         dataset.append_col(

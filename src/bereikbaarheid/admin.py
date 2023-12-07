@@ -6,7 +6,11 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
-from import_export.admin import ImportExportMixin, ImportMixin
+from import_export.admin import (
+    ImportExportActionModelAdmin,
+    ImportExportMixin,
+    ImportMixin,
+)
 from import_export.formats import base_formats
 from import_export.forms import ImportExportFormBase
 from import_export.tmp_storages import CacheStorage
@@ -100,7 +104,7 @@ class ArrayDagenListFilter(admin.SimpleListFilter):
         return queryset
 
 
-class ImportExportFormatsMixin(ImportExportMixin):
+class ImportExportFormatsMixin(ImportExportMixin, ImportExportActionModelAdmin):
     """overwrites the standard get_import_formats and get_export_formats from the ImportExportMixin"""
 
     def get_import_formats(self):
@@ -110,7 +114,7 @@ class ImportExportFormatsMixin(ImportExportMixin):
 
     def get_export_formats(self):
         """Returns available import formats."""
-        formats = [SCSV, base_formats.XLSX, base_formats.CSV]
+        formats = [SCSV, base_formats.XLSX, base_formats.CSV, base_formats.JSON]
         return formats
 
 
@@ -127,7 +131,7 @@ class VenstertijdWegAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
         "created_at",
         "updated_at",
     ]
-    list_filter = ["verkeersbord", ArrayDagenListFilter, "created_at", "updated_at"]
+    list_filter = [ArrayDagenListFilter, "created_at", "updated_at"]
     resource_classes = [VenstertijdWegResource]
 
 

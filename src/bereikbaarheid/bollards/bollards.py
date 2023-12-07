@@ -108,6 +108,29 @@ raw_query = """
             and (%(time_to)s <= bollards.eind_tijd or %(time_to)s is null)
     """
 
+raw_query_all = """
+        with bollards as (
+            select pp.*
+            from bereikbaarheid_verkeerspaal pp
+        )
+
+        select json_build_object(
+            'geometry', ST_AsGeoJson( ST_Transform(bollards.geometry, 4326))::json,
+            'properties', json_build_object(
+                'id', bollards.paal_nr,
+                'type', bollards.type,
+                'location', bollards.standplaats,
+                'days', bollards.dagen,
+                'window_times', bollards.venstertijden,
+                'entry_system', bollards.toegangssysteem,
+                'details', bollards.bijzonderheden
+            ),
+            'type', 'Feature'
+        )
+        from bollards
+
+    """
+
 
 def prepare_pgr_dijkstra_cost_query(day_of_the_week, time_from, time_to):
     """
@@ -219,6 +242,10 @@ def get_bollards(data: dict):
     :param data:
     :return:
     """
+    if not data:
+        # return all bollard objects
+        results = django_query_db(raw_query_all, None)
+        return _transform_results(results)
 
     # required
     _lat = data["lat"]

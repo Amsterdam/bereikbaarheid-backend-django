@@ -2,7 +2,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from import_export.resources import ModelResource
 
 from bereikbaarheid.models import VerkeersBord
-from bereikbaarheid.resources.utils import refresh_materialized
+from bereikbaarheid.resources.utils import clean_dataset_headers, refresh_materialized
 
 
 class VerkeersBordResource(ModelResource):
@@ -17,10 +17,7 @@ class VerkeersBordResource(ModelResource):
             "link_gevalideerd2": "link_validated_2",
         }
 
-        # all lower
-        dataset.headers = [x.strip().lower() for x in dataset.headers]
-        # mapping of the model.py columnnames
-        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
     def before_import_row(self, row, row_number=None, **kwargs):
         if row["tekst_waarde"] == "NULL":
