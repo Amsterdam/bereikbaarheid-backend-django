@@ -23,3 +23,9 @@ secrets:
       database-host: bereikbaarheid-p-3codib2.postgres.database.azure.com  # Environment specific
       database-name: main
       database-user: bereikbaarheid-app-p  # Environment specific
+
+ingress:
+  external:
+    host: bereikbaarheid.amsterdam.nl
+  internal-motiv:
+    host: bereikbaarheid.amsterdam.nl

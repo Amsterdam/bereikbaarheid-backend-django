@@ -25,5 +25,7 @@ secrets:
       database-user: bereikbaarheid-app-t  # Environment specific
 
 ingress:
-  api:
-    className: nginx-internal
+  external:
+    enabled: false
+  internal-motiv:
+    enabled: false
