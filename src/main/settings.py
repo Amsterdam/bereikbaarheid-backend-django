@@ -63,7 +63,6 @@ ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
 
 # Application definition
 DJANGO_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
