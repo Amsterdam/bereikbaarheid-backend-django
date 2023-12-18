@@ -13,10 +13,6 @@ parameters:
     type: string
     default: ' '
 
-variables:
-  # Debugging
-  System.Debug: true
-
 resources:
   repositories:
     - repository: templates
