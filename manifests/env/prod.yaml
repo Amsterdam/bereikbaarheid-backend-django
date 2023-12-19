@@ -4,7 +4,7 @@ tenantId: 72fca1b1-2c2e-4376-a445-294d80196804
 keyVaultName: bereikbaarheid-p-3codib2
 
 # Identity AppID (clientId) used to authenticate with the keyvault
-workloadIdentity: ee8c6413-1230-4cc2-9a39-8c8cd7b0d671  # Environment specific
+workloadIdentity: 93bfb4da-7d05-456b-8a8f-cbe571f8237a  # Environment specific
 
 # We must select the nodepool to run the pods on
 nodepool: cccopdrprd01
