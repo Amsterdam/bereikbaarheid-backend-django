@@ -47,11 +47,6 @@ extends:
       pool: Opdrachten
       namespace: ns-ccc-opdr-acc-01-bereikbaarheid
       kubernetesServiceConnection: "SCN-K8S-ns-ccc-opdr-acc-01-bereikbaarheid"
-      preSteps:
-        - script: helm uninstall backend -n ns-ccc-opdr-acc-01-bereikbaarheid || true
-          displayName: helm uninstall
-        - script: kubectl delete ingress --all -n ns-ccc-opdr-acc-01-bereikbaarheid
-          displayName: kubectl delete ingess
     prod:
       pool: Opdrachten
       namespace: ns-ccc-opdr-prd-01-bereikbaarheid
@@ -59,5 +54,3 @@ extends:
       preSteps:
         - script: helm uninstall backend -n ns-ccc-opdr-prd-01-bereikbaarheid || true
           displayName: helm uninstall
-        - script: kubectl delete ingress --all -n ns-ccc-opdr-prd-01-bereikbaarheid
-          displayName: kubectl delete ingess
