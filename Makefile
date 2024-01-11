@@ -2,12 +2,15 @@
 # https://git.datapunt.amsterdam.nl/Datapunt/python-best-practices/blob/master/dependency_management/
 #
 # VERSION = 2020.01.29
+.PHONY: help pip-tools install requirements update test init
 
-PYTHON = python3
+UID:=$(shell id --user)
+GID:=$(shell id --group)
 
 dc = docker compose
-run = $(dc) run --rm
+run = $(dc) run --rm -u ${UID}:${GID}
 manage = $(run) dev python manage.py
+
 
 help:                               ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
@@ -81,12 +84,6 @@ trivy: 	    						## Detect image vulnerabilities
 	$(dc) build --no-cache app
 	trivy image --ignore-unfixed docker-registry.secure.amsterdam.nl/datapunt/bereikbaarheid-backend
 
-kustomize:
-	kustomize build manifests/overlays/local | kubectl apply -f -
-
-undeploy_kustomize:
-	kustomize build manifests/overlays/local | kubectl delete -f -
-
 lintfix:                            ## Execute lint fixes
 	$(run) test black /src/$(APP) /tests/$(APP)
 	$(run) test autoflake /src --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
@@ -95,7 +92,8 @@ lintfix:                            ## Execute lint fixes
 
 lint:                               ## Execute lint checks
 	$(run) test autoflake /src --check --recursive --quiet
-	$(run) test isort --diff --check /src/$(APP) /tests/$(APP)
+	$(run) test isort --diff --check /src/$(APP) /app/tests/$(APP)
 
 diff:
 	@python3 ./deploy/diff.py
+
