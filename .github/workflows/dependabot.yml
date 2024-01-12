@@ -15,8 +15,8 @@ jobs:
       check_diff: true  # Create a list of major upgrades. Needs the Makefile target "diff"
       slack_channel: 'opdrachten-dependabot'  # Slack channel to post release steps to
       timetell_code: 230719  # Timetell project id
-      acceptance_pipeline: "https://ci.secure.amsterdam.nl/job/Bereikbaarheid%20api/job/main/"
-      production_pipeline: "https://ci.secure.amsterdam.nl/job/Bereikbaarheid%20api/view/tags/jobs/<tag>/"
+      acceptance_pipeline: "https://dev.azure.com/CloudCompetenceCenter/Opdrachten/_build?definitionId=2153"
+      production_pipeline: "https://dev.azure.com/CloudCompetenceCenter/Opdrachten/_build?definitionId=2153"
       acceptance_urls: "acc.bereikbaarheid.amsterdam.nl"
       production_urls: "bereikbaarheid.amsterdam.nl"
 
