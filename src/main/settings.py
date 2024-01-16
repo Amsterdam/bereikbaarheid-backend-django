@@ -70,7 +70,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
 ]
-THIRD_PARTY_APPS = ["import_export", "leaflet", "rest_framework", 'rest_framework_gis']
+THIRD_PARTY_APPS = ["import_export", "leaflet", "rest_framework", "rest_framework_gis"]
 LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
