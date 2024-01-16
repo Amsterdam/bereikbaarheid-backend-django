@@ -11,7 +11,7 @@ from touringcar.model import Bericht
 from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
-
+api_path = "/api/v1/"
 
 @pytest.fixture
 def bericht_today():
@@ -45,14 +45,14 @@ def test_serialization(bericht_today):
         ],
     )
 def test_get_status_code(client, test_input, expected):
-    url_param = "/v1/touringcar/berichten" + f"{test_input}"
+    url_param = api_path +"touringcar/berichten" + f"{test_input}"
     response = client.get(url_param)
     assert response.status_code == expected
 
 @pytest.mark.django_db
 def test_get_bericht_noparam(client, bericht_today):
     bericht_today.save()
-    response = client.get("/v1/touringcar/berichten")
+    response = client.get(api_path +"touringcar/berichten")
     result = geojson.loads(response.content.decode("utf-8"))
     assert result["features"][0]["properties"]["startdate"] == bericht_today.startdate.strftime("%Y-%m-%d")
 

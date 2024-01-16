@@ -8,6 +8,7 @@ from . import auth
 urlpatterns = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += [
     path(settings.API_PATH, include("bereikbaarheid.urls")),
+    path(settings.API_PATH, include("touringcar.urls")),
     path("status/", include("health.urls")),
 ]
 
