@@ -33,6 +33,6 @@ class BerichtFilterSerializer(Schema):
     
     datum = fields.Date(
         format="%Y-%m-%d",
-        load_default= datetime.today().astimezone(tz_amsterdam),
+        load_default=datetime.today().astimezone(tz_amsterdam),
         required=False,
     )
