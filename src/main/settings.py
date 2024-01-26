@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 import sentry_sdk
+from azure.identity import WorkloadIdentityCredential
 from django.http.request import urljoin
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -124,6 +125,31 @@ STATIC_ROOT = "/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace("\\", "/")
 MEDIA_URL = "/media/"
+
+# Django-storages for Django > 4.2
+STORAGES = {
+        "default": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+
+# Azure Storageaccount settings
+if os.getenv("AZURE_FEDERATED_TOKEN_FILE"):
+    credential = WorkloadIdentityCredential()
+    STORAGE_AZURE = {
+        "default": {
+            "BACKEND": "storages.backends.azure_storage.AzureStorage",
+            "OPTIONS": {
+                "token_credential": credential,
+                "account_name": os.getenv("AZURE_STORAGE_ACCOUNT_NAME"),
+                "azure_container": "touringcar-images",
+            },
+        },
+    }
+    STORAGES |= STORAGE_AZURE
 
 TEMPLATES = [
     {
