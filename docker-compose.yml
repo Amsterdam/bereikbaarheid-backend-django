@@ -51,6 +51,8 @@ services:
       target: dev
     environment:
       <<: *base-app-env
+    env_file:
+      - .env
     entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       python manage.py runserver 0.0.0.0:8000
