@@ -149,7 +149,7 @@ if os.getenv("AZURE_FEDERATED_TOKEN_FILE"):
             },
         },
     }
-    STORAGES |= STORAGE_AZURE
+    STORAGES |= STORAGE_AZURE #update storages with storage_azure
 
 TEMPLATES = [
     {
