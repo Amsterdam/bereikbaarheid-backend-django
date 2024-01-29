@@ -92,7 +92,7 @@ lintfix:                            ## Execute lint fixes
 
 lint:                               ## Execute lint checks
 	$(run) test autoflake /src --check --recursive --quiet
-	$(run) test isort --diff --check /src/$(APP) /app/tests/$(APP)
+	$(run) test isort --diff --check /src/$(APP) /tests/$(APP)
 
 diff:
 	@python3 ./deploy/diff.py

@@ -8,8 +8,6 @@ adal==1.2.7
     # via msrestazure
 antlr4-python3-runtime==4.13.1
     # via azure-cli
-anyio==4.2.0
-    # via azure-core
 applicationinsights==0.11.10
     # via azure-cli-telemetry
 argcomplete==3.1.6
@@ -105,7 +103,7 @@ azure-common==1.1.28
     #   azure-synapse-artifacts
     #   azure-synapse-managedprivateendpoints
     #   azure-synapse-spark
-azure-core==1.29.6
+azure-core==1.29.7
     # via
     #   -r requirements.in
     #   azure-appconfiguration
@@ -117,9 +115,11 @@ azure-core==1.29.6
     #   azure-keyvault-secrets
     #   azure-mgmt-core
     #   azure-multiapi-storage
+    #   azure-storage-blob
     #   azure-synapse-accesscontrol
     #   azure-synapse-managedprivateendpoints
     #   azure-synapse-spark
+    #   django-storages
     #   msrest
     #   opencensus-ext-azure
 azure-cosmos==3.2.0
@@ -305,7 +305,7 @@ azure-mgmt-policyinsights==1.1.0b4
     # via azure-cli
 azure-mgmt-privatedns==1.0.0
     # via azure-cli
-azure-mgmt-rdbms==10.2.0b13
+azure-mgmt-rdbms==10.2.0b14
     # via azure-cli
 azure-mgmt-recoveryservices==2.5.0
     # via azure-cli
@@ -347,6 +347,8 @@ azure-multiapi-storage==1.2.0
     # via azure-cli
 azure-nspkg==3.0.2
     # via azure-mgmt-nspkg
+azure-storage-blob==12.19.0
+    # via django-storages
 azure-storage-common==1.4.2
     # via azure-cli
 azure-synapse-accesscontrol==0.5.0
@@ -377,13 +379,14 @@ charset-normalizer==3.3.2
     # via requests
 colorama==0.4.6
     # via azure-cli
-cryptography==41.0.7
+cryptography==42.0.1
     # via
     #   adal
     #   azure-cli-core
     #   azure-identity
     #   azure-keyvault-keys
     #   azure-multiapi-storage
+    #   azure-storage-blob
     #   azure-storage-common
     #   josepy
     #   mozilla-django-oidc
@@ -401,11 +404,12 @@ distro==1.9.0
     # via
     #   azure-cli
     #   azure-cli-core
-django==4.1.13
+django==5.0.1
     # via
     #   -r requirements.in
     #   django-import-export
     #   django-leaflet
+    #   django-storages
     #   djangorestframework
     #   mozilla-django-oidc
     #   opencensus-ext-django
@@ -415,6 +419,8 @@ django-leaflet==0.29.0
     # via -r requirements.in
 django-rest-framework==0.1.0
     # via -r requirements.in
+django-storages[azure]==1.14.2
+    # via -r requirements.in
 djangorestframework==3.14.0
     # via
     #   django-rest-framework
@@ -423,22 +429,18 @@ djangorestframework-gis==1.0
     # via -r requirements.in
 et-xmlfile==1.1.0
     # via openpyxl
-exceptiongroup==1.2.0
-    # via anyio
 fabric==2.7.1
     # via azure-cli
 google-api-core==2.15.0
     # via opencensus
-google-auth==2.26.2
+google-auth==2.27.0
     # via google-api-core
 googleapis-common-protos==1.62.0
     # via google-api-core
 humanfriendly==10.0
     # via azure-cli-core
 idna==3.6
-    # via
-    #   anyio
-    #   requests
+    # via requests
 invoke==1.7.3
     # via fabric
 isodate==0.6.1
@@ -471,6 +473,7 @@ isodate==0.6.1
     #   azure-mgmt-sql
     #   azure-mgmt-storage
     #   azure-mgmt-web
+    #   azure-storage-blob
     #   azure-synapse-artifacts
     #   msrest
 javaproperties==0.5.2
@@ -496,6 +499,7 @@ msal[broker]==1.24.0b2
     #   azure-cli-core
     #   azure-datalake-store
     #   azure-identity
+    #   msal
     #   msal-extensions
 msal-extensions==1.0.0
     # via
@@ -591,7 +595,7 @@ packaging==23.2
     #   azure-cli-core
     #   knack
     #   marshmallow
-pandas==2.1.4
+pandas==2.2.0
     # via -r requirements.in
 paramiko==3.4.0
     # via
@@ -613,7 +617,7 @@ protobuf==4.25.2
     # via
     #   google-api-core
     #   googleapis-common-protos
-psutil==5.9.7
+psutil==5.9.8
     # via
     #   azure-cli-core
     #   opencensus-ext-azure
@@ -646,7 +650,7 @@ pynacl==1.5.0
     #   azure-cli
     #   paramiko
     #   pygithub
-pyopenssl==23.3.0
+pyopenssl==24.0.0
     # via
     #   azure-cli-core
     #   josepy
@@ -706,25 +710,25 @@ six==1.16.0
     #   opencensus
     #   pathlib2
     #   python-dateutil
-sniffio==1.3.0
-    # via anyio
 sqlparse==0.4.4
     # via django
 sshtunnel==0.1.5
     # via azure-cli
 tablib[html,ods,xls,xlsx,yaml]==3.5.0
-    # via django-import-export
+    # via
+    #   django-import-export
+    #   tablib
 tabulate==0.9.0
     # via knack
 typing-extensions==4.9.0
     # via
-    #   anyio
     #   asgiref
     #   azure-core
     #   azure-keyvault-administration
     #   azure-keyvault-certificates
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
+    #   azure-storage-blob
 tzdata==2023.4
     # via pandas
 urllib3==2.1.0
