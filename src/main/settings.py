@@ -71,7 +71,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
 ]
-THIRD_PARTY_APPS = ["import_export", "leaflet", "rest_framework", "rest_framework_gis", "storages"]
+THIRD_PARTY_APPS = ["import_export", "leaflet", "rest_framework", "rest_framework_gis", "storages", "corsheaders"]
 LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -83,6 +83,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -319,3 +320,23 @@ if APPLICATIONINSIGHTS_CONNECTION_STRING:
     LOGGING["loggers"]["django.request"]["handlers"].append("azure")
     LOGGING["loggers"]["main"]["handlers"].append("azure")
     LOGGING["loggers"]["bereikbaarheid"]["handlers"].append("azure")
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]

@@ -16,6 +16,7 @@ django-import-export>= 3.1.0
 django-leaflet
 mozilla-django-oidc
 django-storages[azure]
+django-cors-headers
 
 # Azure
 azure-cli
