@@ -36,9 +36,9 @@ raw_query = """
         else 'true'
     end as boolean_in_amsterdam,
 
-    ST_AsgeoJson(ST_closestpoint(
+    ST_closestpoint(
         v.geom,st_setsrid(ST_MakePoint(%(lon)s, %(lat)s), 4326)
-    ))::json as geom,
+    )::json as geom,
 
     st_length(
         st_transform(

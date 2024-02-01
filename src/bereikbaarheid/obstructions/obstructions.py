@@ -4,7 +4,7 @@ from bereikbaarheid.utils import django_query_db
 
 raw_query = """
     select 
-        ST_AsgeoJson(ST_Transform(t1.geom, 4326))::json as geometry,
+        ST_Transform(t1.geom, 4326)::json as geometry,
         t1.link_nr as road_element_id,
         t1.name as road_element_street_name,
         t2."bereikbaar_status_code" as road_element_accessibility_code,
