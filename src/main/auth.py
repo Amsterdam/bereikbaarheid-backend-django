@@ -28,11 +28,15 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
         based on the roles passed by Azure AD. At the moment we receive none,
         and we assume any user that is able log in is an admin.
         """
+
+        print('claims: ', claims)
+
         with transaction.atomic():
-            user.groups.clear()
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
+            if 'M.van.der.Oord@amsterdam.nl' in claims['email']:
+                user.groups.clear()
+                user.is_staff = True
+                user.is_superuser = True
+                user.save()
 
     def authenticate(self, request, **kwargs):
         user = super().authenticate(request, **kwargs)
@@ -42,3 +46,14 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
         if user and user.is_staff:
             return user
         return None
+
+    def get_userinfo(self, access_token, id_token, payload):
+        """Return user details dictionary. The id_token and payload are not used in
+        the default implementation, but may be used when overriding this method"""
+
+        user_response = super().get_userinfo(access_token, id_token, payload)
+
+        # Add 'groups' from payload 
+        user_response['groups'] = payload['groups']
+
+        return user_response
