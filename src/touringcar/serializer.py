@@ -5,7 +5,7 @@ from marshmallow import Schema, fields
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
-from touringcar.model import Bericht
+from touringcar.models import Bericht
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 

@@ -1,5 +1,5 @@
 from django.contrib.gis.db.models import PointField
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -18,21 +18,21 @@ class Bericht(TimeStampMixin):
         verbose_name_plural = "Berichten"
 
     id = models.BigAutoField(primary_key=True, help_text="Id")
-    title = models.CharField(max_length=255)
-    body =  models.TextField(blank=True, null=True)
-    advice =  models.TextField(blank=True, null=True)
-    title_en =  models.CharField(max_length=255, blank=True, null=True, help_text="engels")
-    body_en =  models.TextField(blank=True, null=True, help_text="engels")
-    advice_en =  models.TextField(blank=True, null=True, help_text="engels")
-    title_fr =  models.CharField(max_length=255, blank=True, null=True, help_text="frans")
-    body_fr =   models.TextField(blank=True, null=True, help_text="frans")
-    advice_fr =   models.TextField(blank=True, null=True, help_text="frans")
-    title_de =  models.CharField(max_length=255, blank=True, null=True, help_text="duits")
-    body_de =   models.TextField(blank=True, null=True, help_text="duits")
-    advice_de =   models.TextField(blank=True, null=True, help_text="duits")
-    title_es =  models.CharField(max_length=255, blank=True, null=True, help_text="spaans")
-    body_es =   models.TextField(blank=True, null=True, help_text="spaans")
-    advice_es =   models.TextField(blank=True, null=True, help_text="spaans")
+    title = models.CharField(max_length=255, help_text="titel")
+    body =  models.TextField(blank=True, null=True, help_text="onderwerp")
+    advice =  models.TextField(blank=True, null=True, help_text="advies")
+    title_en =  models.CharField(max_length=255, blank=True, null=True, help_text="engels: titel")
+    body_en =  models.TextField(blank=True, null=True, help_text="engels: onderwerp")
+    advice_en =  models.TextField(blank=True, null=True, help_text="engels: advies")
+    title_fr =  models.CharField(max_length=255, blank=True, null=True, help_text="frans: titel")
+    body_fr =   models.TextField(blank=True, null=True, help_text="frans: onderwerp")
+    advice_fr =   models.TextField(blank=True, null=True, help_text="frans: advies")
+    title_de =  models.CharField(max_length=255, blank=True, null=True, help_text="duits: titel")
+    body_de =   models.TextField(blank=True, null=True, help_text="duits: onderwerp")
+    advice_de =   models.TextField(blank=True, null=True, help_text="duits: advies")
+    title_es =  models.CharField(max_length=255, blank=True, null=True, help_text="spaans: titel")
+    body_es =   models.TextField(blank=True, null=True, help_text="spaans: onderwerp")
+    advice_es =   models.TextField(blank=True, null=True, help_text="spaans: advies")
     startdate = models.DateField(help_text="Publicatie startdatum")
     enddate = models.DateField(help_text="Publicatie einddatum")
     category = models.CharField(max_length=55, blank=True, null=True)
@@ -54,12 +54,12 @@ class Bericht(TimeStampMixin):
         self.full_clean()
 
         if (self.lat and self.lon): #lat, lon exist
-            if self.geometry != DEFAULT_GEOM: 
+            if self.geometry.equals_exact(GEOSGeometry(DEFAULT_GEOM), tolerance=0.005): #because of decimals == comparing not true
+                self.geometry = calc_geometry_from_wgs(self.lat, self.lon)                
+            else: #self.geometry != DEFAULT_GEOM
                 pnt = calc_lat_lon_from_geometry(self.geometry)
                 self.lat = pnt['lat']
-                self.lon = pnt['lon']
-            else: 
-                self.geometry = calc_geometry_from_wgs(self.lat, self.lon)                
+                self.lon = pnt['lon']            
 
         return super().save(*args, **kwargs) 
 
