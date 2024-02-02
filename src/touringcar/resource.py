@@ -1,6 +1,6 @@
 from import_export.resources import ModelResource
 
-from touringcar.model import Bericht
+from touringcar.models import Bericht
 
 
 class BerichtResource(ModelResource):

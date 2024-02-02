@@ -7,7 +7,7 @@ import pytz
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
-from touringcar.model import Bericht
+from touringcar.models import Bericht
 from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")

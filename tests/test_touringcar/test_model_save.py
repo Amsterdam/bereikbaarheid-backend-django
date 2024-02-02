@@ -2,7 +2,7 @@ import pytest
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
-from touringcar.model import DEFAULT_GEOM, Bericht
+from touringcar.models import DEFAULT_GEOM, Bericht
 
 
 @pytest.fixture(scope="class")

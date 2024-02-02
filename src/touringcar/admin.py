@@ -4,7 +4,7 @@ from import_export.tmp_storages import CacheStorage
 from leaflet.admin import LeafletGeoAdminMixin
 
 from bereikbaarheid.admin import ImportExportFormatsMixin
-from touringcar.model import Bericht
+from touringcar.models import Bericht
 from touringcar.resource import BerichtResource
 
 

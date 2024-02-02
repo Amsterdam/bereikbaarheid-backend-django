@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.gis.geos import Point
 
-from touringcar.model import calc_geometry_from_wgs, calc_lat_lon_from_geometry
+from touringcar.models import calc_geometry_from_wgs, calc_lat_lon_from_geometry
 
 
 class TestGeoFunctions:

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from bereikbaarheid.wrapper import extract_parameters
-from touringcar.model import Bericht
+from touringcar.models import Bericht
 from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
 
 
