@@ -15,9 +15,7 @@ argcomplete==3.1.6
     #   azure-cli-core
     #   knack
 asgiref==3.7.2
-    # via
-    #   django
-    #   django-cors-headers
+    # via django
 azure-appconfiguration==1.1.1
     # via azure-cli
 azure-batch==14.0.0
@@ -381,7 +379,7 @@ charset-normalizer==3.3.2
     # via requests
 colorama==0.4.6
     # via azure-cli
-cryptography==42.0.2
+cryptography==42.0.1
     # via
     #   adal
     #   azure-cli-core
@@ -402,18 +400,19 @@ deprecated==1.2.14
     # via pygithub
 diff-match-patch==20230430
     # via django-import-export
+distro==1.9.0
+    # via
+    #   azure-cli
+    #   azure-cli-core
 django==5.0.1
     # via
     #   -r requirements.in
-    #   django-cors-headers
     #   django-import-export
     #   django-leaflet
     #   django-storages
     #   djangorestframework
     #   mozilla-django-oidc
     #   opencensus-ext-django
-django-cors-headers==4.3.1
-    # via -r requirements.in
 django-import-export==3.3.6
     # via -r requirements.in
 django-leaflet==0.29.0
@@ -432,7 +431,7 @@ et-xmlfile==1.1.0
     # via openpyxl
 fabric==2.7.1
     # via azure-cli
-google-api-core==2.16.1
+google-api-core==2.15.0
     # via opencensus
 google-auth==2.27.0
     # via google-api-core
@@ -663,7 +662,7 @@ python-dateutil==2.8.2
     #   azure-multiapi-storage
     #   azure-storage-common
     #   pandas
-pytz==2023.4
+pytz==2023.3.post1
     # via
     #   -r requirements.in
     #   djangorestframework
@@ -698,7 +697,7 @@ scp==0.13.6
     # via azure-cli
 semver==2.13.0
     # via azure-cli
-sentry-sdk==1.40.0
+sentry-sdk==1.39.2
     # via -r requirements.in
 six==1.16.0
     # via
@@ -732,7 +731,7 @@ typing-extensions==4.9.0
     #   azure-storage-blob
 tzdata==2023.4
     # via pandas
-urllib3==2.2.0
+urllib3==2.1.0
     # via
     #   azure-cli
     #   requests
