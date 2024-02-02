@@ -1,5 +1,5 @@
 from django.contrib.gis.db.models import PointField
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -54,12 +54,12 @@ class Bericht(TimeStampMixin):
         self.full_clean()
 
         if (self.lat and self.lon): #lat, lon exist
-            if self.geometry != DEFAULT_GEOM: 
+            if self.geometry.equals_exact(GEOSGeometry(DEFAULT_GEOM), tolerance=0.005): #because of decimals == comparing not true
+                self.geometry = calc_geometry_from_wgs(self.lat, self.lon)                
+            else: #self.geometry != DEFAULT_GEOM
                 pnt = calc_lat_lon_from_geometry(self.geometry)
                 self.lat = pnt['lat']
-                self.lon = pnt['lon']
-            else: 
-                self.geometry = calc_geometry_from_wgs(self.lat, self.lon)                
+                self.lon = pnt['lon']            
 
         return super().save(*args, **kwargs) 
 
