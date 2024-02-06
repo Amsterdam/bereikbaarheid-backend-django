@@ -2,6 +2,7 @@ import mozilla_django_oidc.auth
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.models import Group
 
 
 def oidc_login(request, **kwargs):
@@ -32,11 +33,23 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
         print('claims: ', claims)
 
         with transaction.atomic():
-            if 'M.van.der.Oord@amsterdam.nl' in claims['email']:
-                user.groups.clear()
-                user.is_staff = True
-                user.is_superuser = True
-                user.save()
+            # standard no permissions 
+            user.groups.clear()
+            user.is_staff = True
+            user.is_superuser = False
+
+            for role in claims['roles']:
+                match role[17:]: #match without environment-app_name-
+                    case 'app-admin-bereikbaarheid' | 'app-admin-touringcar':
+                        django_group_name = role[27:]
+                        group = Group.objects.get(name= django_group_name) 
+                        user.groups.add(group)
+                        user.is_staff = True 
+                    case 'application-admin2':
+                        user.is_staff = True
+                        user.is_superuser = True
+
+            user.save()
 
     def authenticate(self, request, **kwargs):
         user = super().authenticate(request, **kwargs)
@@ -55,5 +68,6 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
 
         # Add 'groups' from payload 
         user_response['groups'] = payload['groups']
+        user_response['roles'] = payload['roles']
 
         return user_response
