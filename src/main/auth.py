@@ -1,8 +1,8 @@
 import mozilla_django_oidc.auth
+from django.contrib.auth.models import Group
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth.models import Group
 
 
 def oidc_login(request, **kwargs):
@@ -33,7 +33,7 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
         print('claims: ', claims)
 
         with transaction.atomic():
-            # standard no permissions 
+            # standard zero permissions shows only home-admin-page with mention: You don’t have permission to view or edit anything.
             user.groups.clear()
             user.is_staff = True
             user.is_superuser = False
@@ -44,9 +44,7 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
                         django_group_name = role[27:]
                         group = Group.objects.get(name= django_group_name) 
                         user.groups.add(group)
-                        user.is_staff = True 
-                    case 'application-admin2':
-                        user.is_staff = True
+                    case 'application-admin':
                         user.is_superuser = True
 
             user.save()
@@ -66,8 +64,7 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
 
         user_response = super().get_userinfo(access_token, id_token, payload)
 
-        # Add 'groups' from payload 
-        user_response['groups'] = payload['groups']
+        # Add 'roles', 'groups' etc from payload 
         user_response['roles'] = payload['roles']
 
         return user_response
