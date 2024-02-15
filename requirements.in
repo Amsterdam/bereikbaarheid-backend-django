@@ -9,3 +9,5 @@ sentry-sdk
 Pillow
 django-rest-framework
 djangorestframework-gis
+requests
+pyproj
