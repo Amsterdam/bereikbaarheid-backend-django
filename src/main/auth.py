@@ -12,6 +12,11 @@ def oidc_login(request, **kwargs):
 
 
 class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBackend):
+    def verify_claims(self, claims):
+        verified = super(OIDCAuthenticationBackend, self).verify_claims(claims)
+        has_roles = claims.get('roles')
+        return verified and has_roles
+
     def create_user(self, claims):
         user = super(OIDCAuthenticationBackend, self).create_user(claims)
         return self.update_user(user, claims)
@@ -63,6 +68,7 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
         user_response = super().get_userinfo(access_token, id_token, payload)
 
         # Add 'roles', 'groups' etc from payload 
-        user_response['roles'] = payload['roles']
+        if payload.get('roles'):
+            user_response['roles'] = payload['roles']
 
         return user_response
