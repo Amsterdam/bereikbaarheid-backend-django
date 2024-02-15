@@ -129,7 +129,7 @@ MEDIA_URL = "/media/"
 # Django-storages for Django > 4.2
 STORAGES = {
         "default": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
         },
         "staticfiles": {
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
