@@ -1,9 +1,8 @@
-import requests
-from urllib.parse import urljoin
 from typing import Dict, List, Optional
+from urllib.parse import urljoin
 
+import requests
 from pyproj import Transformer
-
 
 API_URL = "https://api.data.amsterdam.nl/v1/touringcars/"
 
@@ -54,7 +53,6 @@ def fetch_data() -> List[_Stop]:
         data = [] if data is None else data
 
         response = requests.get(url).json()
-        print(response["_links"].keys())
         data = data + response["_embedded"][data_type]
 
         if "next" in response["_links"].keys():

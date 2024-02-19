@@ -43,6 +43,6 @@ class CsvView(APIView):
             writer = csv.writer(response)
             for entry in fetch_data():
                 writer.writerow(entry.to_row())
-        except err:
+        except Exception as err:
             response = JsonResponse(status=400, data={"error": str(err)})
         return response
