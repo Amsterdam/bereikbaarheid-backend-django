@@ -6,7 +6,7 @@
 #
 asgiref==3.7.2
     # via django
-certifi==2023.11.17
+certifi==2024.2.2
     # via sentry-sdk
 defusedxml==0.7.1
     # via odfpy
@@ -18,7 +18,7 @@ django==4.1.13
     #   django-import-export
     #   django-leaflet
     #   djangorestframework
-django-import-export==3.3.6
+django-import-export==3.3.7
     # via -r requirements.in
 django-leaflet==0.29.0
     # via -r requirements.in
@@ -36,7 +36,7 @@ markuppy==1.14
     # via tablib
 marshmallow==3.20.2
     # via -r requirements.in
-numpy==1.26.3
+numpy==1.26.4
     # via pandas
 odfpy==1.4.1
     # via tablib
@@ -52,14 +52,14 @@ psycopg2-binary==2.9.9
     # via -r requirements.in
 python-dateutil==2.8.2
     # via pandas
-pytz==2023.4
+pytz==2024.1
     # via
     #   -r requirements.in
     #   djangorestframework
     #   pandas
 pyyaml==6.0.1
     # via tablib
-sentry-sdk==1.39.2
+sentry-sdk==1.40.4
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
@@ -71,9 +71,9 @@ tablib[html,ods,xls,xlsx,yaml]==3.5.0
     #   tablib
 typing-extensions==4.9.0
     # via asgiref
-tzdata==2023.4
+tzdata==2024.1
     # via pandas
-urllib3==2.1.0
+urllib3==2.2.0
     # via sentry-sdk
 xlrd==2.0.1
     # via tablib
