@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Dict, List, Optional
 from urllib.parse import urljoin
 
@@ -6,7 +7,7 @@ from pyproj import Transformer
 
 API_URL = "https://api.data.amsterdam.nl/v1/touringcars/"
 
-class _Stop:
+class _Stop():
     transformer = Transformer.from_crs("EPSG:28992", "EPSG:4326", always_xy=True)
 
     latitude: float
@@ -14,7 +15,7 @@ class _Stop:
     text: str
     stop_type: str
 
-    def __init__(self, entry) -> None:
+    def __init__(self, entry: Dict) -> None:
         rdw_coordinates = entry["geometry"]["coordinates"]
         wgs_coordinates = self.transformer.transform(*rdw_coordinates)
         self.latitude = wgs_coordinates[0]
@@ -22,8 +23,9 @@ class _Stop:
         self._omschrijving = entry["omschrijving"]
     
     @property
+    @abstractmethod
     def text(self) -> str:
-        return self._omschrijving
+        ...
     
     def to_row(self) -> List[str]:
         return [
