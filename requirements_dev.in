@@ -1,4 +1,4 @@
-pytest<8  # Pytest 8 geeft rare error dat hij in een root folder permissies mist
+pytest<8  # 8 breaks pytest-django with error on /root/__init__.py
 pytest-cov
 pytest-django
 bakery
