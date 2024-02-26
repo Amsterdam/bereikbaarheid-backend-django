@@ -1,13 +1,32 @@
-Django<4.2  # Django 4.2 does not support Postgres 11 anymore
+# Define all requirements, only pin when necessary (and if so, add a comment explaining why).
+# See # https://git.datapunt.amsterdam.nl/Datapunt/python-best-practices/blob/master/dependency_management/
+
 psycopg2-binary
 marshmallow
 pytz
-django-import-export>= 3.1.0
-django-leaflet
 pandas
 sentry-sdk
 Pillow
-django-rest-framework
-djangorestframework-gis
 requests
 pyproj
+
+# Django
+Django
+django-import-export>= 3.1.0
+django-leaflet
+mozilla-django-oidc
+django-storages[azure]
+django-rest-framework
+djangorestframework-gis
+
+# Azure
+azure-cli
+azure-core
+azure-identity
+azure-keyvault
+azure-keyvault-secrets
+opencensus-ext-django
+opencensus-ext-azure
+opencensus-ext-postgresql
+opencensus-ext-logging
+opencensus-ext-requests

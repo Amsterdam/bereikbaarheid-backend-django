@@ -13,7 +13,6 @@ from .views import (
 )
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
     path("v1/traffic-signs/", TrafficSignsView.as_view()),
     path("v1/permits/", PermitsView.as_view()),
     path("v1/road-obstructions/", ObstructionsView.as_view()),

@@ -12,11 +12,17 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 
 import os
+import sys
 from pathlib import Path
-from urllib.parse import urljoin
 
 import sentry_sdk
+from azure.identity import WorkloadIdentityCredential
+from django.http.request import urljoin
 from sentry_sdk.integrations.django import DjangoIntegration
+
+from .azure_settings import Azure
+
+azure = Azure()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,23 +48,32 @@ CSRF_COOKIE_SECURE = _setting
 SESSION_COOKIE_SECURE = _setting
 SECURE_SSL_REDIRECT = _setting
 
+
+def make_url_path(url_path):
+    """
+    url paths should have trailing slash, unless its for the root
+    """
+    return (url_path.strip().strip("/") + "/").lstrip("/")
+
+
+API_PATH = make_url_path(os.getenv("API_PATH", ""))
+
+ADMIN_ENABLED = os.getenv("ADMIN_ENABLED", "false").lower() == "true"
+ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
+
+
 # Application definition
-
-
-LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
-INSTALLED_APPS = [
-    "django.contrib.admin",
+DJANGO_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
-    "import_export",
-    "leaflet",
-    "rest_framework",
-    'rest_framework_gis',
-] + LOCAL_APPS
+]
+THIRD_PARTY_APPS = ["import_export", "leaflet", "rest_framework", "rest_framework_gis", "storages"]
+LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -70,6 +85,34 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "main.auth.OIDCAuthenticationBackend",
+]
+
+# Only enabled the plugin if admin is enabled
+if ADMIN_ENABLED:
+    INSTALLED_APPS += ("django.contrib.admin",)
+    THIRD_PARTY_APPS += ("mozilla_django_oidc",)
+    MIDDLEWARE += ("mozilla_django_oidc.middleware.SessionRefresh",)
+
+
+## OpenId Connect settings ##
+LOGIN_URL = "oidc_authentication_init"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL_FAILURE = "/static/403.html"
+
+OIDC_BASE_URL = os.getenv("OIDC_BASE_URL")
+OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_RP_CLIENT_SECRET")
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_BASE_URL}/oauth2/v2.0/authorize"
+OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_BASE_URL}/oauth2/v2.0/token"
+OIDC_OP_USER_ENDPOINT = "https://graph.microsoft.com/oidc/userinfo"
+OIDC_OP_JWKS_ENDPOINT = f"{OIDC_BASE_URL}/discovery/v2.0/keys"
+OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_BASE_URL}/oauth2/v2.0/logout"
+OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"prompt": "select_account"}
+
 ROOT_URLCONF = "main.urls"
 BASE_URL = os.getenv("BASE_URL", "")
 FORCE_SCRIPT_NAME = BASE_URL
@@ -78,15 +121,40 @@ FORCE_SCRIPT_NAME = BASE_URL
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = urljoin(f"{BASE_URL}/", "static/")
-STATIC_ROOT = "static"
+STATIC_ROOT = "/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media").replace("\\", "/")
 MEDIA_URL = "/media/"
 
+# Django-storages for Django > 4.2
+STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+
+# Azure Storageaccount settings
+if os.getenv("AZURE_FEDERATED_TOKEN_FILE"):
+    credential = WorkloadIdentityCredential()
+    STORAGE_AZURE = {
+        "default": {
+            "BACKEND": "storages.backends.azure_storage.AzureStorage",
+            "OPTIONS": {
+                "token_credential": credential,
+                "account_name": os.getenv("AZURE_STORAGE_ACCOUNT_NAME"),
+                "azure_container": "touringcar-images",
+            },
+        },
+    }
+    STORAGES |= STORAGE_AZURE #update storages with storage_azure
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -106,37 +174,32 @@ WSGI_APPLICATION = "main.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 
+# Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
+DATABASE_HOST = os.getenv("DATABASE_HOST", "database")
+DATABASE_NAME = os.getenv("DATABASE_NAME", "bereikbaarheid")
+DATABASE_USER = os.getenv("DATABASE_USER", "bereikbaarheid")
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "insecure")
+DATABASE_PORT = os.getenv("DATABASE_PORT", "5432")
+DATABASE_OPTIONS = {"sslmode": "allow", "connect_timeout": 5}
+
+if "azure.com" in DATABASE_HOST:
+    DATABASE_PASSWORD = azure.auth.db_password
+    DATABASE_OPTIONS["sslmode"] = "require"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": os.getenv("DATABASE_NAME", "bereikbaarheid"),
-        "USER": os.getenv("DATABASE_USER", "bereikbaarheid"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD", "insecure"),
-        "HOST": os.getenv("DATABASE_HOST", "database"),
-        "CONN_MAX_AGE": 20,
-        "PORT": os.getenv("DATABASE_PORT", 5432),
+        "NAME": DATABASE_NAME,
+        "USER": DATABASE_USER,
+        "PASSWORD": DATABASE_PASSWORD,
+        "HOST": DATABASE_HOST,
+        "CONN_MAX_AGE": 60 * 5,
+        "PORT": DATABASE_PORT,
+        "OPTIONS": DATABASE_OPTIONS,
     },
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -182,23 +245,46 @@ LEAFLET_CONFIG = {
     "RESET_VIEW": False,
 }
 
-
+# Django Logging settings
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "root": {
+        "level": "INFO",
+        "handlers": ["console"],
+    },
+    "formatters": {
+        "console": {"format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"},
+    },
     "handlers": {
         "console": {
+            "level": "INFO",
             "class": "logging.StreamHandler",
+            "formatter": "console",
         },
     },
-    "root": {
-        "handlers": ["console"],
-        "level": "WARNING",
-    },
     "loggers": {
+        "bereikbaarheid": {
+            "level": "WARNING",
+            "handlers": ["console"],
+            "propagate": True,
+        },
+        "main": {
+            "level": "WARNING",
+            "handlers": ["console"],
+            "propagate": True,
+        },
         "django": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "level": os.getenv(
+                "DJANGO_LOG_LEVEL", "ERROR" if "pytest" in sys.argv[0] else "INFO"
+            ).upper(),
+            "propagate": False,
+        },
+        # Log all unhandled exceptions
+        "django.request": {
+            "level": "ERROR",
+            "handlers": ["console"],
             "propagate": False,
         },
     },
@@ -211,3 +297,25 @@ if SENTRY_DSN:
         integrations=[DjangoIntegration()],
         ignore_errors=["ExpiredSignatureError"],
     )
+
+
+APPLICATIONINSIGHTS_CONNECTION_STRING = os.getenv(
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"
+)
+
+if APPLICATIONINSIGHTS_CONNECTION_STRING:
+    OPENCENSUS = {
+        "TRACE": {
+            "SAMPLER": "opencensus.trace.samplers.ProbabilitySampler(rate=1)",
+            "EXPORTER": f"opencensus.ext.azure.trace_exporter.AzureExporter(connection_string='{APPLICATIONINSIGHTS_CONNECTION_STRING}')",
+        }
+    }
+    LOGGING["handlers"]["azure"] = {
+        "level": "DEBUG",
+        "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
+        "connection_string": APPLICATIONINSIGHTS_CONNECTION_STRING,
+    }
+    LOGGING["loggers"]["django"]["handlers"].append("azure")
+    LOGGING["loggers"]["django.request"]["handlers"].append("azure")
+    LOGGING["loggers"]["main"]["handlers"].append("azure")
+    LOGGING["loggers"]["bereikbaarheid"]["handlers"].append("azure")

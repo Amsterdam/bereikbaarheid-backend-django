@@ -11,5 +11,3 @@ Om lokaal te kunnen ontwikkelen wordt gebruik gemaakt van Docker-compose.
 - Make a docker-compose.override.yml if needed.
 - Run `make dev` to start the development container locally.
 - The project is now available at http://localhost:8000
-
-

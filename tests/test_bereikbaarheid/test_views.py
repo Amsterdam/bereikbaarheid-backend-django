@@ -13,7 +13,7 @@ def bollard():
 
 class TestViews:
     def setup_method(self):
-        self.url = "/v1/"
+        self.url = "/api/v1/"
 
     @pytest.mark.parametrize(
         "test_input, expected",
