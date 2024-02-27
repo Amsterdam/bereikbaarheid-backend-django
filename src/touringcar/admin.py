@@ -35,6 +35,9 @@ class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAd
     ]
     list_filter = ["startdate", "enddate", "is_live", "important", "updated_at"]
     resource_classes = [BerichtResource]
+    ordering = ("-enddate",)
+    search_help_text = "zoek naar trefwoord in titel"
+    search_fields = ["title"]
 
     # ordering on admin page touringcar
     fieldsets = [
