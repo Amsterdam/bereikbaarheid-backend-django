@@ -7,8 +7,8 @@ pytz
 pandas
 sentry-sdk
 Pillow
-django-rest-framework
-djangorestframework-gis
+requests
+pyproj
 
 # Django
 Django
@@ -16,6 +16,8 @@ django-import-export>= 3.1.0
 django-leaflet
 mozilla-django-oidc
 django-storages[azure]
+django-rest-framework
+djangorestframework-gis
 
 # Azure
 azure-cli

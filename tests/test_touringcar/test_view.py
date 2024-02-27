@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from unittest import mock
 
 import geojson
 import pytest
@@ -7,6 +8,7 @@ import pytz
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
+from touringcar.download import Halte, Parkeerplaats
 from touringcar.models import Bericht
 from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
 
@@ -69,6 +71,33 @@ def test_get_bericht_noparam(client, bericht_today):
     bericht_today.save()
     response = client.get(api_path + "touringcar/berichten")
     result = geojson.loads(response.content.decode("utf-8"))
-    assert result["features"][0]["properties"][
-        "startdate"
-    ] == bericht_today.startdate.strftime("%Y-%m-%d")
+    assert result["features"][0]["properties"]["startdate"] == bericht_today.startdate.strftime("%Y-%m-%d")
+
+def test_serves_csv(client):
+    with mock.patch("touringcar.view.fetch_data") as fetch_data:
+        fetch_data.return_value = [
+            Halte({
+                "omschrijving": "H7: Spui",
+                "geometry": {
+                    "coordinates": [
+                        121180.61543053293,
+                        487116.3467369651
+                    ]
+                }
+            }),
+            Parkeerplaats({
+                "omschrijving": "P1: P+R Zeeburg",
+                "geometry": {
+                    "coordinates": [
+                        126035.35254910096,
+                        487121.07517851336
+                    ]
+                }
+            }),
+        ]
+        response = client.get("/api/v1/touringcar/downloads/csv")
+    
+    assert response.status_code == 200
+    assert response.headers["Content-Disposition"] == "attachment; filename=\"touringcar.csv\""
+    assert response.headers["Content-Type"] == "text/csv"
+    assert response.content == b'4.8906110012279225,52.37088300414084,H7,halte\r\n4.961894001299134,52.37120300414078,P+R Zeeburg,parkeerplaats\r\n'
