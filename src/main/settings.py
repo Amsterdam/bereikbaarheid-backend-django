@@ -41,7 +41,7 @@ ALLOWED_HOSTS = ["*"]
 X_FRAME_OPTIONS = "ALLOW-FROM *"
 INTERNAL_IPS = ("127.0.0.1", "0.0.0.0")
 
-_setting = bool(os.getenv("DEBUG", False))
+_setting = DEBUG
 # flip in development = True, production = False
 _setting ^= _setting
 CSRF_COOKIE_SECURE = _setting
@@ -100,7 +100,7 @@ if ADMIN_ENABLED:
 LOGIN_URL = "oidc_authentication_init"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-LOGIN_REDIRECT_URL_FAILURE = "/static/403.html"
+LOGIN_REDIRECT_URL_FAILURE = "/403"
 
 OIDC_BASE_URL = os.getenv("OIDC_BASE_URL")
 OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")

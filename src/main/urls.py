@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from main.view_403 import permissiondenied403
 
 from . import auth
 
@@ -10,6 +11,7 @@ urlpatterns += [
     path(settings.API_PATH, include("bereikbaarheid.urls")),
     path(settings.API_PATH, include("touringcar.urls")),
     path("status/", include("health.urls")),
+    path("403/", permissiondenied403),
 ]
 
 if settings.ADMIN_ENABLED:
