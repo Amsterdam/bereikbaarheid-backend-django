@@ -21,7 +21,6 @@ x-app: &app
   depends_on:
     - database
 
-
 services:
   database:
     ports:
@@ -31,8 +30,6 @@ services:
       POSTGRES_USER: bereikbaarheid
       POSTGRES_PASSWORD: insecure
     image: kartoza/postgis:15-3.4
-    networks:
-      - backend
 
   app:
     <<: *app
@@ -52,8 +49,6 @@ services:
     entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       python manage.py runserver 0.0.0.0:8000
-    networks:
-      - backend
 
   test:
     <<: *app
@@ -68,10 +63,6 @@ services:
     entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       pytest
-    networks:
-      - backend
 
-networks:
-  backend:
-    name: amsterdam-bereikbaarheid
+
 

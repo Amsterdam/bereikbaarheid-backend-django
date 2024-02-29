@@ -41,7 +41,7 @@ ALLOWED_HOSTS = ["*"]
 X_FRAME_OPTIONS = "ALLOW-FROM *"
 INTERNAL_IPS = ("127.0.0.1", "0.0.0.0")
 
-_setting = bool(os.getenv("DEBUG", False))
+_setting = DEBUG
 # flip in development = True, production = False
 _setting ^= _setting
 CSRF_COOKIE_SECURE = _setting
@@ -96,11 +96,13 @@ if ADMIN_ENABLED:
     MIDDLEWARE += ("mozilla_django_oidc.middleware.SessionRefresh",)
 
 
+BASE_URL = os.getenv("BASE_URL", "")
+
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-LOGIN_REDIRECT_URL_FAILURE = "/static/403.html"
+LOGIN_REDIRECT_URL_FAILURE = urljoin(f"{BASE_URL}/", "403/")
 
 OIDC_BASE_URL = os.getenv("OIDC_BASE_URL")
 OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")
@@ -114,7 +116,6 @@ OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"prompt": "select_account"}
 
 ROOT_URLCONF = "main.urls"
-BASE_URL = os.getenv("BASE_URL", "")
 FORCE_SCRIPT_NAME = BASE_URL
 
 # Static files (CSS, JavaScript, Images)
