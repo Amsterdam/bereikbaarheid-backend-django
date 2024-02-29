@@ -42,8 +42,8 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
             user.is_superuser = False
 
             for role in claims['roles']:
-                match role[17:]: #match without environment-app_name-
-                    case 'app-admin-bereikbaarheid' | 'app-admin-touringcar':
+                match role[17:]: #match without "environment-app_name-"
+                    case 'app-admin-bereikbaarheid' | 'app-admin-tourbus':
                         django_group_name = role[27:]
                         group = Group.objects.get(name= django_group_name) 
                         user.groups.add(group)
