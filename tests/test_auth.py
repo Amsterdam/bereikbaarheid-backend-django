@@ -11,7 +11,7 @@ def django_group_bereikbaarheid():
 
 @pytest.fixture
 def django_group_touringcar():
-    return baker.make(Group, name= 'touringcar')
+    return baker.make(Group, name= 'tourbus')
 
 class Test_auth:
 
@@ -24,11 +24,11 @@ class Test_auth:
             (2, {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-bereikbaarheid']},
                 "<QuerySet ['bereikbaarheid']>",
              ),
-            (3,  {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-touringcar']},
-                "<QuerySet ['touringcar']>",
+            (3,  {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-tourbus']},
+                "<QuerySet ['tourbus']>",
              ),
-            (4, {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-bereikbaarheid','o-bereikbaarheid-app-admin-touringcar']},
-                "<QuerySet ['bereikbaarheid', 'touringcar']>",
+            (4, {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-bereikbaarheid','o-bereikbaarheid-app-admin-tourbus']},
+                "<QuerySet ['bereikbaarheid', 'tourbus']>",
              ),
         ],
     )
