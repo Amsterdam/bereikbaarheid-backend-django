@@ -18,6 +18,7 @@ mozilla-django-oidc
 django-storages[azure]
 django-rest-framework
 djangorestframework-gis
+django-cors-headers
 
 # Azure
 azure-cli
