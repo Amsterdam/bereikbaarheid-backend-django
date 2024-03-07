@@ -19,6 +19,7 @@ import sentry_sdk
 from azure.identity import WorkloadIdentityCredential
 from django.http.request import urljoin
 from sentry_sdk.integrations.django import DjangoIntegration
+from corsheaders.defaults import default_headers
 
 from .azure_settings import Azure
 
@@ -323,21 +324,20 @@ if APPLICATIONINSIGHTS_CONNECTION_STRING:
     LOGGING["loggers"]["bereikbaarheid"]["handlers"].append("azure")
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+# Cors settings for local frontend development
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", False)
 
 CORS_ALLOW_METHODS = [
     'GET',
-    'POST',
+]
+
+CORS_CUSTOM_HEADERS = [
+    'accept-encoding',
+    'dnt',
+    'origin',
 ]
 
 CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
+    *default_headers,
+    #CORS_CUSTOM_HEADERS
 ]
