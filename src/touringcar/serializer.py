@@ -60,7 +60,7 @@ class BerichtSerializer(GeoFeatureModelSerializer):
         geo_field = "geom_wgs"
 
         fields = [
-                "nl", "en", "fr", "de", "es",
+                "nl", "en", "fr", "de", "es", "id",
                 "startdate", "enddate", "category", 
                 "link", "image_url", "important", "is_live",
          ]
