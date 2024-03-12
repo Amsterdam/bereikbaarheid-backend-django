@@ -15,6 +15,11 @@ class BerichtResource(ModelResource):
         # mapping of the model.py columnnames
         dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
 
+        # trim leading and trailing spaces
+        title_clean = [ x.strip() for x in dataset["title"]]
+        del dataset["title"]
+        dataset.append_col( title_clean, header="title")
+
     class Meta:
         model = Bericht
         skip_unchanged = True
