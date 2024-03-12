@@ -6,8 +6,8 @@ from touringcar.models import Bericht
 class BerichtResource(ModelResource):
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         col_mapping = {
-            "location_lat": "lan",
-            "location_lon": "lon",
+            "location_lat": "lat",
+            "location_lng": "lon",
         }
 
         # all lower
