@@ -51,7 +51,8 @@ class BerichtSerializer(GeoFeatureModelSerializer):
 
     def get_geom_wgs(self, obj):
         wgs = calc_lat_lon_from_geometry(obj.geometry)
-        return Point(wgs['lat'], wgs['lon'])
+        # to be consistent with other-endpoints: serve lon,lat not lat,lon
+        return Point(wgs['lon'], wgs['lat'])
 
 
     class Meta:
