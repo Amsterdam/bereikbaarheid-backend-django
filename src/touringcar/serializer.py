@@ -1,11 +1,15 @@
 from datetime import datetime
 
 import pytz
+from django.contrib.gis.geos import Point
 from marshmallow import Schema, fields
 from rest_framework import serializers
-from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from rest_framework_gis.serializers import (
+    GeoFeatureModelSerializer,
+    GeometrySerializerMethodField,
+)
 
-from touringcar.models import Bericht
+from touringcar.models import Bericht, calc_lat_lon_from_geometry
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 
@@ -42,12 +46,21 @@ class BerichtSerializer(GeoFeatureModelSerializer):
     def get_es(self, instance):
         return self.make_set(instance,"_es")
 
+     # a field which contains a geometry value and can be used as geo_field
+    geom_wgs = GeometrySerializerMethodField()
+
+    def get_geom_wgs(self, obj):
+        wgs = calc_lat_lon_from_geometry(obj.geometry)
+        # to be consistent with other-endpoints: serve lon,lat not lat,lon
+        return Point(wgs['lon'], wgs['lat'])
+
+
     class Meta:
         model = Bericht
-        geo_field = "geometry"
+        geo_field = "geom_wgs"
 
         fields = [
-                "nl", "en", "fr", "de", "es",
+                "nl", "en", "fr", "de", "es", "id",
                 "startdate", "enddate", "category", 
                 "link", "image_url", "important", "is_live",
          ]
