@@ -90,8 +90,8 @@ class TestDownload:
     def test_stop_converts_location_data_rdw_to_wgs(self):
         stop = _Stop(self.api_responses[0]["_embedded"]["haltes"][0])
 
-        assert stop.latitude == 4.8906110012279225
-        assert stop.longitude == 52.37088300414084
+        assert stop.latitude == 52.37088300414084
+        assert stop.longitude == 4.8906110012279225
     
     def test_halte_formats_text(self):
         halte = Halte(self.api_responses[0]["_embedded"]["haltes"][0])
