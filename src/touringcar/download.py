@@ -18,8 +18,8 @@ class _Stop():
     def __init__(self, entry: Dict) -> None:
         rdw_coordinates = entry["geometry"]["coordinates"]
         wgs_coordinates = self.transformer.transform(*rdw_coordinates)
-        self.latitude = wgs_coordinates[0]
-        self.longitude = wgs_coordinates[1]
+        self.latitude = wgs_coordinates[1]
+        self.longitude = wgs_coordinates[0]
         self._omschrijving = entry["omschrijving"]
     
     @property
