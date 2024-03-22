@@ -16,7 +16,7 @@ tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 
 class BerichtSerializer(GeoFeatureModelSerializer):
 
-    image_url = serializers.ImageField(use_url=True, required=False, allow_null=True)
+    image_url = serializers.ImageField(use_url=False)
     nl = serializers.SerializerMethodField()
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
