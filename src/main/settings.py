@@ -71,11 +71,12 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
 ]
-THIRD_PARTY_APPS = ["import_export", "leaflet", "rest_framework", "rest_framework_gis", "storages"]
+THIRD_PARTY_APPS = ["corsheaders", "import_export", "leaflet", "rest_framework", "rest_framework_gis", "storages"]
 LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -97,6 +98,8 @@ if ADMIN_ENABLED:
 
 
 BASE_URL = os.getenv("BASE_URL", "")
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
