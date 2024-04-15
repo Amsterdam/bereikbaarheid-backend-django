@@ -1,0 +1,36 @@
+# By default, Compose reads two files, a docker-compose.yml and an
+# optional docker-compose.override.yml file. By convention,
+# the docker-compose.yml contains your base configuration. The
+# override file, as its name implies, can contain configuration
+# overrides for existing services or entirely new services.
+# See https://docs.docker.com/compose/extends/
+#
+# Usage: copy this file, name it ".docker-compose.override.yml" and
+# set your own values.
+
+services:
+  django-dev:
+    depends_on:
+      - database
+    build:
+      context: .
+      target: dev
+    environment:
+      SECRET_KEY: "insecure"
+      DEBUG: "true"
+      OIDC_BASE_URL: "https://login.microsoftonline.com/72fca1b1-2c2e-4376-a445-294d80196804"
+      OIDC_RP_CLIENT_ID: null
+      OIDC_RP_CLIENT_SECRET: null
+      APPLICATIONINSIGHTS_CONNECTION_STRING: null
+      ADMIN_ENABLED: true
+      ADMIN_PATH: /admin
+      API_PATH: /api
+    entrypoint: /deploy/wait-for-it.sh database:5432 --
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./src:/src
+      - ./tests:/tests
+      - ./deploy:/deploy
+      - ./pyproject.toml:/pyproject.toml
+    ports:
+      - "8000:8000"

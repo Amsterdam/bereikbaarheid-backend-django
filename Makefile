@@ -2,15 +2,17 @@
 # https://git.datapunt.amsterdam.nl/Datapunt/python-best-practices/blob/master/dependency_management/
 #
 # VERSION = 2020.01.29
-.PHONY: help pip-tools install requirements update test init
 
 UID:=$(shell id --user)
 GID:=$(shell id --group)
 
 dc = docker compose
-run = $(dc) run --rm -u ${UID}:${GID}
-manage = $(run) dev python manage.py
+dc_dev = $(dc) -f compose.yml -f compose.dev.yml
+run = run --rm -u ${UID}:${GID}
+manage = $(dc_dev) $(run) django-dev python manage.py
 
+all: help pip-tools install requirements upgrade build push push_semver clean app dev test loadtest test_data pdb bash shell dbshell migrate migrations trivy lintfix lint diff
+.PHONY: all
 
 help:                               ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
@@ -49,24 +51,26 @@ app:
 # the name option is explicitly set, so the back- and frontend can communicate
 # with eachother while on the same docker network. The frontend docker-compose
 # file contains a reference to the set name
-dev: migrate
-	$(run) --name bereikbaarheid-backend-django-dev --service-ports dev
+dev:
+	$(dc_dev) build
+	$(dc_dev) run --rm django-dev python manage.py migrate
+	$(dc_dev) up django-dev
 
-test: lint							## Execute tests
-	$(run) test pytest $(ARGS)
+test: lint                          ## Execute tests
+	$(dc) $(run) test pytest $(ARGS)
 
 loadtest: migrate
 	$(manage) make_partitions $(ARGS)
-	$(run) locust $(ARGS)
+	$(dc) $(run) locust $(ARGS)
 
 test_data:
 	$(manage) generate_test_data --num_days 25 --num_rows_per_day 2000
 
 pdb:
-	$(run) dev pytest --pdb $(ARGS)
+	$(dc_dev) $(run) django-dev pytest --pdb $(ARGS)
 
 bash:
-	$(run) dev bash
+	$(dc_dev) $(run) django-dev bash
 
 shell:
 	$(manage) shell_plus
@@ -80,20 +84,19 @@ migrate:
 migrations:
 	$(manage) makemigrations $(ARGS)
 
-trivy: 	    						## Detect image vulnerabilities
+trivy:                              ## Detect image vulnerabilities
 	$(dc) build --no-cache app
 	trivy image --ignore-unfixed docker-registry.secure.amsterdam.nl/datapunt/bereikbaarheid-backend
 
 lintfix:                            ## Execute lint fixes
-	$(run) test black /src/$(APP) /tests/$(APP)
-	$(run) test autoflake /src --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
-	$(run) test isort /src/$(APP) /tests/$(APP)
+	$(dc) $(run) test black /src/$(APP) /tests/$(APP)
+	$(dc) $(run) test autoflake /src --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
+	$(dc) $(run) test isort /src/$(APP) /tests/$(APP)
 
 
 lint:                               ## Execute lint checks
-	$(run) test autoflake /src --check --recursive --quiet
-	$(run) test isort --diff --check /src/$(APP) /tests/$(APP)
+	$(dc) $(run) test autoflake /src --check --recursive --quiet
+	$(dc) $(run) test isort --diff --check /src/$(APP) /tests/$(APP)
 
 diff:
 	@python3 ./deploy/diff.py
-
