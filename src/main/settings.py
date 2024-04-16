@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-
+import json
 import os
 import sys
 from pathlib import Path
@@ -18,6 +18,7 @@ from pathlib import Path
 import sentry_sdk
 from azure.identity import WorkloadIdentityCredential
 from django.http.request import urljoin
+from opencensus.trace import config_integration
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .azure_settings import Azure
@@ -247,6 +248,10 @@ LEAFLET_CONFIG = {
 }
 
 # Django Logging settings
+base_log_fmt = {"time": "%(asctime)s", "name": "%(name)s", "level": "%(levelname)s"}
+log_fmt = base_log_fmt.copy()
+log_fmt["message"] = "%(message)s"
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -255,25 +260,30 @@ LOGGING = {
         "handlers": ["console"],
     },
     "formatters": {
-        "console": {"format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"},
+        "json": {"format": json.dumps(log_fmt)},
     },
     "handlers": {
         "console": {
             "level": "INFO",
             "class": "logging.StreamHandler",
-            "formatter": "console",
+            "formatter": "json",
         },
     },
     "loggers": {
         "bereikbaarheid": {
             "level": "WARNING",
             "handlers": ["console"],
-            "propagate": True,
+            "propagate": False,
         },
+        "touringcar": {
+            "level": "WARNING",
+            "handlers": ["console"],
+            "propagate": False,
+        },        
         "main": {
             "level": "WARNING",
             "handlers": ["console"],
-            "propagate": True,
+            "propagate": False,
         },
         "django": {
             "handlers": ["console"],
@@ -300,23 +310,25 @@ if SENTRY_DSN:
     )
 
 
-APPLICATIONINSIGHTS_CONNECTION_STRING = os.getenv(
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"
-)
+if APPLICATIONINSIGHTS_CONNECTION_STRING:= os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+    MIDDLEWARE.append("opencensus.ext.django.middleware.OpencensusMiddleware")
 
-if APPLICATIONINSIGHTS_CONNECTION_STRING:
     OPENCENSUS = {
         "TRACE": {
             "SAMPLER": "opencensus.trace.samplers.ProbabilitySampler(rate=1)",
-            "EXPORTER": f"opencensus.ext.azure.trace_exporter.AzureExporter(connection_string='{APPLICATIONINSIGHTS_CONNECTION_STRING}')",
+            "EXPORTER": f'''opencensus.ext.azure.trace_exporter.AzureExporter(
+                connection_string='{APPLICATIONINSIGHTS_CONNECTION_STRING}',
+                service_name='api-bereikbaarheid-backend' )''',
         }
     }
+    config_integration.trace_integrations(["logging"])
     LOGGING["handlers"]["azure"] = {
         "level": "DEBUG",
         "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
         "connection_string": APPLICATIONINSIGHTS_CONNECTION_STRING,
+        "formatter": "json"
     }
-    LOGGING["loggers"]["django"]["handlers"].append("azure")
-    LOGGING["loggers"]["django.request"]["handlers"].append("azure")
-    LOGGING["loggers"]["main"]["handlers"].append("azure")
-    LOGGING["loggers"]["bereikbaarheid"]["handlers"].append("azure")
+    LOGGING["root"]["handlers"].append("azure")
+    for logger_name, logger_details in LOGGING["loggers"].items():
+        LOGGING["loggers"][logger_name]["handlers"].append("azure")
+
