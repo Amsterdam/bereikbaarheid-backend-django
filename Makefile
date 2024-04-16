@@ -48,9 +48,6 @@ clean:                              ## Clean docker stuff
 app:
 	$(dc) up app
 
-# the name option is explicitly set, so the back- and frontend can communicate
-# with eachother while on the same docker network. The frontend docker-compose
-# file contains a reference to the set name
 dev:
 	$(dc_dev) build
 	$(dc_dev) run --rm django-dev python manage.py migrate
