@@ -7,9 +7,8 @@ UID:=$(shell id --user)
 GID:=$(shell id --group)
 
 dc = docker compose
-dc_dev = $(dc) -f compose.yml -f compose.dev.yml
-run = run --rm -u ${UID}:${GID}
-manage = $(dc_dev) $(run) django-dev python manage.py
+run = $(dc) run --rm -u ${UID}:${GID}
+manage = $(run) django-dev python manage.py
 
 all: help pip-tools install requirements upgrade build push push_semver clean app dev test loadtest test_data pdb bash shell dbshell migrate migrations trivy lintfix lint diff
 .PHONY: all
@@ -49,25 +48,25 @@ app:
 	$(dc) up app
 
 dev:
-	$(dc_dev) build
-	$(dc_dev) run --rm django-dev python manage.py migrate
-	$(dc_dev) up django-dev
+	$(dc) build
+	$(dc) run --rm django-dev python manage.py migrate
+	$(dc) up django-dev
 
 test: lint                          ## Execute tests
-	$(dc) $(run) test pytest $(ARGS)
+	$(run) test pytest $(ARGS)
 
 loadtest: migrate
 	$(manage) make_partitions $(ARGS)
-	$(dc) $(run) locust $(ARGS)
+	$(run) locust $(ARGS)
 
 test_data:
 	$(manage) generate_test_data --num_days 25 --num_rows_per_day 2000
 
 pdb:
-	$(dc_dev) $(run) django-dev pytest --pdb $(ARGS)
+	$(run) django-dev pytest --pdb $(ARGS)
 
 bash:
-	$(dc_dev) $(run) django-dev bash
+	$(run) django-dev bash
 
 shell:
 	$(manage) shell_plus
@@ -86,14 +85,14 @@ trivy:                              ## Detect image vulnerabilities
 	trivy image --ignore-unfixed docker-registry.secure.amsterdam.nl/datapunt/bereikbaarheid-backend
 
 lintfix:                            ## Execute lint fixes
-	$(dc) $(run) test black /src/$(APP) /tests/$(APP)
-	$(dc) $(run) test autoflake /src --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
-	$(dc) $(run) test isort /src/$(APP) /tests/$(APP)
+	$(run) test black /src/$(APP) /tests/$(APP)
+	$(run) test autoflake /src --recursive --in-place --remove-unused-variables --remove-all-unused-imports --quiet
+	$(run) test isort /src/$(APP) /tests/$(APP)
 
 
 lint:                               ## Execute lint checks
-	$(dc) $(run) test autoflake /src --check --recursive --quiet
-	$(dc) $(run) test isort --diff --check /src/$(APP) /tests/$(APP)
+	$(run) test autoflake /src --check --recursive --quiet
+	$(run) test isort --diff --check /src/$(APP) /tests/$(APP)
 
 diff:
 	@python3 ./deploy/diff.py
