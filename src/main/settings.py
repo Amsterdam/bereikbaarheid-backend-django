@@ -313,12 +313,16 @@ if SENTRY_DSN:
 if APPLICATIONINSIGHTS_CONNECTION_STRING:= os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     MIDDLEWARE.append("opencensus.ext.django.middleware.OpencensusMiddleware")
 
+    service_prefix = 'api'
+    if ADMIN_ENABLED:
+        service_prefix = 'admin'
+
     OPENCENSUS = {
         "TRACE": {
             "SAMPLER": "opencensus.trace.samplers.ProbabilitySampler(rate=1)",
             "EXPORTER": f'''opencensus.ext.azure.trace_exporter.AzureExporter(
                 connection_string='{APPLICATIONINSIGHTS_CONNECTION_STRING}',
-                service_name='api-bereikbaarheid-backend' )''',
+                service_name='{service_prefix}-bereikbaarheid-backend' )''',
         }
     }
     config_integration.trace_integrations(["logging"])
