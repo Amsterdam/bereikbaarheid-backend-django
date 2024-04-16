@@ -111,7 +111,7 @@ venv.bak/
 .vscode
 
 # Local settings that should never be committed
-docker-compose.override.yml
+docker-compose.override.y*ml
 .pre-commit-config.yaml
 src/media/
 
