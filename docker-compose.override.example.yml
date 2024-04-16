@@ -9,6 +9,14 @@
 # set your own values.
 
 services:
+  database:
+    ports:
+      - "5432:5432" # allows to run database on different port on host
+
+  app:
+    ports:
+      - "8000:8000" # allows to run app on different port on host
+
   django-dev:
     depends_on:
       - database
