@@ -96,10 +96,10 @@ if ADMIN_ENABLED:
     THIRD_PARTY_APPS += ("mozilla_django_oidc",)
     MIDDLEWARE += ("mozilla_django_oidc.middleware.SessionRefresh",)
 
-
 BASE_URL = os.getenv("BASE_URL", "")
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = [ 'GET', ]
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
