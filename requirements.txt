@@ -15,7 +15,9 @@ argcomplete==3.1.6
     #   azure-cli-core
     #   knack
 asgiref==3.8.1
-    # via django
+    # via
+    #   django
+    #   django-cors-headers
 azure-appconfiguration==1.1.1
     # via azure-cli
 azure-batch==14.1.0
@@ -412,12 +414,15 @@ distro==1.9.0
 django==5.0.4
     # via
     #   -r requirements.in
+    #   django-cors-headers
     #   django-import-export
     #   django-leaflet
     #   django-storages
     #   djangorestframework
     #   mozilla-django-oidc
     #   opencensus-ext-django
+django-cors-headers==4.3.1
+    # via -r requirements.in
 django-import-export==3.3.8
     # via -r requirements.in
 django-leaflet==0.29.1
