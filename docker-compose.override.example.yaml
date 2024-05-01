@@ -17,7 +17,7 @@ services:
     ports:
       - "8000:8000" # Allows to run app on different port on host
 
-  backend-dev: # Add "django" prefix to distinguish it from the "frontend-dev" service on the front-end.
+  dev:
     depends_on:
       - database
     build:

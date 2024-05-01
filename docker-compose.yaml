@@ -1,4 +1,4 @@
-name: amsterdam-bereikbaarheid
+name: bereikbaarheid-backend
 
 x-app: &app
   ports:
