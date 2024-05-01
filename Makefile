@@ -8,7 +8,7 @@ GID:=$(shell id --group)
 
 dc = docker compose
 run = $(dc) run --rm -u ${UID}:${GID}
-manage = $(run) django-dev python manage.py
+manage = $(run) backend-dev python manage.py
 
 all: help pip-tools install requirements upgrade build push push_semver clean app dev test loadtest test_data pdb bash shell dbshell migrate migrations trivy lintfix lint diff
 .PHONY: all
@@ -49,8 +49,8 @@ app:
 
 dev:
 	$(dc) build
-	$(dc) run --rm django-dev python manage.py migrate
-	$(dc) up django-dev
+	$(dc) run --rm backend-dev python manage.py migrate
+	$(dc) up backend-dev
 
 test: lint                          ## Execute tests
 	$(run) test pytest $(ARGS)
@@ -63,10 +63,10 @@ test_data:
 	$(manage) generate_test_data --num_days 25 --num_rows_per_day 2000
 
 pdb:
-	$(run) django-dev pytest --pdb $(ARGS)
+	$(run) backend-dev pytest --pdb $(ARGS)
 
 bash:
-	$(run) django-dev bash
+	$(run) backend-dev bash
 
 shell:
 	$(manage) shell_plus

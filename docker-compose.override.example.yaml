@@ -11,14 +11,13 @@
 services:
   database:
     ports:
-      - "5432:5432" # allows to run database on different port on host
+      - "5432:5432" # Allows to run database on different port on host
 
   app:
     ports:
-      - "8000:8000" # allows to run app on different port on host
+      - "8000:8000" # Allows to run app on different port on host
 
-  # Add "django" prefix to distinguish it from the "dev" service on the front-end.
-  django-dev:
+  backend-dev: # Add "django" prefix to distinguish it from the "frontend-dev" service on the front-end.
     depends_on:
       - database
     build:
@@ -42,4 +41,4 @@ services:
       - ./deploy:/deploy
       - ./pyproject.toml:/pyproject.toml
     ports:
-      - "8000:8000"
+      - "4000:8000" # Allows to run app on different port on host
