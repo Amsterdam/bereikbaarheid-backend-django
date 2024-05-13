@@ -5,7 +5,6 @@ psycopg2-binary
 marshmallow
 pytz
 pandas
-sentry-sdk
 Pillow
 requests
 pyproj
