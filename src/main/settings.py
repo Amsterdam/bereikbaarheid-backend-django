@@ -15,11 +15,9 @@ import os
 import sys
 from pathlib import Path
 
-import sentry_sdk
 from azure.identity import WorkloadIdentityCredential
 from django.http.request import urljoin
 from opencensus.trace import config_integration
-from sentry_sdk.integrations.django import DjangoIntegration
 
 from .azure_settings import Azure
 
@@ -303,14 +301,6 @@ LOGGING = {
         },
     },
 }
-
-SENTRY_DSN = os.getenv("SENTRY_DSN")
-if SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        ignore_errors=["ExpiredSignatureError"],
-    )
 
 
 if APPLICATIONINSIGHTS_CONNECTION_STRING:= os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):

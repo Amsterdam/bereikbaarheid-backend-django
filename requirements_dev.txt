@@ -10,15 +10,17 @@ autoflake==2.3.1
     # via -r requirements_dev.in
 bakery==1.0.0
     # via -r requirements_dev.in
-black==24.4.0
+black==24.4.2
     # via -r requirements_dev.in
 click==8.1.7
     # via black
-coverage[toml]==7.4.4
-    # via pytest-cov
-django==5.0.4
+coverage[toml]==7.5.1
+    # via
+    #   coverage
+    #   pytest-cov
+django==5.0.6
     # via model-bakery
-exceptiongroup==1.2.0
+exceptiongroup==1.2.1
     # via pytest
 geojson==3.1.0
     # via -r requirements_dev.in
@@ -26,7 +28,7 @@ iniconfig==2.0.0
     # via pytest
 isort==5.13.2
     # via -r requirements_dev.in
-model-bakery==1.17.0
+model-bakery==1.18.0
     # via -r requirements_dev.in
 mypy-extensions==1.0.0
     # via black
@@ -36,9 +38,9 @@ packaging==24.0
     #   pytest
 pathspec==0.12.1
     # via black
-platformdirs==4.2.0
+platformdirs==4.2.1
     # via black
-pluggy==1.4.0
+pluggy==1.5.0
     # via pytest
 pyflakes==3.2.0
     # via autoflake
