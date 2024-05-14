@@ -398,12 +398,18 @@ cryptography==42.0.7
     #   pyopenssl
 decorator==5.1.1
     # via fabric
+defusedxml==0.7.1
+    # via odfpy
 deprecated==1.2.14
     # via
     #   fabric
     #   pygithub
 diff-match-patch==20230430
     # via django-import-export
+distro==1.9.0
+    # via
+    #   azure-cli
+    #   azure-cli-core
 django==5.0.6
     # via
     #   -r requirements.in
@@ -416,7 +422,7 @@ django==5.0.6
     #   opencensus-ext-django
 django-cors-headers==4.3.1
     # via -r requirements.in
-django-import-export==4.0.1
+django-import-export==3.3.9
     # via -r requirements.in
 django-leaflet==0.30.0
     # via -r requirements.in
@@ -430,6 +436,8 @@ djangorestframework==3.15.1
     #   djangorestframework-gis
 djangorestframework-gis==1.0
     # via -r requirements.in
+et-xmlfile==1.1.0
+    # via openpyxl
 fabric==3.2.2
     # via azure-cli
 google-api-core==2.19.0
@@ -494,6 +502,8 @@ jsondiff==2.0.0
     # via azure-cli
 knack==0.11.0
     # via azure-cli-core
+markuppy==1.14
+    # via tablib
 marshmallow==3.21.2
     # via -r requirements.in
 mozilla-django-oidc==4.0.1
@@ -503,7 +513,6 @@ msal[broker]==1.28.0
     #   azure-cli-core
     #   azure-datalake-store
     #   azure-identity
-    #   msal
     #   msal-extensions
 msal-extensions==1.2.0b1
     # via
@@ -565,6 +574,8 @@ numpy==1.26.4
     # via pandas
 oauthlib==3.2.2
     # via requests-oauthlib
+odfpy==1.4.1
+    # via tablib
 opencensus==0.11.4
     # via
     #   opencensus-ext-azure
@@ -584,6 +595,8 @@ opencensus-ext-postgresql==0.1.3
     # via -r requirements.in
 opencensus-ext-requests==0.8.0
     # via -r requirements.in
+openpyxl==3.1.2
+    # via tablib
 packaging==24.0
     # via
     #   azure-cli
@@ -668,6 +681,7 @@ pyyaml==6.0.1
     # via
     #   knack
     #   pycomposefile
+    #   tablib
 requests[socks]==2.31.0
     # via
     #   -r requirements.in
@@ -708,7 +722,7 @@ sqlparse==0.5.0
     # via django
 sshtunnel==0.1.5
     # via azure-cli
-tablib==3.5.0
+tablib[html,ods,xls,xlsx,yaml]==3.5.0
     # via django-import-export
 tabulate==0.9.0
     # via knack
@@ -734,5 +748,9 @@ wrapt==1.16.0
     # via
     #   deprecated
     #   opencensus-ext-requests
+xlrd==2.0.1
+    # via tablib
+xlwt==1.3.0
+    # via tablib
 xmltodict==0.13.0
     # via azure-cli
