@@ -15,9 +15,7 @@ black==24.4.2
 click==8.1.7
     # via black
 coverage[toml]==7.5.1
-    # via
-    #   coverage
-    #   pytest-cov
+    # via pytest-cov
 django==5.0.6
     # via model-bakery
 exceptiongroup==1.2.1

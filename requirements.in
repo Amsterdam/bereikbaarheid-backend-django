@@ -12,7 +12,7 @@ pyproj
 # Django
 Django
 django-cors-headers
-django-import-export>= 3.1.0
+django-import-export== 3.3.9
 django-leaflet
 mozilla-django-oidc
 django-storages[azure]
