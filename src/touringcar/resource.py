@@ -4,7 +4,7 @@ from touringcar.models import Bericht
 
 
 class BerichtResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
         col_mapping = {
             "location_lat": "lat",
             "location_lng": "lon",

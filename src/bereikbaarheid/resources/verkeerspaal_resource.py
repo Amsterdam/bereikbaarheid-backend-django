@@ -8,7 +8,7 @@ from bereikbaarheid.resources.utils import (
 
 
 class VerkeersPaalResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
         col_mapping = {
             "linknr": "link_nr",
             "paalnummer": "paal_nr",
@@ -22,7 +22,7 @@ class VerkeersPaalResource(ModelResource):
             header="dagen",
         )
 
-    def before_import_row(self, row, row_number=None, **kwargs):
+    def before_import_row(self, row, **kwargs):
         if row["paal_nr"] == "None":
             row["paal_nr"] = ""
 
