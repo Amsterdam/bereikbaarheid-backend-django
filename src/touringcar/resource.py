@@ -16,9 +16,9 @@ class BerichtResource(ModelResource):
         dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
 
         # trim leading and trailing spaces
-        title_clean = [ x.strip() for x in dataset["title"]]
+        title_clean = [x.strip() for x in dataset["title"]]
         del dataset["title"]
-        dataset.append_col( title_clean, header="title")
+        dataset.append_col(title_clean, header="title")
 
     class Meta:
         model = Bericht

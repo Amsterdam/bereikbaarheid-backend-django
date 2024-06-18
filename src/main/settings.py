@@ -70,7 +70,14 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
 ]
-THIRD_PARTY_APPS = ["corsheaders", "import_export", "leaflet", "rest_framework", "rest_framework_gis", "storages"]
+THIRD_PARTY_APPS = [
+    "corsheaders",
+    "import_export",
+    "leaflet",
+    "rest_framework",
+    "rest_framework_gis",
+    "storages",
+]
 LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -98,7 +105,9 @@ if ADMIN_ENABLED:
 BASE_URL = os.getenv("BASE_URL", "")
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_METHODS = [ 'GET', ]
+CORS_ALLOW_METHODS = [
+    "GET",
+]
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
@@ -131,13 +140,13 @@ MEDIA_URL = "/media/"
 
 # Django-storages for Django > 4.2
 STORAGES = {
-        "default": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-        },
-        "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        },
-    }
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 # Azure Storageaccount settings
 if os.getenv("AZURE_FEDERATED_TOKEN_FILE"):
@@ -152,7 +161,7 @@ if os.getenv("AZURE_FEDERATED_TOKEN_FILE"):
             },
         },
     }
-    STORAGES |= STORAGE_AZURE #update storages with storage_azure
+    STORAGES |= STORAGE_AZURE  # update storages with storage_azure
 
 TEMPLATES = [
     {
@@ -280,7 +289,7 @@ LOGGING = {
             "level": "WARNING",
             "handlers": ["console"],
             "propagate": False,
-        },        
+        },
         "main": {
             "level": "WARNING",
             "handlers": ["console"],
@@ -303,19 +312,21 @@ LOGGING = {
 }
 
 
-if APPLICATIONINSIGHTS_CONNECTION_STRING:= os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+if APPLICATIONINSIGHTS_CONNECTION_STRING := os.getenv(
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"
+):
     MIDDLEWARE.append("opencensus.ext.django.middleware.OpencensusMiddleware")
 
-    service_prefix = 'api'
+    service_prefix = "api"
     if ADMIN_ENABLED:
-        service_prefix = 'admin'
+        service_prefix = "admin"
 
     OPENCENSUS = {
         "TRACE": {
             "SAMPLER": "opencensus.trace.samplers.ProbabilitySampler(rate=1)",
-            "EXPORTER": f'''opencensus.ext.azure.trace_exporter.AzureExporter(
+            "EXPORTER": f"""opencensus.ext.azure.trace_exporter.AzureExporter(
                 connection_string='{APPLICATIONINSIGHTS_CONNECTION_STRING}',
-                service_name='{service_prefix}-bereikbaarheid-backend' )''',
+                service_name='{service_prefix}-bereikbaarheid-backend' )""",
         }
     }
     config_integration.trace_integrations(["logging"])
@@ -323,9 +334,8 @@ if APPLICATIONINSIGHTS_CONNECTION_STRING:= os.getenv("APPLICATIONINSIGHTS_CONNEC
         "level": "DEBUG",
         "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
         "connection_string": APPLICATIONINSIGHTS_CONNECTION_STRING,
-        "formatter": "json"
+        "formatter": "json",
     }
     LOGGING["root"]["handlers"].append("azure")
     for logger_name, logger_details in LOGGING["loggers"].items():
         LOGGING["loggers"][logger_name]["handlers"].append("azure")
-

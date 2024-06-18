@@ -6,7 +6,7 @@ from bereikbaarheid.resources.utils import refresh_materialized
 
 
 class GebiedResource(ModelResource):
-    def before_import_row(self, row, **kwargs):    
+    def before_import_row(self, row, **kwargs):
         row["geom"] = GEOSGeometry(str(row["geom"]))
 
     def after_import(self, dataset, result, **kwargs):

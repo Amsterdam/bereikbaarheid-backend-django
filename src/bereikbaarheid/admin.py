@@ -1,9 +1,6 @@
 import json
-import warnings
 
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from import_export.admin import (
@@ -12,7 +9,6 @@ from import_export.admin import (
     ImportMixin,
 )
 from import_export.formats import base_formats
-from import_export.forms import ImportExportFormBase
 from import_export.tmp_storages import CacheStorage
 from leaflet.admin import LeafletGeoAdminMixin
 

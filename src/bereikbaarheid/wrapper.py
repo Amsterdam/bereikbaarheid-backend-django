@@ -49,6 +49,7 @@ def validate_data(serializer):
     :param serializer:
     :return:
     """
+
     def decorator(func):
         def wrapper(view, request, *args, **kwargs):
             try:
@@ -59,6 +60,7 @@ def validate_data(serializer):
                 return JsonResponse(status=400, data=err.messages)
             except json.JSONDecodeError as e:
                 return JsonResponse(status=400, data={"error": str(e)})
+
         return wrapper
 
     return decorator

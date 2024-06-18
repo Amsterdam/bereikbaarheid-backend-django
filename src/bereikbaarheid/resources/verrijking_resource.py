@@ -22,7 +22,7 @@ class VerrijkingResource(ModelResource):
         # import_export Version 4 change: param dry-run passed in kwargs
         # refresh materialized vieuws when dry_run = False
         dry_run = kwargs.get("dry_run", False)
-        if not dry_run:            
+        if not dry_run:
             refresh_materialized("bereikbaarheid_out_vma_undirected")
             refresh_materialized("bereikbaarheid_out_vma_directed")
             refresh_materialized("bereikbaarheid_out_vma_node")

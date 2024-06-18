@@ -7,36 +7,80 @@ from main.auth import OIDCAuthenticationBackend
 
 @pytest.fixture
 def django_group_bereikbaarheid():
-    return baker.make(Group, name= 'bereikbaarheid')
+    return baker.make(Group, name="bereikbaarheid")
+
 
 @pytest.fixture
 def django_group_touringcar():
-    return baker.make(Group, name= 'tourbus')
+    return baker.make(Group, name="tourbus")
+
 
 class Test_auth:
 
     @pytest.mark.parametrize(
         "key, test_claims, expected",
         [
-            (1,  {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-application-admin']},
+            (
+                1,
+                {
+                    "name": "test",
+                    "family_name": "family_test",
+                    "given_name": "Test",
+                    "email": "test@amsterdam.nl",
+                    "roles": ["o-bereikbaarheid-application-admin"],
+                },
                 "<QuerySet []>",
-             ),
-            (2, {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-bereikbaarheid']},
+            ),
+            (
+                2,
+                {
+                    "name": "test",
+                    "family_name": "family_test",
+                    "given_name": "Test",
+                    "email": "test@amsterdam.nl",
+                    "roles": ["o-bereikbaarheid-app-admin-bereikbaarheid"],
+                },
                 "<QuerySet ['bereikbaarheid']>",
-             ),
-            (3,  {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-tourbus']},
+            ),
+            (
+                3,
+                {
+                    "name": "test",
+                    "family_name": "family_test",
+                    "given_name": "Test",
+                    "email": "test@amsterdam.nl",
+                    "roles": ["o-bereikbaarheid-app-admin-tourbus"],
+                },
                 "<QuerySet ['tourbus']>",
-             ),
-            (4, {'name': 'test', 'family_name': 'family_test', 'given_name': 'Test', 'email': 'test@amsterdam.nl', 'roles': ['o-bereikbaarheid-app-admin-bereikbaarheid','o-bereikbaarheid-app-admin-tourbus']},
+            ),
+            (
+                4,
+                {
+                    "name": "test",
+                    "family_name": "family_test",
+                    "given_name": "Test",
+                    "email": "test@amsterdam.nl",
+                    "roles": [
+                        "o-bereikbaarheid-app-admin-bereikbaarheid",
+                        "o-bereikbaarheid-app-admin-tourbus",
+                    ],
+                },
                 "<QuerySet ['bereikbaarheid', 'tourbus']>",
-             ),
+            ),
         ],
     )
     @pytest.mark.django_db
-    def test_update_group(self, django_group_bereikbaarheid, django_group_touringcar, key, test_claims, expected):
+    def test_update_group(
+        self,
+        django_group_bereikbaarheid,
+        django_group_touringcar,
+        key,
+        test_claims,
+        expected,
+    ):
         OIDC = OIDCAuthenticationBackend()
         OIDC.create_user(test_claims)
 
         user = User.objects.get(pk=key)
         assert user.last_name == "family_test"
-        assert str(user.groups.values_list('name',flat = True)) == expected
+        assert str(user.groups.values_list("name", flat=True)) == expected

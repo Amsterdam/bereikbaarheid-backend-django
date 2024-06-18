@@ -14,7 +14,7 @@ def oidc_login(request, **kwargs):
 class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBackend):
     def verify_claims(self, claims):
         verified = super(OIDCAuthenticationBackend, self).verify_claims(claims)
-        has_roles = claims.get('roles')
+        has_roles = claims.get("roles")
         return verified and has_roles
 
     def create_user(self, claims):
@@ -34,20 +34,20 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
         based on the roles passed by Azure AD. At the moment we receive none,
         and we assume any user that is able log in is an admin.
         """
-        
+
         with transaction.atomic():
             # standard zero permissions shows only home-admin-page with mention: You don’t have permission to view or edit anything.
             user.groups.clear()
             user.is_staff = True
             user.is_superuser = False
 
-            for role in claims['roles']:
-                match role[17:]: #match without "environment-app_name-"
-                    case 'app-admin-bereikbaarheid' | 'app-admin-tourbus':
+            for role in claims["roles"]:
+                match role[17:]:  # match without "environment-app_name-"
+                    case "app-admin-bereikbaarheid" | "app-admin-tourbus":
                         django_group_name = role[27:]
-                        group = Group.objects.get(name= django_group_name) 
+                        group = Group.objects.get(name=django_group_name)
                         user.groups.add(group)
-                    case 'application-admin':
+                    case "application-admin":
                         user.is_superuser = True
 
             user.save()
@@ -67,8 +67,8 @@ class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBacke
 
         user_response = super().get_userinfo(access_token, id_token, payload)
 
-        # Add 'roles', 'groups' etc from payload 
-        if payload.get('roles'):
-            user_response['roles'] = payload['roles']
+        # Add 'roles', 'groups' etc from payload
+        if payload.get("roles"):
+            user_response["roles"] = payload["roles"]
 
         return user_response
