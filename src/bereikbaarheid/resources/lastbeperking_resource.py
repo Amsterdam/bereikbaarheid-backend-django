@@ -9,7 +9,7 @@ from bereikbaarheid.resources.utils import (
 
 
 class LastbeperkingResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
         col_mapping = {
             "linknr": "link_nr",
             "lastbeperking in kg": "lastbeperking_in_kg",
@@ -17,7 +17,7 @@ class LastbeperkingResource(ModelResource):
 
         dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
-    def before_import_row(self, row, row_number=None, **kwargs):
+    def before_import_row(self, row, **kwargs):
         if row["lastbeperking_in_kg"] == "NULL":
             row["lastbeperking_in_kg"] = None
 
@@ -29,11 +29,15 @@ class LastbeperkingResource(ModelResource):
 
         return super().skip_row(instance, original, row, import_validation_errors)
 
-    def before_save_instance(self, instance, using_transactions, dry_run):
-        instance.dry_run = dry_run  # set a temporal flag for dry-run mode
+    def before_save_instance(self, instance, row, **kwargs):
+        # import_export Version 4 change: param dry-run passed in kwargs
+        # during 'confirm' step, dry_run is True
+        instance.dry_run = kwargs.get("dry_run", False)
 
-    def after_import(self, dataset, result, using_transactions, dry_run, **kwargs):
+    def after_import(self, dataset, result, **kwargs):
+        # import_export Version 4 change: param dry-run passed in kwargs
         # refresh materialized vieuws when dry_run = False
+        dry_run = kwargs.get("dry_run", False)
         if not dry_run:
             refresh_materialized("bereikbaarheid_out_vma_undirected")
             refresh_materialized("bereikbaarheid_out_vma_directed")
