@@ -1,9 +1,6 @@
 import json
-import warnings
 
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from import_export.admin import (
@@ -12,7 +9,6 @@ from import_export.admin import (
     ImportMixin,
 )
 from import_export.formats import base_formats
-from import_export.forms import ImportExportFormBase
 from import_export.tmp_storages import CacheStorage
 from leaflet.admin import LeafletGeoAdminMixin
 
@@ -260,6 +256,7 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
         return False
 
     def import_action(self, request, *args, **kwargs):
+        # import_export Version 4 major changes: code adjustment for this overwrite of import_action to keep working
         """
         This method is overwritten to battle the exponential growth of loading time when
         chuck loading a large GEOJSON-file. To keep the same behavior we had to import the whole
@@ -274,39 +271,10 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
         context = self.get_import_context_data()
 
         import_formats = self.get_import_formats()
-        if getattr(self.get_form_kwargs, "is_original", False):
-            # Use new API
-            import_form = self.create_import_form(request)
-        else:
-            form_class = self.get_import_form_class(request)
-            form_kwargs = self.get_form_kwargs(form_class, *args, **kwargs)
-
-            if issubclass(form_class, ImportExportFormBase):
-                import_form = form_class(
-                    import_formats,
-                    self.get_import_resource_classes(),
-                    request.POST or None,
-                    request.FILES or None,
-                    **form_kwargs
-                )
-            else:
-                warnings.warn(
-                    "The ImportForm class must inherit from ImportExportFormBase, "
-                    "this is needed for multiple resource classes to work properly. ",
-                    category=DeprecationWarning,
-                )
-                import_form = form_class(
-                    import_formats,
-                    request.POST or None,
-                    request.FILES or None,
-                    **form_kwargs
-                )
-
+        import_form = self.create_import_form(request)
         resources = list()
         if request.POST and import_form.is_valid():
-            input_format = import_formats[
-                int(import_form.cleaned_data["input_format"])
-            ]()
+            input_format = import_formats[int(import_form.cleaned_data["format"])]()
             if not input_format.is_binary():
                 input_format.encoding = self.from_encoding
             import_file = import_form.cleaned_data["import_file"]
@@ -374,9 +342,9 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
         else:
             res_kwargs = self.get_import_resource_kwargs(
-                request, form=import_form, *args, **kwargs
+                request, form=import_form, **kwargs
             )
-            resource_classes = self.get_import_resource_classes()
+            resource_classes = self.get_import_resource_classes(request)
             resources = [
                 resource_class(**res_kwargs) for resource_class in resource_classes
             ]

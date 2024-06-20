@@ -41,7 +41,9 @@ class CsvView(APIView):
         try:
             response = HttpResponse(
                 content_type="text/csv",
-                headers={"Content-Disposition": 'attachment; filename="touringcar.csv"'},
+                headers={
+                    "Content-Disposition": 'attachment; filename="touringcar.csv"'
+                },
             )
 
             writer = csv.writer(response)

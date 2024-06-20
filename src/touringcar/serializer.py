@@ -29,45 +29,54 @@ class BerichtSerializer(GeoFeatureModelSerializer):
             "title": getattr(instance, f"title{lg}"),
             "body": getattr(instance, f"body{lg}"),
             "advice": getattr(instance, f"advice{lg}"),
-        }        
+        }
 
     def get_nl(self, instance):
-        return self.make_set(instance,"")
-    
+        return self.make_set(instance, "")
+
     def get_en(self, instance):
-        return self.make_set(instance,"_en")
-    
+        return self.make_set(instance, "_en")
+
     def get_fr(self, instance):
-        return self.make_set(instance,"_fr")
+        return self.make_set(instance, "_fr")
 
     def get_de(self, instance):
-        return self.make_set(instance,"_de")
-    
-    def get_es(self, instance):
-        return self.make_set(instance,"_es")
+        return self.make_set(instance, "_de")
 
-     # a field which contains a geometry value and can be used as geo_field
+    def get_es(self, instance):
+        return self.make_set(instance, "_es")
+
+    # a field which contains a geometry value and can be used as geo_field
     geom_wgs = GeometrySerializerMethodField()
 
     def get_geom_wgs(self, obj):
         wgs = calc_lat_lon_from_geometry(obj.geometry)
         # to be consistent with other-endpoints: serve lon,lat not lat,lon
-        return Point(wgs['lon'], wgs['lat'])
-
+        return Point(wgs["lon"], wgs["lat"])
 
     class Meta:
         model = Bericht
         geo_field = "geom_wgs"
 
         fields = [
-                "nl", "en", "fr", "de", "es", "id",
-                "startdate", "enddate", "category", 
-                "link", "image_url", "important", "is_live",
-         ]
+            "nl",
+            "en",
+            "fr",
+            "de",
+            "es",
+            "id",
+            "startdate",
+            "enddate",
+            "category",
+            "link",
+            "image_url",
+            "important",
+            "is_live",
+        ]
 
 
 class BerichtFilterSerializer(Schema):
-    
+
     datum = fields.Date(
         format="%Y-%m-%d",
         load_default=datetime.today().astimezone(tz_amsterdam),

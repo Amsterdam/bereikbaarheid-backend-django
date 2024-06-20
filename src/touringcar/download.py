@@ -7,7 +7,8 @@ from pyproj import Transformer
 
 API_URL = "https://api.data.amsterdam.nl/v1/touringcars/"
 
-class _Stop():
+
+class _Stop:
     transformer = Transformer.from_crs("EPSG:28992", "EPSG:4326", always_xy=True)
 
     latitude: float
@@ -21,19 +22,14 @@ class _Stop():
         self.latitude = wgs_coordinates[1]
         self.longitude = wgs_coordinates[0]
         self._omschrijving = entry["omschrijving"]
-    
+
     @property
     @abstractmethod
-    def text(self) -> str:
-        ...
-    
+    def text(self) -> str: ...
+
     def to_row(self) -> List[str]:
-        return [
-            self.latitude,
-            self.longitude,
-            self.text,
-            self.stop_type
-        ]
+        return [self.latitude, self.longitude, self.text, self.stop_type]
+
 
 class Halte(_Stop):
     stop_type = "halte"
@@ -41,6 +37,7 @@ class Halte(_Stop):
     @property
     def text(self) -> str:
         return self._omschrijving.split(":")[0]
+
 
 class Parkeerplaats(_Stop):
     stop_type = "parkeerplaats"
@@ -51,7 +48,7 @@ class Parkeerplaats(_Stop):
 
 
 def fetch_data() -> List[_Stop]:
-    def _get_all(url: str, data_type: str, data: Optional[list]=None) -> Dict:
+    def _get_all(url: str, data_type: str, data: Optional[list] = None) -> Dict:
         data = [] if data is None else data
 
         response = requests.get(url).json()
@@ -62,5 +59,8 @@ def fetch_data() -> List[_Stop]:
         return data
 
     haltes = [Halte(x) for x in _get_all(urljoin(API_URL, "haltes"), "haltes")]
-    parkeerplaatsen = [Parkeerplaats(x) for x in _get_all(urljoin(API_URL, "parkeerplaatsen"), "parkeerplaatsen")]
+    parkeerplaatsen = [
+        Parkeerplaats(x)
+        for x in _get_all(urljoin(API_URL, "parkeerplaatsen"), "parkeerplaatsen")
+    ]
     return haltes + parkeerplaatsen

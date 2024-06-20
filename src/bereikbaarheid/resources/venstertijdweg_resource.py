@@ -9,7 +9,7 @@ from bereikbaarheid.resources.utils import (
 
 
 class VenstertijdWegResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
         col_mapping = {
             "linknr": "link_nr",
         }
@@ -22,7 +22,7 @@ class VenstertijdWegResource(ModelResource):
             header="dagen",
         )
 
-    def before_import_row(self, row, row_number=None, **kwargs):
+    def before_import_row(self, row, **kwargs):
         row["begin_tijd"] = convert_to_time(row["begin_tijd"])
         row["eind_tijd"] = convert_to_time(row["eind_tijd"])
 

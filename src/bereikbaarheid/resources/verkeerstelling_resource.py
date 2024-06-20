@@ -5,7 +5,7 @@ from bereikbaarheid.resources.utils import clean_dataset_headers
 
 
 class VerkeersTellingResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
         col_mapping = {
             "volgnummer": "volg_nummer",
             "latitude": "lat",

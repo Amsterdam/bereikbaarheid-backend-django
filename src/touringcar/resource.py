@@ -4,7 +4,7 @@ from touringcar.models import Bericht
 
 
 class BerichtResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
         col_mapping = {
             "location_lat": "lat",
             "location_lng": "lon",
@@ -16,9 +16,9 @@ class BerichtResource(ModelResource):
         dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
 
         # trim leading and trailing spaces
-        title_clean = [ x.strip() for x in dataset["title"]]
+        title_clean = [x.strip() for x in dataset["title"]]
         del dataset["title"]
-        dataset.append_col( title_clean, header="title")
+        dataset.append_col(title_clean, header="title")
 
     class Meta:
         model = Bericht

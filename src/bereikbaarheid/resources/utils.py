@@ -94,8 +94,10 @@ def truncate(model):
     truncate db table and restart AutoField primary_key for import
 
     use as follows:
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
+        # import_export Version 4 change: param dry-run passed in kwargs
         # truncate table before import when dry_run = False
+        dry_run = kwargs.get("dry_run", False)
         if not dry_run:
             truncate(modelobject)
     """

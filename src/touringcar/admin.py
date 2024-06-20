@@ -8,14 +8,14 @@ from touringcar.models import Bericht
 from touringcar.resource import BerichtResource
 
 
-class BerichtenForm(forms.ModelForm): 
+class BerichtenForm(forms.ModelForm):
     class Meta:
         widgets = {
-            'title': forms.TextInput(attrs={'size':'80'}),
-            'title_en': forms.TextInput(attrs={'size':'80'}),
-            'title_fr': forms.TextInput(attrs={'size':'80'}),
-            'title_de': forms.TextInput(attrs={'size':'80'}),
-            'title_es': forms.TextInput(attrs={'size':'80'}),
+            "title": forms.TextInput(attrs={"size": "80"}),
+            "title_en": forms.TextInput(attrs={"size": "80"}),
+            "title_fr": forms.TextInput(attrs={"size": "80"}),
+            "title_de": forms.TextInput(attrs={"size": "80"}),
+            "title_es": forms.TextInput(attrs={"size": "80"}),
         }
 
 
@@ -44,14 +44,41 @@ class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAd
         (
             None,
             {
-                "fields": ["title", "body", "advice", "startdate", "enddate", "category", "link", "image_url", "important","is_live", "lat", "lon", "geometry"],
+                "fields": [
+                    "title",
+                    "body",
+                    "advice",
+                    "startdate",
+                    "enddate",
+                    "category",
+                    "link",
+                    "image_url",
+                    "important",
+                    "is_live",
+                    "lat",
+                    "lon",
+                    "geometry",
+                ],
             },
         ),
         (
             "Vertaalvelden (optioneel)",
             {
                 "classes": ["collapse"],
-                "fields": ["title_en","body_en", "advice_en", "title_fr","body_fr", "advice_fr", "title_de","body_de", "advice_de","title_es","body_es", "advice_es"],
+                "fields": [
+                    "title_en",
+                    "body_en",
+                    "advice_en",
+                    "title_fr",
+                    "body_fr",
+                    "advice_fr",
+                    "title_de",
+                    "body_de",
+                    "advice_de",
+                    "title_es",
+                    "body_es",
+                    "advice_es",
+                ],
             },
         ),
     ]

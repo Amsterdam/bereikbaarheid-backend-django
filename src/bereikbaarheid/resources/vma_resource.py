@@ -11,22 +11,25 @@ from bereikbaarheid.resources.utils import (
 
 
 class VmaResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
+        # import_export Version 4 change: param dry-run passed in kwargs
         col_mapping = {
             "linknr": "link_nr",
         }
 
         dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
-
-        # truncate table before import when dry_run = False
+        # during 'confirm' step, dry_run is True -> in VmaAdmin import_action is dry_run set on False
+        dry_run = kwargs.get("dry_run", False)
         if not dry_run:
             truncate(Vma)
 
-    def before_import_row(self, row, row_number, **kwargs):
+    def before_import_row(self, row, **kwargs):
         row["geom"] = GEOSGeometry(row["geom"], srid=28992)
 
-    def after_import(self, dataset, result, using_transactions, dry_run, **kwargs):
+    def after_import(self, dataset, result, **kwargs):
+        # import_export Version 4 change: param dry-run passed in kwargs
         # refresh materialized vieuws when dry_run = False
+        dry_run = kwargs.get("dry_run", False)
         if not dry_run:
             refresh_materialized("bereikbaarheid_out_vma_undirected")
             refresh_materialized("bereikbaarheid_out_vma_directed")
