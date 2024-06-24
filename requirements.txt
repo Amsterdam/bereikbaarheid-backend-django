@@ -501,6 +501,8 @@ jsondiff==2.0.0
     # via azure-cli
 knack==0.11.0
     # via azure-cli-core
+markuppy==1.14
+    # via tablib
 marshmallow==3.21.3
     # via -r requirements.in
 mozilla-django-oidc==4.0.1
