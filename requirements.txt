@@ -398,8 +398,6 @@ cryptography==42.0.8
     #   pyopenssl
 decorator==5.1.1
     # via fabric
-defusedxml==0.7.1
-    # via odfpy
 deprecated==1.2.14
     # via
     #   fabric
@@ -422,9 +420,9 @@ django==5.0.6
     #   opencensus-ext-django
 django-cors-headers==4.3.1
     # via -r requirements.in
-django-import-export==3.3.9
+django-import-export[xlsx]==4.0.8
     # via -r requirements.in
-django-leaflet==0.30.0
+django-leaflet==0.30.1
     # via -r requirements.in
 django-rest-framework==0.1.0
     # via -r requirements.in
@@ -570,12 +568,10 @@ msrestazure==0.6.4.post1
     #   azure-mgmt-devtestlabs
     #   azure-mgmt-kusto
     #   azure-mgmt-managedservices
-numpy==1.26.4
+numpy==2.0.0
     # via pandas
 oauthlib==3.2.2
     # via requests-oauthlib
-odfpy==1.4.1
-    # via tablib
 opencensus==0.11.4
     # via
     #   opencensus-ext-azure
@@ -681,7 +677,6 @@ pyyaml==6.0.1
     # via
     #   knack
     #   pycomposefile
-    #   tablib
 requests[socks]==2.32.3
     # via
     #   -r requirements.in
@@ -722,7 +717,7 @@ sqlparse==0.5.0
     # via django
 sshtunnel==0.1.5
     # via azure-cli
-tablib[html,ods,xls,xlsx,yaml]==3.5.0
+tablib[xlsx]==3.5.0
     # via django-import-export
 tabulate==0.9.0
     # via
@@ -740,7 +735,7 @@ typing-extensions==4.12.2
     #   azure-storage-blob
 tzdata==2024.1
     # via pandas
-urllib3==2.2.1
+urllib3==2.2.2
     # via
     #   azure-cli
     #   requests
@@ -750,9 +745,5 @@ wrapt==1.16.0
     # via
     #   deprecated
     #   opencensus-ext-requests
-xlrd==2.0.1
-    # via tablib
-xlwt==1.3.0
-    # via tablib
 xmltodict==0.13.0
     # via azure-cli

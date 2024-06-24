@@ -5,7 +5,7 @@ from bereikbaarheid.resources.utils import clean_dataset_headers, convert_to_dat
 
 
 class StremmingResource(ModelResource):
-    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+    def before_import(self, dataset, **kwargs):
         col_mapping = {
             "vma-linknr": "link_nr",
             "vma_linknr": "link_nr",
@@ -17,7 +17,7 @@ class StremmingResource(ModelResource):
 
         dataset.headers = clean_dataset_headers(dataset.headers, col_mapping)
 
-    def before_import_row(self, row, row_number=None, **kwargs):
+    def before_import_row(self, row, **kwargs):
         row["start_date"] = convert_to_date(row["start_date"])
         row["end_date"] = convert_to_date(row["end_date"])
 
