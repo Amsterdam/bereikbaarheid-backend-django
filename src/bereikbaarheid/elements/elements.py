@@ -23,25 +23,11 @@ select
             'traffic_type', t2."type_verkeer",
             'year', t2.jaar
         ) order by t2.jaar desc)
-        end as traffic_counts, 
-    case
-        when count(t3) = 0 then '[]'
-        else json_agg(json_build_object(
-            'activity', t3."werkzaamheden",
-            'reference', t3."kenmerk",
-            'url', t3."url",
-            'start_date', t3.start_date,
-            'end_date', t3.end_date
-        ) order by t3.start_date desc)
-        end traffic_obstructions
+        end as traffic_counts 
 from bereikbaarheid_out_vma_undirected t1
 
 left join bereikbaarheid_verkeerstelling t2
     on t1.link_nr = t2.link_nr
-
-left join bereikbaarheid_stremming t3
-    on t1.link_nr = t3.link_nr
-    and now() < t3.end_date
 
 where t1.link_nr = %(road_element_id)s
 group by t1.geom, t1.link_nr, t1.name,
@@ -63,7 +49,6 @@ def _transform_results(results: list[tuple]) -> list[dict]:
                 "max_speed_in_km": row[3],
                 "street_name": row[4],
                 "traffic_counts": row[5],
-                "traffic_obstructions": row[6],
             },
             "type": "Feature",
         }

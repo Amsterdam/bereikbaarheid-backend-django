@@ -31,25 +31,6 @@ class Gebied(models.Model):
     geom = PolygonField(srid=28992)
 
 
-class Stremming(TimeStampMixin):
-    """
-    naam oude db-tabel: bereikbaarheid.bd_stremming
-    help_text = kolomnaam oude db-tabel
-    """
-
-    class Meta:
-        verbose_name = "Stremming"
-        verbose_name_plural = "Stremmingen"
-
-    link_nr = models.IntegerField(db_index=True, help_text="vma_linknr")
-    werkzaamheden = models.CharField(max_length=255)
-    opmerking = models.CharField(max_length=1000, blank=True, null=True)
-    kenmerk = models.CharField(max_length=255, blank=True, null=True)
-    url = models.CharField(max_length=255, blank=True, null=True)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-
-
 class VenstertijdWeg(TimeStampMixin):
     """
     naam oude db-tabel: bereikbaarheid.bd_venstertijdwegen

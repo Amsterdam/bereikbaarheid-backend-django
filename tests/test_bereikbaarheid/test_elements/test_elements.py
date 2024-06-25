@@ -63,7 +63,6 @@ class TestElements:
                             "max_speed_in_km": QUERY_RESULT[0][3],
                             "street_name": QUERY_RESULT[0][4],
                             "traffic_counts": QUERY_RESULT[0][5],
-                            "traffic_obstructions": QUERY_RESULT[0][6],
                         },
                     }
                 ],
