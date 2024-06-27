@@ -9,8 +9,6 @@ from bereikbaarheid.bollards.serializer import BollardsSerializer
 from bereikbaarheid.elements import get_elements
 from bereikbaarheid.isochrones import get_isochrones
 from bereikbaarheid.isochrones.serializer import IsochronesSerializer
-from bereikbaarheid.obstructions import get_obstructions
-from bereikbaarheid.obstructions.serializer import ObstructionsSerializer
 from bereikbaarheid.permits import get_permits
 from bereikbaarheid.permits.serializers import PermitSerializer
 from bereikbaarheid.prohibitory import get_prohibitory
@@ -105,24 +103,6 @@ class ProhibitorView(View):
         return self.handle(request, serialized_data)
 
     @validate_data(ProhibitorySerializer)
-    def post(self, request: HttpRequest, serialized_data: dict, *args, **kwargs):
-        return self.handle(request, serialized_data)
-
-
-class ObstructionsView(View):
-    """
-    return Obstructions
-    """
-
-    @geo_json_response
-    def handle(self, request, data: dict, *args, **kwargs):
-        return get_obstructions(data)
-
-    @validate_data(ObstructionsSerializer)
-    def get(self, request, serialized_data: dict, *args, **kwargs):
-        return self.handle(request, serialized_data)
-
-    @validate_data(ObstructionsSerializer)
     def post(self, request: HttpRequest, serialized_data: dict, *args, **kwargs):
         return self.handle(request, serialized_data)
 

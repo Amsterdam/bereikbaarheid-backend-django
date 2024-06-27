@@ -32,7 +32,6 @@ class TestViews:
             ("permits/", 400),  # needs params
             ("roads/prohibitory/", 400),  # needs params
             ("roads/isochrones/", 400),  # needs params
-            ("road-obstructions/", 200),
         ],
     )
     @pytest.mark.django_db

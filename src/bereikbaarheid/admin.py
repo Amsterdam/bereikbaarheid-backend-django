@@ -15,7 +15,6 @@ from leaflet.admin import LeafletGeoAdminMixin
 from bereikbaarheid.models import (
     Gebied,
     Lastbeperking,
-    Stremming,
     VenstertijdWeg,
     VerkeersBord,
     VerkeersPaal,
@@ -25,7 +24,6 @@ from bereikbaarheid.models import (
 )
 from bereikbaarheid.resources.gebied_resource import GebiedResource
 from bereikbaarheid.resources.lastbeperking_resource import LastbeperkingResource
-from bereikbaarheid.resources.stremming_resource import StremmingResource
 from bereikbaarheid.resources.utils import GEOJSON, SCSV
 from bereikbaarheid.resources.venstertijdweg_resource import VenstertijdWegResource
 from bereikbaarheid.resources.verkeersbord_resource import VerkeersBordResource
@@ -120,21 +118,6 @@ class LastbeperkingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
     list_display = ["id", "link_nr", "lastbeperking_in_kg", "created_at", "updated_at"]
     list_filter = ["created_at", "updated_at"]
     resource_classes = [LastbeperkingResource]
-
-
-@admin.register(Stremming)
-class StremmingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
-    tmp_storage_class = CacheStorage
-    list_display = [
-        "id",
-        "link_nr",
-        "werkzaamheden",
-        "kenmerk",
-        "created_at",
-        "updated_at",
-    ]
-    list_filter = ["start_date", "end_date", "created_at", "updated_at"]
-    resource_classes = [StremmingResource]
 
 
 @admin.register(VerkeersBord)

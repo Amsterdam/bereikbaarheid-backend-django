@@ -5,7 +5,6 @@ from .views import (
     BollardsView,
     ElementsView,
     IsochronesView,
-    ObstructionsView,
     PermitsView,
     ProhibitorView,
     SectionsView,
@@ -15,7 +14,6 @@ from .views import (
 urlpatterns = [
     path("v1/traffic-signs/", TrafficSignsView.as_view()),
     path("v1/permits/", PermitsView.as_view()),
-    path("v1/road-obstructions/", ObstructionsView.as_view()),
     path("v1/road-elements/<int:element_id>/", ElementsView.as_view()),
     path("v1/road-sections/load-unload/", SectionsView.as_view()),
     path("v1/roads/prohibitory/", ProhibitorView.as_view()),
