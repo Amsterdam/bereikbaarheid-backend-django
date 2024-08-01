@@ -51,7 +51,7 @@ pytest-cov==5.0.0
     # via -r requirements_dev.in
 pytest-django==4.8.0
     # via -r requirements_dev.in
-sqlparse==0.5.0
+sqlparse==0.5.1
     # via django
 tomli==2.0.1
     # via
