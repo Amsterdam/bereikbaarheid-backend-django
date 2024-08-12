@@ -10,13 +10,13 @@ autoflake==2.3.1
     # via -r requirements_dev.in
 bakery==1.0.0
     # via -r requirements_dev.in
-black==24.4.2
+black==24.8.0
     # via -r requirements_dev.in
 click==8.1.7
     # via black
-coverage[toml]==7.6.0
+coverage[toml]==7.6.1
     # via pytest-cov
-django==5.0.7
+django==5.1
     # via model-bakery
 exceptiongroup==1.2.2
     # via pytest
@@ -26,7 +26,7 @@ iniconfig==2.0.0
     # via pytest
 isort==5.13.2
     # via -r requirements_dev.in
-model-bakery==1.18.2
+model-bakery==1.19.1
     # via -r requirements_dev.in
 mypy-extensions==1.0.0
     # via black
