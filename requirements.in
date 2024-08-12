@@ -10,7 +10,7 @@ requests
 pyproj
 
 # Django
-Django
+Django==5.0.8
 django-cors-headers
 django-import-export[xlsx]
 django-leaflet
