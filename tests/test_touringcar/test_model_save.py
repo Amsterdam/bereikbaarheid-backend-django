@@ -54,8 +54,8 @@ class TestModelSave:
         if geometry != DEFAULT_GEOM and lat,lon != None"""
         bericht_latlon.save()
 
-        assert Bericht.objects.get(pk=1).lat == 52.371198006108706
-        assert Bericht.objects.get(pk=1).lon == 4.892041799845697
+        assert Bericht.objects.get(pk=1).lat == 52.371198003066766
+        assert Bericht.objects.get(pk=1).lon == 4.89204173299227
         bericht_latlon.delete()
         assert not Bericht.objects.filter(pk=1).exists()
 
@@ -70,7 +70,7 @@ class TestModelSave:
         assert Bericht.objects.get(pk=2).lon == lon_org
         assert (
             str(Bericht.objects.get(pk=2).geometry)
-            == "SRID=28992;POINT (121278.2906402176 487150.7277812314)"
+            == "SRID=28992;POINT (121278.29528808684 487150.7278690106)"
         )
         bericht_geomdefault.delete()
         assert not Bericht.objects.filter(pk=2).exists()

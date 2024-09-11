@@ -6,7 +6,7 @@
 #
 adal==1.2.7
     # via msrestazure
-antlr4-python3-runtime==4.13.1
+antlr4-python3-runtime==4.13.2
     # via azure-cli
 applicationinsights==0.11.10
     # via azure-cli-telemetry
@@ -22,9 +22,9 @@ azure-appconfiguration==1.1.1
     # via azure-cli
 azure-batch==14.2.0
     # via azure-cli
-azure-cli==2.61.0
+azure-cli==2.63.0
     # via -r requirements.in
-azure-cli-core==2.61.0
+azure-cli-core==2.63.0
     # via azure-cli
 azure-cli-telemetry==1.1.0
     # via azure-cli-core
@@ -54,7 +54,6 @@ azure-common==1.1.28
     #   azure-mgmt-containerservice
     #   azure-mgmt-cosmosdb
     #   azure-mgmt-databoxedge
-    #   azure-mgmt-datalake-store
     #   azure-mgmt-datamigration
     #   azure-mgmt-devtestlabs
     #   azure-mgmt-dns
@@ -132,7 +131,7 @@ azure-datalake-store==0.0.53
     # via azure-cli
 azure-graphrbac==0.60.0
     # via azure-cli
-azure-identity==1.16.1
+azure-identity==1.17.1
     # via
     #   -r requirements.in
     #   opencensus-ext-azure
@@ -183,7 +182,7 @@ azure-mgmt-containerinstance==10.1.0
     # via azure-cli
 azure-mgmt-containerregistry==10.3.0
     # via azure-cli
-azure-mgmt-containerservice==30.0.0
+azure-mgmt-containerservice==31.0.0
     # via azure-cli
 azure-mgmt-core==1.4.0
     # via
@@ -247,13 +246,9 @@ azure-mgmt-core==1.4.0
     #   azure-mgmt-trafficmanager
     #   azure-mgmt-web
     #   azure-synapse-artifacts
-azure-mgmt-cosmosdb==9.4.0
+azure-mgmt-cosmosdb==9.5.1
     # via azure-cli
 azure-mgmt-databoxedge==1.0.0
-    # via azure-cli
-azure-mgmt-datalake-nspkg==3.0.1
-    # via azure-mgmt-datalake-store
-azure-mgmt-datalake-store==0.5.0
     # via azure-cli
 azure-mgmt-datamigration==10.0.0
     # via azure-cli
@@ -299,8 +294,6 @@ azure-mgmt-msi==7.0.0
     # via azure-cli
 azure-mgmt-netapp==10.1.0
     # via azure-cli
-azure-mgmt-nspkg==3.0.2
-    # via azure-mgmt-datalake-nspkg
 azure-mgmt-policyinsights==1.1.0b4
     # via azure-cli
 azure-mgmt-privatedns==1.0.0
@@ -331,11 +324,11 @@ azure-mgmt-servicelinker==1.2.0b2
     # via azure-cli
 azure-mgmt-signalr==2.0.0b1
     # via azure-cli
-azure-mgmt-sql==4.0.0b16
+azure-mgmt-sql==4.0.0b17
     # via azure-cli
 azure-mgmt-sqlvirtualmachine==1.0.0b5
     # via azure-cli
-azure-mgmt-storage==21.1.0
+azure-mgmt-storage==21.2.0
     # via azure-cli
 azure-mgmt-synapse==2.1.0b5
     # via azure-cli
@@ -347,30 +340,28 @@ azure-monitor-query==1.2.0
     # via azure-cli
 azure-multiapi-storage==1.2.0
     # via azure-cli
-azure-nspkg==3.0.2
-    # via azure-mgmt-nspkg
-azure-storage-blob==12.20.0
+azure-storage-blob==12.22.0
     # via django-storages
 azure-storage-common==1.4.2
     # via azure-cli
 azure-synapse-accesscontrol==0.5.0
     # via azure-cli
-azure-synapse-artifacts==0.18.0
+azure-synapse-artifacts==0.19.0
     # via azure-cli
 azure-synapse-managedprivateendpoints==0.4.0
     # via azure-cli
 azure-synapse-spark==0.2.0
     # via azure-cli
-bcrypt==4.1.3
+bcrypt==4.2.0
     # via paramiko
-cachetools==5.3.3
+cachetools==5.5.0
     # via google-auth
-certifi==2024.6.2
+certifi==2024.8.30
     # via
     #   msrest
     #   pyproj
     #   requests
-cffi==1.16.0
+cffi==1.17.0
     # via
     #   azure-datalake-store
     #   cryptography
@@ -381,7 +372,7 @@ charset-normalizer==3.3.2
     # via requests
 colorama==0.4.6
     # via azure-cli
-cryptography==42.0.8
+cryptography==43.0.0
     # via
     #   adal
     #   azure-cli-core
@@ -408,45 +399,48 @@ distro==1.9.0
     # via
     #   azure-cli
     #   azure-cli-core
-django==5.0.6
+django==5.1
     # via
     #   -r requirements.in
     #   django-cors-headers
+    #   django-filter
     #   django-import-export
     #   django-leaflet
     #   django-storages
     #   djangorestframework
     #   mozilla-django-oidc
     #   opencensus-ext-django
-django-cors-headers==4.3.1
+django-cors-headers==4.4.0
     # via -r requirements.in
-django-import-export[xlsx]==4.0.8
+django-filter==24.3
+    # via djangorestframework-gis
+django-import-export[xlsx]==4.1.1
     # via -r requirements.in
 django-leaflet==0.30.1
     # via -r requirements.in
 django-rest-framework==0.1.0
     # via -r requirements.in
-django-storages[azure]==1.14.3
+django-storages[azure]==1.14.4
     # via -r requirements.in
-djangorestframework==3.15.1
+djangorestframework==3.15.2
     # via
     #   django-rest-framework
     #   djangorestframework-gis
-djangorestframework-gis==1.0
+djangorestframework-gis==1.1
     # via -r requirements.in
 et-xmlfile==1.1.0
     # via openpyxl
 fabric==3.2.2
     # via azure-cli
-google-api-core==2.19.0
+google-api-core==2.19.2
     # via opencensus
-google-auth==2.30.0
+google-auth==2.34.0
     # via google-api-core
-googleapis-common-protos==1.63.1
+googleapis-common-protos==1.65.0
     # via google-api-core
 humanfriendly==10.0
     # via azure-cli-core
-idna==3.7
+idna==3.8
     # via requests
 invoke==2.2.0
     # via fabric
@@ -501,19 +495,17 @@ jsondiff==2.0.0
     # via azure-cli
 knack==0.11.0
     # via azure-cli-core
-markuppy==1.14
-    # via tablib
-marshmallow==3.21.3
+marshmallow==3.22.0
     # via -r requirements.in
 mozilla-django-oidc==4.0.1
     # via -r requirements.in
-msal[broker]==1.28.0
+msal[broker]==1.30.0
     # via
     #   azure-cli-core
     #   azure-datalake-store
     #   azure-identity
     #   msal-extensions
-msal-extensions==1.2.0b1
+msal-extensions==1.2.0
     # via
     #   azure-cli-core
     #   azure-identity
@@ -564,11 +556,10 @@ msrestazure==0.6.4.post1
     #   azure-batch
     #   azure-cli-core
     #   azure-graphrbac
-    #   azure-mgmt-datalake-store
     #   azure-mgmt-devtestlabs
     #   azure-mgmt-kusto
     #   azure-mgmt-managedservices
-numpy==2.0.0
+numpy==2.1.0
     # via pandas
 oauthlib==3.2.2
     # via requests-oauthlib
@@ -591,7 +582,7 @@ opencensus-ext-postgresql==0.1.3
     # via -r requirements.in
 opencensus-ext-requests==0.8.0
     # via -r requirements.in
-openpyxl==3.1.4
+openpyxl==3.1.5
     # via tablib
 packaging==24.1
     # via
@@ -601,28 +592,28 @@ packaging==24.1
     #   marshmallow
 pandas==2.2.2
     # via -r requirements.in
-paramiko==3.4.0
+paramiko==3.4.1
     # via
     #   azure-cli-core
     #   fabric
     #   scp
     #   sshtunnel
-pillow==10.3.0
+pillow==10.4.0
     # via -r requirements.in
 pkginfo==1.11.1
     # via azure-cli-core
-portalocker==2.8.2
+portalocker==2.10.1
     # via
     #   azure-cli-telemetry
     #   msal-extensions
-proto-plus==1.23.0
+proto-plus==1.24.0
     # via google-api-core
-protobuf==4.25.3
+protobuf==5.28.0
     # via
     #   google-api-core
     #   googleapis-common-protos
     #   proto-plus
-psutil==5.9.8
+psutil==6.0.0
     # via
     #   azure-cli-core
     #   opencensus-ext-azure
@@ -644,7 +635,7 @@ pygithub==1.59.1
     # via azure-cli
 pygments==2.18.0
     # via knack
-pyjwt[crypto]==2.8.0
+pyjwt[crypto]==2.9.0
     # via
     #   adal
     #   azure-cli-core
@@ -655,7 +646,7 @@ pynacl==1.5.0
     #   azure-cli
     #   paramiko
     #   pygithub
-pyopenssl==24.1.0
+pyopenssl==24.2.1
     # via
     #   azure-cli-core
     #   josepy
@@ -673,7 +664,7 @@ pytz==2024.1
     # via
     #   -r requirements.in
     #   pandas
-pyyaml==6.0.1
+pyyaml==6.0.2
     # via
     #   knack
     #   pycomposefile
@@ -713,7 +704,7 @@ six==1.16.0
     #   msrestazure
     #   opencensus
     #   python-dateutil
-sqlparse==0.5.0
+sqlparse==0.5.1
     # via django
 sshtunnel==0.1.5
     # via azure-cli
@@ -727,10 +718,12 @@ typing-extensions==4.12.2
     # via
     #   asgiref
     #   azure-core
+    #   azure-identity
     #   azure-keyvault-administration
     #   azure-keyvault-certificates
     #   azure-keyvault-keys
     #   azure-keyvault-secrets
+    #   azure-mgmt-containerservice
     #   azure-monitor-query
     #   azure-storage-blob
 tzdata==2024.1

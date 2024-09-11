@@ -1,4 +1,4 @@
-FROM python:3.11-buster as app
+FROM python:3.12-bookworm as app
 MAINTAINER datapunt@amsterdam.nl
 
 ENV PYTHONUNBUFFERED 1 \
@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1 \
 RUN apt-get update \
   && apt-get dist-upgrade -y \
   && apt-get install --no-install-recommends -y \
-  && apt-get install -y gdal-bin libgeos-dev netcat \
+  && apt-get install -y gdal-bin libgeos-dev netcat-openbsd \
   && pip install --upgrade pip \
   && pip install uwsgi \
   && apt-get clean \
