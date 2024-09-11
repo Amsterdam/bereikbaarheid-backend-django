@@ -1,5 +1,6 @@
 from django.contrib.gis.db.models import MultiLineStringField, PointField, PolygonField
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import RegexValidator
 from django.db import models
 
 """
@@ -7,6 +8,8 @@ Docs:
 https://git.data.amsterdam.nl/re_verkeer/bereikbaarheid/-/issues/459
 help_text is the original table name
 """
+
+REGEXSPECIALCHAR = "[!@#$^*+.=;|].*"
 
 
 class TimeStampMixin(models.Model):
@@ -42,8 +45,30 @@ class VenstertijdWeg(TimeStampMixin):
         verbose_name_plural = "Venstertijdwegen"
 
     link_nr = models.IntegerField(help_text="linknr")
-    name = models.CharField(max_length=255, blank=True, null=True)
-    e_type = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        validators=[
+            RegexValidator(
+                REGEXSPECIALCHAR,
+                inverse_match=True,
+                message="Specialcharacters like !@#$^*+.=;| are not allowed, remove and try again",
+            )
+        ],
+    )
+    e_type = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        validators=[
+            RegexValidator(
+                REGEXSPECIALCHAR,
+                inverse_match=True,
+                message="Specialcharacters like !@#$^*+.=;| are not allowed, remove and try again",
+            )
+        ],
+    )
     verkeersbord = models.IntegerField()
     dagen = ArrayField(models.CharField(max_length=10, blank=True, null=True))
     begin_tijd = models.TimeField(blank=True, null=True)
