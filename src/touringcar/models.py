@@ -76,13 +76,51 @@ class Bericht(TimeStampMixin):
 
 def calc_geometry_from_wgs(lat: float, lon: float) -> PointField:
     """Calculate geometry in srid=28992 (RD-coordinates) from given latitude and longitude (srid=4326; WGS coordinates)"""
-    pnt = Point(lon, lat, srid=4326)
-    pnt.transform(28992)
-    return pnt
+    point_wgs84 = Point(lon, lat, srid=4326)
+    point_rd = point_wgs84.transform(28992, clone=True)
+    return point_rd
 
 
 def calc_lat_lon_from_geometry(geom: PointField) -> dict:
     """Calculate Point latitude and longitude (srid=4326; WGS coordinates) from given geometry in srid=28992 (RD-coordinates)"""
-    pnt = Point(geom.x, geom.y, srid=28992)
-    pnt.transform(4326)
-    return {"lat": pnt.y, "lon": pnt.x}
+    point_rd = Point(geom.x, geom.y, srid=28992)
+    point_wgs84 = point_rd.transform(4326, clone=True)
+    return {"lat": point_wgs84.y, "lon": point_wgs84.x}
+
+
+class Halte(TimeStampMixin):
+    """   Touringcar: haltes   """
+    name = models.CharField(max_length=50, help_text="omschrijving")
+    code = models.IntegerField(blank=True)
+    location = models.CharField(max_length=150, help_text="bijzonderheden")
+    capacity = models.IntegerField(help_text="plaatsen")
+    lat = models.FloatField(help_text="Latitude", blank=True, null=True)
+    lon = models.FloatField(help_text="Longitude", blank=True, null=True)
+    geometry = PointField(srid=28992, default=DEFAULT_GEOM)
+
+    def clean(self):
+        check_code = self.name.split(':')[0]
+        if ( check_code[0:1] != 'H' or not check_code[1:].isnumeric()):
+            raise ValidationError({"name": ("name moet beginnen met een 'H' gevolgd door een <nummer> en ':' ")})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+
+        # set numeric code from given name
+        self.code =  int(self.name.split(':')[0][1:])
+
+        if self.lat and self.lon:  # lat, lon exist
+            if self.geometry.equals_exact(
+                GEOSGeometry(DEFAULT_GEOM), tolerance=0.005
+            ):  # because of decimals == comparing not true
+                self.geometry = calc_geometry_from_wgs(self.lat, self.lon)
+            else:  # self.geometry != DEFAULT_GEOM
+                pnt = calc_lat_lon_from_geometry(self.geometry)
+                self.lat = pnt["lat"]
+                self.lon = pnt["lon"]
+
+        # Round the coordinates to 6 decimal places
+        self.lat = round(self.lat, 6)
+        self.lon = round(self.lon, 6)
+
+        return super().save(*args, **kwargs)

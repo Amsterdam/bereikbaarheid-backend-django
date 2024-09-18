@@ -3,9 +3,10 @@ from django.contrib import admin
 from import_export.tmp_storages import CacheStorage
 from leaflet.admin import LeafletGeoAdminMixin
 
-from bereikbaarheid.admin import ImportExportFormatsMixin
-from touringcar.models import Bericht
-from touringcar.resource import BerichtResource
+from bereikbaarheid.admin import ImportExportFormatsMixin, ImportMixin
+from bereikbaarheid.resources.utils import GEOJSON
+from touringcar.models import Bericht, Halte
+from touringcar.resource import BerichtResource, HalteResource
 
 
 class BerichtenForm(forms.ModelForm):
@@ -82,3 +83,25 @@ class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAd
             },
         ),
     ]
+
+@admin.register(Halte)
+class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
+    readonly_fields = ['code']
+    list_display = [
+        "name",
+        "code",
+        "location",
+        "capacity",
+        "created_at",
+        "updated_at",
+    ]
+    list_filter = ["capacity", "created_at", "updated_at"]
+    resource_classes = [HalteResource]
+    ordering = ("code",)
+    search_help_text = "zoek naar trefwoord in name"
+    search_fields = ["name"]
+
+    def get_import_formats(self):
+        """Returns available import formats."""
+        return [GEOJSON]

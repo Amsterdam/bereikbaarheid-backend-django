@@ -1,6 +1,7 @@
+from django.contrib.gis.geos import GEOSGeometry
 from import_export.resources import ModelResource
 
-from touringcar.models import Bericht
+from touringcar.models import Bericht, Halte, calc_geometry_from_wgs
 
 
 class BerichtResource(ModelResource):
@@ -26,3 +27,43 @@ class BerichtResource(ModelResource):
         report_skipped = True
         exclude = ("id", "created_at", "updated_at")
         import_id_fields = ("title", "startdate", "enddate")
+
+
+class HalteResource(ModelResource):
+    def before_import(self, dataset, **kwargs):
+        col_mapping = {
+            "omschrijving": "name",
+            "bijzonderheden": "location",
+            "plaatsen": "capacity"
+        }
+
+        # all lower
+        dataset.headers = [x.strip().lower() for x in dataset.headers]
+        # mapping of the model.py columnnames
+        dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
+        
+        # trim leading and trailing spaces
+        name_clean = [x.strip() for x in dataset["name"]]
+        del dataset["name"]
+        dataset.append_col(name_clean, header="name")
+
+        # Rename the column
+        dataset.headers[dataset.headers.index("geom")] = "geometry"
+
+
+    def before_import_row(self, row, **kwargs):
+        geom = GEOSGeometry(str(row["geometry"]))
+        row["lat"] = geom.y
+        row["lon"] = geom.x
+        
+        if geom.srid == 4326:
+            row["geometry"] = calc_geometry_from_wgs(geom.y, geom.x)
+        else:
+            row["geometry"] = geom
+
+    class Meta:
+        model = Halte
+        skip_unchanged = True
+        report_skipped = True
+        exclude = ("id", "created_at", "updated_at")
+        import_id_fields = ("name",)
