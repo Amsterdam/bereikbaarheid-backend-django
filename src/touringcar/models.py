@@ -1,6 +1,7 @@
 from django.contrib.gis.db.models import PointField
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 
 from bereikbaarheid.models import TimeStampMixin
@@ -101,9 +102,6 @@ class TouringcarBase(TimeStampMixin):
     def save(self, *args, **kwargs):
         self.full_clean()
 
-        # set numeric code from given name
-        self.code =  int(self.name.split(':')[0][1:])
-
         if self.lat and self.lon:  # lat, lon exist
             if self.geometry.equals_exact(
                 GEOSGeometry(DEFAULT_GEOM), tolerance=0.005
@@ -160,8 +158,21 @@ class Parkeerplaats(TouringcarBase):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-
         # set numeric code from given name
         self.code =  int(self.name.split(':')[0][1:])
 
         return super().save(*args, **kwargs)
+
+
+class Doorrijhoogte(TouringcarBase):
+    """   Touringcar: borden Doorrijhoogte """
+    maxheight = models.CharField(
+        max_length=5, 
+        help_text="maximaleDoorrijhoogte", 
+        validators=[
+            RegexValidator(
+                regex=r'^\d+[,]{0,1}\d{0,}m$',
+                message="format voor maximaledoorijhoogte is: <cijfer>,<cijfer> gevolgd door 'm'",
+            )
+        ]
+    )
