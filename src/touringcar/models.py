@@ -88,20 +88,15 @@ def calc_lat_lon_from_geometry(geom: PointField) -> dict:
     return {"lat": point_wgs84.y, "lon": point_wgs84.x}
 
 
-class Halte(TimeStampMixin):
-    """   Touringcar: haltes   """
+class TouringcarBase(TimeStampMixin):
+    """ Base model for data halte, parkeerplaatsen en doorrijhoogte"""
+    class Meta:
+        abstract = True
+
     name = models.CharField(max_length=50, help_text="omschrijving")
-    code = models.IntegerField(blank=True)
-    location = models.CharField(max_length=150, help_text="bijzonderheden")
-    capacity = models.IntegerField(help_text="plaatsen")
     lat = models.FloatField(help_text="Latitude", blank=True, null=True)
     lon = models.FloatField(help_text="Longitude", blank=True, null=True)
     geometry = PointField(srid=28992, default=DEFAULT_GEOM)
-
-    def clean(self):
-        check_code = self.name.split(':')[0]
-        if ( check_code[0:1] != 'H' or not check_code[1:].isnumeric()):
-            raise ValidationError({"name": ("name moet beginnen met een 'H' gevolgd door een <nummer> en ':' ")})
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -122,5 +117,51 @@ class Halte(TimeStampMixin):
         # Round the coordinates to 6 decimal places
         self.lat = round(self.lat, 6)
         self.lon = round(self.lon, 6)
+
+        return super().save(*args, **kwargs)
+
+
+
+class Halte(TouringcarBase):
+    """   Touringcar: haltes   """
+    code = models.IntegerField(blank=True)    
+    location = models.CharField(max_length=150, help_text="bijzonderheden")
+    capacity = models.IntegerField(help_text="plaatsen")
+
+    def clean(self):
+        check_code = self.name.split(':')[0]
+        if ( check_code[0:1] != 'H' or not check_code[1:].isnumeric()):
+            raise ValidationError({"name": ("name moet beginnen met een 'H' gevolgd door een <nummer> en ':' ")})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        # set numeric code from given name
+        self.code =  int(self.name.split(':')[0][1:])
+
+        return super().save(*args, **kwargs)
+
+
+
+class Parkeerplaats(TouringcarBase):
+    """   Touringcar: parkeerplaats (P+R)   """
+    class Meta:
+        verbose_name_plural = "Parkeerplaatsen"
+
+    code = models.IntegerField(blank=True)
+    location = models.CharField(max_length=200, help_text="bijzonderheden")
+    capacity = models.IntegerField(help_text="plaatsen")
+    info = models.CharField(max_length=100, help_text="meerInformatie", blank=True, null=True)
+    url = models.URLField(blank=True, null=True)
+
+    def clean(self):
+        check_code = self.name.split(':')[0]
+        if ( check_code[0:1] != 'P' or not check_code[1:].isnumeric()):
+            raise ValidationError({"name": ("name moet beginnen met een 'P' gevolgd door een <nummer> en ':' ")})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+
+        # set numeric code from given name
+        self.code =  int(self.name.split(':')[0][1:])
 
         return super().save(*args, **kwargs)

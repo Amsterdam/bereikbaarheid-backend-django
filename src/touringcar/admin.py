@@ -5,8 +5,8 @@ from leaflet.admin import LeafletGeoAdminMixin
 
 from bereikbaarheid.admin import ImportExportFormatsMixin, ImportMixin
 from bereikbaarheid.resources.utils import GEOJSON
-from touringcar.models import Bericht, Halte
-from touringcar.resource import BerichtResource, HalteResource
+from touringcar.models import Bericht, Halte, Parkeerplaats
+from touringcar.resource import BerichtResource, HalteResource, ParkeerplaatsResource
 
 
 class BerichtenForm(forms.ModelForm):
@@ -105,3 +105,26 @@ class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     def get_import_formats(self):
         """Returns available import formats."""
         return [GEOJSON]
+
+
+@admin.register(Parkeerplaats)
+class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+    tmp_storage_class = CacheStorage
+    readonly_fields = ['code']
+    list_display = [
+        "name",
+        "code",
+        "location",
+        "capacity",
+        "created_at",
+        "updated_at",
+    ]
+    list_filter = ["capacity", "created_at", "updated_at"]
+    resource_classes = [ParkeerplaatsResource]
+    ordering = ("code",)
+    search_help_text = "zoek naar trefwoord in name"
+    search_fields = ["name"]
+
+    def get_import_formats(self):
+        """Returns available import formats."""
+        return [GEOJSON]    
