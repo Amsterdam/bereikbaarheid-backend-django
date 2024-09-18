@@ -112,9 +112,9 @@ class TouringcarBase(TimeStampMixin):
                 self.lat = pnt["lat"]
                 self.lon = pnt["lon"]
 
-        # Round the coordinates to 6 decimal places
-        self.lat = round(self.lat, 6)
-        self.lon = round(self.lon, 6)
+            # Round the coordinates to 6 decimal places
+            self.lat = round(self.lat, 6)
+            self.lon = round(self.lon, 6)
 
         return super().save(*args, **kwargs)
 
