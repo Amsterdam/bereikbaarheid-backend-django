@@ -43,6 +43,7 @@ class TouringcarBaseResource(ModelResource):
 
         # combine col_mapping BaseResource and specificResource
         col_mapping |= col_map
+
         # all lower
         dataset.headers = [x.strip().lower() for x in dataset.headers]
         # mapping of the model.py columnnames
@@ -109,11 +110,15 @@ class DoorrijhoogteResource(TouringcarBaseResource):
         col_mapping = {
             "maximaledoorrijhoogte": "maxheight",
         }
-        return super().before_import(dataset, col_mapping, **kwargs)
+
+        super().before_import(dataset, col_mapping, **kwargs)
+        # add for use in import_id_fields
+        dataset.headers.append('lat')
+        dataset.headers.append('lon')
 
     class Meta:
         model = Doorrijhoogte
         skip_unchanged = True
         report_skipped = True
-        exclude = ("created_at", "updated_at")
-        import_id_fields = ("name", "id")
+        exclude = ("id", "created_at", "updated_at")
+        import_id_fields = ("name", "lat", "lon")

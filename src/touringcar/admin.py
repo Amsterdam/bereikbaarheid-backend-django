@@ -139,15 +139,15 @@ class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     tmp_storage_class = CacheStorage
     list_display = [
-        "id",
         "name",
+        "id",
         "maxheight",
         "created_at",
         "updated_at",
     ]
     list_filter = ["maxheight", "created_at", "updated_at"]
     resource_classes = [DoorrijhoogteResource]
-    ordering = ("id",)
+    ordering = ("name","-id")
     search_help_text = "zoek naar trefwoord in name"
     search_fields = ["name"]
 

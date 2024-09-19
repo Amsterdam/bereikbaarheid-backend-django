@@ -122,6 +122,13 @@ class TouringcarBase(TimeStampMixin):
 
 class Halte(TouringcarBase):
     """   Touringcar: haltes   """
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(
+                    fields=["name",],
+                    name="halte_name_unique"),
+        ]
+
     code = models.IntegerField(blank=True)    
     location = models.CharField(max_length=150, help_text="bijzonderheden")
     capacity = models.IntegerField(help_text="plaatsen")
@@ -144,7 +151,11 @@ class Parkeerplaats(TouringcarBase):
     """   Touringcar: parkeerplaats (P+R)   """
     class Meta:
         verbose_name_plural = "Parkeerplaatsen"
-
+        constraints = [
+                models.UniqueConstraint(
+                    fields=["name",],
+                    name="parkeerplaats_name_unique"),
+        ]
     code = models.IntegerField(blank=True)
     location = models.CharField(max_length=200, help_text="bijzonderheden")
     capacity = models.IntegerField(help_text="plaatsen")
@@ -166,6 +177,12 @@ class Parkeerplaats(TouringcarBase):
 
 class Doorrijhoogte(TouringcarBase):
     """   Touringcar: borden Doorrijhoogte """
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(
+                    fields=["name", "lat", "lon"],
+                    name="doorrijhoogte_name_lat_lon_unique"),
+        ]    
     maxheight = models.CharField(
         max_length=5, 
         help_text="maximaleDoorrijhoogte", 
