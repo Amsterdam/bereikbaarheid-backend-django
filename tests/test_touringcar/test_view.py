@@ -8,9 +8,9 @@ import pytz
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
-from touringcar.download import Halte, Parkeerplaats
-from touringcar.models import Bericht
-from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
+from touringcar.download import Halte_data_api, Parkeerplaats_data_api
+from touringcar.models import DEFAULT_GEOM, Bericht, Halte
+from touringcar.serializer import BerichtSerializer, HalteSerializer
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 api_path = "/api/v1/"
@@ -79,7 +79,7 @@ def test_get_bericht_noparam(client, bericht_today):
 def test_serves_csv(client):
     with mock.patch("touringcar.view.fetch_data") as fetch_data:
         fetch_data.return_value = [
-            Halte(
+            Halte_data_api(
                 {
                     "omschrijving": "H7: Spui",
                     "geometry": {
@@ -87,7 +87,7 @@ def test_serves_csv(client):
                     },
                 }
             ),
-            Parkeerplaats(
+            Parkeerplaats_data_api(
                 {
                     "omschrijving": "P1: P+R Zeeburg",
                     "geometry": {
@@ -108,3 +108,35 @@ def test_serves_csv(client):
         response.content
         == b"52.37088300414084,4.8906110012279225,H7,halte\r\n52.37120300414078,4.961894001299134,P+R Zeeburg,parkeerplaats\r\n"
     )
+
+
+HALTE_TEST =  Halte(
+        name = "H1: test", 
+        lat = 52.37088300,
+        lon = 4.890611,
+        geometry = DEFAULT_GEOM,
+        location = "test test",
+        capacity = 5
+        )
+
+
+@pytest.mark.django_db
+def test_serialization_halte():
+    HALTE_TEST.save()
+    serializer = HalteSerializer(HALTE_TEST)
+    data = serializer.data
+    assert data["properties"]["name"] == 'H1: test'
+
+    HALTE_TEST.delete()
+    assert Halte.objects.count() == 0
+
+@pytest.mark.django_db
+def test_get_halte(client):
+    HALTE_TEST.save()
+    response = client.get(api_path + "touringcar/haltes")
+    result = geojson.loads(response.content.decode("utf-8"))
+    assert result["features"][0]["properties"]["lat"] == HALTE_TEST.lat
+    assert result["features"][0]["geometry"]["coordinates"] != DEFAULT_GEOM
+
+    HALTE_TEST.delete()
+    assert Halte.objects.count() == 0

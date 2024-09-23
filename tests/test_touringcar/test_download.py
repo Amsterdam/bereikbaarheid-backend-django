@@ -1,7 +1,13 @@
 from unittest import mock
 from urllib.parse import urljoin
 
-from touringcar.download import API_URL, Halte, Parkeerplaats, _Stop, fetch_data
+from touringcar.download import (
+    API_URL,
+    Halte_data_api,
+    Parkeerplaats_data_api,
+    _Stop,
+    fetch_data,
+)
 
 
 class TestDownload:
@@ -88,7 +94,7 @@ class TestDownload:
             haltes_parkeerplaatsen = fetch_data()
 
         for x in haltes_parkeerplaatsen:
-            assert type(x) in [Halte, Parkeerplaats]
+            assert type(x) in [Halte_data_api, Parkeerplaats_data_api]
 
     def test_stop_converts_location_data_rdw_to_wgs(self):
         stop = _Stop(self.api_responses[0]["_embedded"]["haltes"][0])
@@ -97,11 +103,11 @@ class TestDownload:
         assert stop.longitude == 4.8906110012279225
 
     def test_halte_formats_text(self):
-        halte = Halte(self.api_responses[0]["_embedded"]["haltes"][0])
+        halte = Halte_data_api(self.api_responses[0]["_embedded"]["haltes"][0])
 
         assert halte.text == "H7"
 
     def test_parkeerplaats_formats_text(self):
-        halte = Parkeerplaats(self.api_responses[2]["_embedded"]["parkeerplaatsen"][0])
+        halte = Parkeerplaats_data_api(self.api_responses[2]["_embedded"]["parkeerplaatsen"][0])
 
         assert halte.text == "P+R Zeeburg"
