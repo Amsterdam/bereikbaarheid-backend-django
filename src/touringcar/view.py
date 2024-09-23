@@ -8,8 +8,12 @@ from rest_framework.views import APIView
 
 from bereikbaarheid.wrapper import extract_parameters
 from touringcar.download import fetch_data
-from touringcar.models import Bericht
-from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
+from touringcar.models import Bericht, Halte
+from touringcar.serializer import (
+    BerichtFilterSerializer,
+    BerichtSerializer,
+    HalteSerializer,
+)
 
 
 class BerichtList(APIView):
@@ -52,3 +56,16 @@ class CsvView(APIView):
         except Exception as err:
             response = JsonResponse(status=400, data={"error": str(err)})
         return response
+
+
+class HalteList(APIView):
+    def get(self, request):
+        try:
+            # "Geeft een lijst terug met alle haltes"
+            serializer = HalteSerializer(Halte.objects.all(),  many=True)
+            return Response(serializer.data)
+
+        except ValidationError as err:
+            return JsonResponse(status=400, data=err.messages)
+        except json.JSONDecodeError as e:
+            return JsonResponse(status=400, data={"error": str(e)})

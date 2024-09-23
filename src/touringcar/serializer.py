@@ -9,7 +9,7 @@ from rest_framework_gis.serializers import (
     GeometrySerializerMethodField,
 )
 
-from touringcar.models import Bericht, calc_lat_lon_from_geometry
+from touringcar.models import Bericht, Halte, calc_lat_lon_from_geometry
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 
@@ -82,3 +82,22 @@ class BerichtFilterSerializer(Schema):
         load_default=datetime.today().astimezone(tz_amsterdam),
         required=False,
     )
+
+
+class HalteSerializer(GeoFeatureModelSerializer):
+    geom_wgs = GeometrySerializerMethodField()
+
+    def get_geom_wgs(self, obj):
+        return Point(obj.lon, obj.lat)
+
+    class Meta:
+        model = Halte
+        geo_field = "geom_wgs"
+        fields = [ "id",
+                  "name",
+                  "location",
+                  "capacity",
+                  "lat",
+                  "lon",
+                  "created_at",
+                  "updated_at"]
