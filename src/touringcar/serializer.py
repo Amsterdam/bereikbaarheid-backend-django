@@ -9,7 +9,13 @@ from rest_framework_gis.serializers import (
     GeometrySerializerMethodField,
 )
 
-from touringcar.models import Bericht, Halte, calc_lat_lon_from_geometry
+from touringcar.models import (
+    Bericht,
+    Doorrijhoogte,
+    Halte,
+    Parkeerplaats,
+    calc_lat_lon_from_geometry,
+)
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 
@@ -87,6 +93,12 @@ class BerichtFilterSerializer(Schema):
 class HalteSerializer(GeoFeatureModelSerializer):
     geom_wgs = GeometrySerializerMethodField()
 
+    # change field names into dutch to connect frontend with same fields as old https://api.data.amsterdam.nl/v1/touringcars/
+    omschrijving = serializers.CharField(source="name")
+    bijzonderheden = serializers.CharField(source = "location")
+    plaatsen = serializers.IntegerField( source = "capacity")
+    
+
     def get_geom_wgs(self, obj):
         return Point(obj.lon, obj.lat)
 
@@ -94,9 +106,56 @@ class HalteSerializer(GeoFeatureModelSerializer):
         model = Halte
         geo_field = "geom_wgs"
         fields = [ "id",
-                  "name",
-                  "location",
-                  "capacity",
+                  "omschrijving",#name",
+                  "bijzonderheden",#location",
+                  "plaatsen", #"capacity",
+                  "lat",
+                  "lon",
+                  "created_at",
+                  "updated_at"]      
+    
+
+class ParkeerplaatsSerializer(GeoFeatureModelSerializer):
+    geom_wgs = GeometrySerializerMethodField()
+
+    omschrijving = serializers.CharField(source= "name")
+    bijzonderheden = serializers.CharField(source = "location")
+    plaatsen = serializers.IntegerField(source = "capacity")
+    meerInformatie = serializers.CharField(source = "info")
+
+    def get_geom_wgs(self, obj):
+        return Point(obj.lon, obj.lat)
+
+    class Meta:
+        model = Parkeerplaats
+        geo_field = "geom_wgs"
+        fields = [ "id",
+                  "omschrijving",#name",
+                  "bijzonderheden",#location",
+                  "plaatsen", #"capacity",
+                  "meerInformatie", #info,
+                  "url",
+                  "lat",
+                  "lon",
+                  "created_at",
+                  "updated_at"]
+        
+
+class DoorrijhoogteSerializer(GeoFeatureModelSerializer):
+    geom_wgs = GeometrySerializerMethodField()
+
+    omschrijving = serializers.CharField(source= "name")
+    maximaleDoorrijhoogte = serializers.CharField(source= "maxheight")
+
+    def get_geom_wgs(self, obj):
+        return Point(obj.lon, obj.lat)
+
+    class Meta:
+        model = Doorrijhoogte
+        geo_field = "geom_wgs"
+        fields = [ "id",
+                  "omschrijving",
+                  "maximaleDoorrijhoogte", #maxheight,
                   "lat",
                   "lon",
                   "created_at",

@@ -9,8 +9,13 @@ from django.core.exceptions import ValidationError
 from model_bakery import baker
 
 from touringcar.download import Halte_data_api, Parkeerplaats_data_api
-from touringcar.models import DEFAULT_GEOM, Bericht, Halte
-from touringcar.serializer import BerichtSerializer, HalteSerializer
+from touringcar.models import DEFAULT_GEOM, Bericht, Doorrijhoogte, Halte, Parkeerplaats
+from touringcar.serializer import (
+    BerichtSerializer,
+    DoorrijhoogteSerializer,
+    HalteSerializer,
+    ParkeerplaatsSerializer,
+)
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 api_path = "/api/v1/"
@@ -120,23 +125,58 @@ HALTE_TEST =  Halte(
         )
 
 
+PARKEERPLAATS_TEST =  Parkeerplaats(
+        name = "P1: test", 
+        lat = 52.97088300,
+        lon = 4.890611,
+        geometry = DEFAULT_GEOM,
+        location = "test test",
+        capacity = 5,
+        info = 'testtest',
+        )
+
+DOORRIJHOOGTE_TEST =  Doorrijhoogte(
+        name = "Doorrijhoogte test", 
+        lat = 52.47088300,
+        lon = 4.890611,
+        geometry = DEFAULT_GEOM,
+        maxheight = '4m',
+        )
+
 @pytest.mark.django_db
-def test_serialization_halte():
-    HALTE_TEST.save()
-    serializer = HalteSerializer(HALTE_TEST)
+@pytest.mark.parametrize(
+    "test_model, test_input, test_serializer, expected",
+    [
+        (Halte, HALTE_TEST, HalteSerializer, 'H1: test'),
+        (Parkeerplaats, PARKEERPLAATS_TEST, ParkeerplaatsSerializer, 'P1: test'),
+        (Doorrijhoogte, DOORRIJHOOGTE_TEST, DoorrijhoogteSerializer, 'Doorrijhoogte test'),
+    ],
+)
+def test_serialization_halte(test_model, test_input, test_serializer, expected):
+    test_input.save()
+    serializer = test_serializer(test_input)
     data = serializer.data
-    assert data["properties"]["name"] == 'H1: test'
+    assert data["properties"]["omschrijving"] == expected
 
-    HALTE_TEST.delete()
-    assert Halte.objects.count() == 0
+    test_input.delete()
+    assert test_model.objects.count() == 0
 
 @pytest.mark.django_db
-def test_get_halte(client):
-    HALTE_TEST.save()
-    response = client.get(api_path + "touringcar/haltes")
+@pytest.mark.parametrize(
+    "test_model, test_path, test_input, test_var, expected",
+    [
+        (Halte, "/haltes" ,  HALTE_TEST, "lat", HALTE_TEST.lat),
+        (Parkeerplaats, "/parkeerplaatsen", PARKEERPLAATS_TEST, "meerInformatie", PARKEERPLAATS_TEST.info),
+        (Doorrijhoogte, "/doorrijhoogten", DOORRIJHOOGTE_TEST, "maximaleDoorrijhoogte", DOORRIJHOOGTE_TEST.maxheight),
+    ],
+)
+def test_get_halte(client, test_model, test_path, test_input, test_var, expected):
+    test_input.save()
+    response = client.get(api_path + "touringcar" + test_path)
     result = geojson.loads(response.content.decode("utf-8"))
-    assert result["features"][0]["properties"]["lat"] == HALTE_TEST.lat
+
+    assert result["features"][0]["properties"][test_var] == expected
     assert result["features"][0]["geometry"]["coordinates"] != DEFAULT_GEOM
 
-    HALTE_TEST.delete()
-    assert Halte.objects.count() == 0
+    test_input.delete()
+    assert test_model.objects.count() == 0
