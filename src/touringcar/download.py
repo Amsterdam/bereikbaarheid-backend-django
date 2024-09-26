@@ -31,7 +31,7 @@ class _Stop:
         return [self.latitude, self.longitude, self.text, self.stop_type]
 
 
-class Halte(_Stop):
+class Halte_data_api(_Stop):
     stop_type = "halte"
 
     @property
@@ -39,7 +39,7 @@ class Halte(_Stop):
         return self._omschrijving.split(":")[0]
 
 
-class Parkeerplaats(_Stop):
+class Parkeerplaats_data_api(_Stop):
     stop_type = "parkeerplaats"
 
     @property
@@ -58,9 +58,9 @@ def fetch_data() -> List[_Stop]:
             data = _get_all(response["_links"]["next"]["href"], data_type, data)
         return data
 
-    haltes = [Halte(x) for x in _get_all(urljoin(API_URL, "haltes"), "haltes")]
+    haltes = [Halte_data_api(x) for x in _get_all(urljoin(API_URL, "haltes"), "haltes")]
     parkeerplaatsen = [
-        Parkeerplaats(x)
+        Parkeerplaats_data_api(x)
         for x in _get_all(urljoin(API_URL, "parkeerplaatsen"), "parkeerplaatsen")
     ]
     return haltes + parkeerplaatsen

@@ -8,9 +8,14 @@ import pytz
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
-from touringcar.download import Halte, Parkeerplaats
-from touringcar.models import Bericht
-from touringcar.serializer import BerichtFilterSerializer, BerichtSerializer
+from touringcar.download import Halte_data_api, Parkeerplaats_data_api
+from touringcar.models import DEFAULT_GEOM, Bericht, Doorrijhoogte, Halte, Parkeerplaats
+from touringcar.serializer import (
+    BerichtSerializer,
+    DoorrijhoogteSerializer,
+    HalteSerializer,
+    ParkeerplaatsSerializer,
+)
 
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 api_path = "/api/v1/"
@@ -79,7 +84,7 @@ def test_get_bericht_noparam(client, bericht_today):
 def test_serves_csv(client):
     with mock.patch("touringcar.view.fetch_data") as fetch_data:
         fetch_data.return_value = [
-            Halte(
+            Halte_data_api(
                 {
                     "omschrijving": "H7: Spui",
                     "geometry": {
@@ -87,7 +92,7 @@ def test_serves_csv(client):
                     },
                 }
             ),
-            Parkeerplaats(
+            Parkeerplaats_data_api(
                 {
                     "omschrijving": "P1: P+R Zeeburg",
                     "geometry": {
@@ -108,3 +113,70 @@ def test_serves_csv(client):
         response.content
         == b"52.37088300414084,4.8906110012279225,H7,halte\r\n52.37120300414078,4.961894001299134,P+R Zeeburg,parkeerplaats\r\n"
     )
+
+
+HALTE_TEST =  Halte(
+        name = "H1: test", 
+        lat = 52.37088300,
+        lon = 4.890611,
+        geometry = DEFAULT_GEOM,
+        location = "test test",
+        capacity = 5
+        )
+
+
+PARKEERPLAATS_TEST =  Parkeerplaats(
+        name = "P1: test", 
+        lat = 52.97088300,
+        lon = 4.890611,
+        geometry = DEFAULT_GEOM,
+        location = "test test",
+        capacity = 5,
+        info = 'testtest',
+        )
+
+DOORRIJHOOGTE_TEST =  Doorrijhoogte(
+        name = "Doorrijhoogte test", 
+        lat = 52.47088300,
+        lon = 4.890611,
+        geometry = DEFAULT_GEOM,
+        maxheight = '4m',
+        )
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "test_model, test_input, test_serializer, expected",
+    [
+        (Halte, HALTE_TEST, HalteSerializer, 'H1: test'),
+        (Parkeerplaats, PARKEERPLAATS_TEST, ParkeerplaatsSerializer, 'P1: test'),
+        (Doorrijhoogte, DOORRIJHOOGTE_TEST, DoorrijhoogteSerializer, 'Doorrijhoogte test'),
+    ],
+)
+def test_serialization_halte(test_model, test_input, test_serializer, expected):
+    test_input.save()
+    serializer = test_serializer(test_input)
+    data = serializer.data
+    assert data["properties"]["omschrijving"] == expected
+
+    test_input.delete()
+    assert test_model.objects.count() == 0
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "test_model, test_path, test_input, test_var, expected",
+    [
+        (Halte, "/haltes" ,  HALTE_TEST, "lat", HALTE_TEST.lat),
+        (Parkeerplaats, "/parkeerplaatsen", PARKEERPLAATS_TEST, "meerInformatie", PARKEERPLAATS_TEST.info),
+        (Doorrijhoogte, "/doorrijhoogten", DOORRIJHOOGTE_TEST, "maximaleDoorrijhoogte", DOORRIJHOOGTE_TEST.maxheight),
+    ],
+)
+def test_get_halte(client, test_model, test_path, test_input, test_var, expected):
+    test_input.save()
+    response = client.get(api_path + "touringcar" + test_path)
+    result = geojson.loads(response.content.decode("utf-8"))
+
+    assert result["features"][0]["properties"][test_var] == expected
+    assert result["features"][0]["geometry"]["coordinates"] != DEFAULT_GEOM
+
+    test_input.delete()
+    assert test_model.objects.count() == 0
