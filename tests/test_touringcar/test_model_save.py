@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.gis.geos import GEOSGeometry
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
@@ -66,10 +67,10 @@ class TestModelSave:
         GEODEFAULT.save()
         assert Doorrijhoogte.objects.last().lat == lat_org
         assert Doorrijhoogte.objects.last().lon == lon_org
-        assert (
-            str(Doorrijhoogte.objects.last().geometry)
-            == "SRID=28992;POINT (121278.3042605289 487150.7276881739)"
-        )
+        assert Doorrijhoogte.objects.last().geometry.equals_exact(
+                GEOSGeometry("SRID=28992;POINT (121278.3042605289 487150.7276881739)"), tolerance=0.005
+            )  # because of decimals == comparing not true
+
         GEODEFAULT.delete()
         assert Doorrijhoogte.objects.count() == 0
 

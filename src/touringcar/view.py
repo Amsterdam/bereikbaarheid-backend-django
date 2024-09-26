@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 
 from django.http import HttpResponse, JsonResponse
 from marshmallow import ValidationError
@@ -16,6 +17,8 @@ from touringcar.serializer import (
     HalteSerializer,
     ParkeerplaatsSerializer,
 )
+
+log = logging.getLogger(__name__)
 
 
 class BerichtList(APIView):
@@ -37,9 +40,11 @@ class BerichtList(APIView):
             return Response(serializer.data)
 
         except ValidationError as err:
-            return JsonResponse(status=400, data=err.messages)
+            log.info(err.messages)
+            return JsonResponse(status=400, data={'error':"An error has occurred!"})
         except json.JSONDecodeError as e:
-            return JsonResponse(status=400, data={"error": str(e)})
+            log.info(str(e))
+            return JsonResponse(status=400, data={'error':"An error has occurred!"})
 
 
 class CsvView(APIView):
@@ -56,9 +61,9 @@ class CsvView(APIView):
             for entry in fetch_data():
                 writer.writerow(entry.to_row())
         except Exception as err:
-            response = JsonResponse(status=400, data={"error": str(err)})
+            log.info(str(err))
+            response = JsonResponse(status=400, data={"error": "An error has occurred!"})
         return response
-
 
 class HalteList(APIView):
     def get(self, request):
@@ -67,9 +72,11 @@ class HalteList(APIView):
             serializer = HalteSerializer(Halte.objects.all(),  many=True)
             return Response(serializer.data)
 
-        except Exception as e:
-            return JsonResponse(status=400, data={"error": str(e)})
+        except Exception as err:
+            log.info(str(err))
+            return JsonResponse(status=400, data={"error": "An error has occurred!"})
         
+
 class ParkeerplaatsList(APIView):
     def get(self, request):
         try:
@@ -77,9 +84,11 @@ class ParkeerplaatsList(APIView):
             serializer = ParkeerplaatsSerializer(Parkeerplaats.objects.all(),  many=True)
             return Response(serializer.data)
 
-        except Exception as e:
-            return JsonResponse(status=400, data={"error": str(e)})
-        
+        except Exception as err:
+            log.info(str(err))
+            return JsonResponse(status=400, data={"error": "An error has occurred!"})
+
+
 class DoorrijhoogteList(APIView):
     def get(self, request):
         try:
@@ -87,5 +96,6 @@ class DoorrijhoogteList(APIView):
             serializer = DoorrijhoogteSerializer(Doorrijhoogte.objects.all(),  many=True)
             return Response(serializer.data)
 
-        except Exception as e:
-            return JsonResponse(status=400, data={"error": str(e)})                
+        except Exception as err:
+            log.info(str(err))
+            return JsonResponse(status=400, data={"error": "An error has occurred!"})

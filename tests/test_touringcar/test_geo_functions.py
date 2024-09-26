@@ -1,5 +1,5 @@
 import pytest
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import GEOSGeometry, Point
 
 from touringcar.models import calc_geometry_from_wgs, calc_lat_lon_from_geometry
 
@@ -17,7 +17,8 @@ class TestGeoFunctions:
     )
     def test_calc_geometry_from_wgs(self, test_lat, test_lon, expected):
         """Calculate geometry in srid=28992 (RD-coordinates) from given latitude and longitude (srid=4326; WGS coordinates)"""
-        assert str(calc_geometry_from_wgs(test_lat, test_lon)) == expected
+        test_calcgeom = calc_geometry_from_wgs(test_lat, test_lon)
+        assert test_calcgeom.equals_exact(GEOSGeometry(expected), tolerance=0.005) # because of decimals == comparing not true
 
     @pytest.mark.parametrize(
         "test_x, test_y, expected",
