@@ -16,7 +16,7 @@ click==8.1.7
     # via black
 coverage[toml]==7.6.1
     # via pytest-cov
-django==5.1
+django==5.1.1
     # via model-bakery
 exceptiongroup==1.2.2
     # via pytest
@@ -36,7 +36,7 @@ packaging==24.1
     #   pytest
 pathspec==0.12.1
     # via black
-platformdirs==4.2.2
+platformdirs==4.3.6
     # via black
 pluggy==1.5.0
     # via pytest
@@ -49,7 +49,7 @@ pytest==7.4.4
     #   pytest-django
 pytest-cov==5.0.0
     # via -r requirements_dev.in
-pytest-django==4.8.0
+pytest-django==4.9.0
     # via -r requirements_dev.in
 sqlparse==0.5.1
     # via django
