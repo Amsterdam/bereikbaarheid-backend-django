@@ -20,7 +20,20 @@ from touringcar.models import (
 tz_amsterdam = pytz.timezone("Europe/Amsterdam")
 
 
-class BerichtSerializer(GeoFeatureModelSerializer):
+class GeometryMixin(GeoFeatureModelSerializer):
+    # a field which contains a geometry value and can be used as geo_field
+    geom_wgs = GeometrySerializerMethodField()
+
+    def get_geom_wgs(self, obj):
+        wgs = calc_lat_lon_from_geometry(obj.geometry)
+        # to be consistent with other-endpoints: serve lon,lat not lat,lon
+        return Point(wgs["lon"], wgs["lat"])
+
+    class Meta:
+        abstract=True
+
+
+class BerichtSerializer(GeometryMixin):
 
     image_url = serializers.ImageField(use_url=False)
     nl = serializers.SerializerMethodField()
@@ -52,14 +65,6 @@ class BerichtSerializer(GeoFeatureModelSerializer):
     def get_es(self, instance):
         return self.make_set(instance, "_es")
 
-    # a field which contains a geometry value and can be used as geo_field
-    geom_wgs = GeometrySerializerMethodField()
-
-    def get_geom_wgs(self, obj):
-        wgs = calc_lat_lon_from_geometry(obj.geometry)
-        # to be consistent with other-endpoints: serve lon,lat not lat,lon
-        return Point(wgs["lon"], wgs["lat"])
-
     class Meta:
         model = Bericht
         geo_field = "geom_wgs"
@@ -90,50 +95,39 @@ class BerichtFilterSerializer(Schema):
     )
 
 
-class HalteSerializer(GeoFeatureModelSerializer):
-    geom_wgs = GeometrySerializerMethodField()
-
+class HalteSerializer(GeometryMixin):
     # change field names into dutch to connect frontend with same fields as old https://api.data.amsterdam.nl/v1/touringcars/
     omschrijving = serializers.CharField(source="name")
     bijzonderheden = serializers.CharField(source = "location")
     plaatsen = serializers.IntegerField( source = "capacity")
-    
-
-    def get_geom_wgs(self, obj):
-        return Point(obj.lon, obj.lat)
-
+       
     class Meta:
         model = Halte
         geo_field = "geom_wgs"
         fields = [ "id",
-                  "omschrijving",#name",
-                  "bijzonderheden",#location",
-                  "plaatsen", #"capacity",
+                  "omschrijving",
+                  "bijzonderheden",
+                  "plaatsen",
                   "lat",
                   "lon",
                   "created_at",
                   "updated_at"]      
     
 
-class ParkeerplaatsSerializer(GeoFeatureModelSerializer):
-    geom_wgs = GeometrySerializerMethodField()
-
+class ParkeerplaatsSerializer(GeometryMixin):
     omschrijving = serializers.CharField(source= "name")
     bijzonderheden = serializers.CharField(source = "location")
     plaatsen = serializers.IntegerField(source = "capacity")
     meerInformatie = serializers.CharField(source = "info")
 
-    def get_geom_wgs(self, obj):
-        return Point(obj.lon, obj.lat)
-
     class Meta:
         model = Parkeerplaats
         geo_field = "geom_wgs"
         fields = [ "id",
-                  "omschrijving",#name",
-                  "bijzonderheden",#location",
-                  "plaatsen", #"capacity",
-                  "meerInformatie", #info,
+                  "omschrijving",
+                  "bijzonderheden",
+                  "plaatsen",
+                  "meerInformatie",
                   "url",
                   "lat",
                   "lon",
@@ -141,21 +135,16 @@ class ParkeerplaatsSerializer(GeoFeatureModelSerializer):
                   "updated_at"]
         
 
-class DoorrijhoogteSerializer(GeoFeatureModelSerializer):
-    geom_wgs = GeometrySerializerMethodField()
-
+class DoorrijhoogteSerializer(GeometryMixin):
     omschrijving = serializers.CharField(source= "name")
     maximaleDoorrijhoogte = serializers.CharField(source= "maxheight")
-
-    def get_geom_wgs(self, obj):
-        return Point(obj.lon, obj.lat)
 
     class Meta:
         model = Doorrijhoogte
         geo_field = "geom_wgs"
         fields = [ "id",
                   "omschrijving",
-                  "maximaleDoorrijhoogte", #maxheight,
+                  "maximaleDoorrijhoogte",
                   "lat",
                   "lon",
                   "created_at",
