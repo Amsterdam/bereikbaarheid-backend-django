@@ -30,7 +30,7 @@ class GeometryMixin(GeoFeatureModelSerializer):
         return Point(wgs["lon"], wgs["lat"])
 
     class Meta:
-        abstract=True
+        abstract = True
 
 
 class BerichtSerializer(GeometryMixin):
@@ -98,54 +98,60 @@ class BerichtFilterSerializer(Schema):
 class HalteSerializer(GeometryMixin):
     # change field names into dutch to connect frontend with same fields as old https://api.data.amsterdam.nl/v1/touringcars/
     omschrijving = serializers.CharField(source="name")
-    bijzonderheden = serializers.CharField(source = "location")
-    plaatsen = serializers.IntegerField( source = "capacity")
-       
+    bijzonderheden = serializers.CharField(source="location")
+    plaatsen = serializers.IntegerField(source="capacity")
+
     class Meta:
         model = Halte
         geo_field = "geom_wgs"
-        fields = [ "id",
-                  "omschrijving",
-                  "bijzonderheden",
-                  "plaatsen",
-                  "lat",
-                  "lon",
-                  "created_at",
-                  "updated_at"]      
-    
+        fields = [
+            "id",
+            "omschrijving",
+            "bijzonderheden",
+            "plaatsen",
+            "lat",
+            "lon",
+            "created_at",
+            "updated_at",
+        ]
+
 
 class ParkeerplaatsSerializer(GeometryMixin):
-    omschrijving = serializers.CharField(source= "name")
-    bijzonderheden = serializers.CharField(source = "location")
-    plaatsen = serializers.IntegerField(source = "capacity")
-    meerInformatie = serializers.CharField(source = "info")
+    omschrijving = serializers.CharField(source="name")
+    bijzonderheden = serializers.CharField(source="location")
+    plaatsen = serializers.IntegerField(source="capacity")
+    meerInformatie = serializers.CharField(source="info")
 
     class Meta:
         model = Parkeerplaats
         geo_field = "geom_wgs"
-        fields = [ "id",
-                  "omschrijving",
-                  "bijzonderheden",
-                  "plaatsen",
-                  "meerInformatie",
-                  "url",
-                  "lat",
-                  "lon",
-                  "created_at",
-                  "updated_at"]
-        
+        fields = [
+            "id",
+            "omschrijving",
+            "bijzonderheden",
+            "plaatsen",
+            "meerInformatie",
+            "url",
+            "lat",
+            "lon",
+            "created_at",
+            "updated_at",
+        ]
+
 
 class DoorrijhoogteSerializer(GeometryMixin):
-    omschrijving = serializers.CharField(source= "name")
-    maximaleDoorrijhoogte = serializers.CharField(source= "maxheight")
+    omschrijving = serializers.CharField(source="name")
+    maximaleDoorrijhoogte = serializers.CharField(source="maxheight")
 
     class Meta:
         model = Doorrijhoogte
         geo_field = "geom_wgs"
-        fields = [ "id",
-                  "omschrijving",
-                  "maximaleDoorrijhoogte",
-                  "lat",
-                  "lon",
-                  "created_at",
-                  "updated_at"]
+        fields = [
+            "id",
+            "omschrijving",
+            "maximaleDoorrijhoogte",
+            "lat",
+            "lon",
+            "created_at",
+            "updated_at",
+        ]

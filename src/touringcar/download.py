@@ -3,9 +3,10 @@ from typing import Dict, List, Optional
 from urllib.parse import urljoin
 
 import requests
+from django.conf import settings
 from pyproj import Transformer
 
-API_URL = "/v1/touringcars/"
+API_URL = urljoin(settings.BASE_URL, "v1/touringcar/")
 
 
 class _Stop:

@@ -115,41 +115,47 @@ def test_serves_csv(client):
     )
 
 
-HALTE_TEST =  Halte(
-        name = "H1: test", 
-        lat = 52.37088300,
-        lon = 4.890611,
-        geometry = DEFAULT_GEOM,
-        location = "test test",
-        capacity = 5
-        )
+HALTE_TEST = Halte(
+    name="H1: test",
+    lat=52.37088300,
+    lon=4.890611,
+    geometry=DEFAULT_GEOM,
+    location="test test",
+    capacity=5,
+)
 
 
-PARKEERPLAATS_TEST =  Parkeerplaats(
-        name = "P1: test", 
-        lat = 52.97088300,
-        lon = 4.890611,
-        geometry = DEFAULT_GEOM,
-        location = "test test",
-        capacity = 5,
-        info = 'testtest',
-        )
+PARKEERPLAATS_TEST = Parkeerplaats(
+    name="P1: test",
+    lat=52.97088300,
+    lon=4.890611,
+    geometry=DEFAULT_GEOM,
+    location="test test",
+    capacity=5,
+    info="testtest",
+)
 
-DOORRIJHOOGTE_TEST =  Doorrijhoogte(
-        name = "Doorrijhoogte test", 
-        lat = 52.47088300,
-        lon = 4.890611,
-        geometry = DEFAULT_GEOM,
-        maxheight = '4m',
-        )
+DOORRIJHOOGTE_TEST = Doorrijhoogte(
+    name="Doorrijhoogte test",
+    lat=52.47088300,
+    lon=4.890611,
+    geometry=DEFAULT_GEOM,
+    maxheight="4m",
+)
+
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "test_model, test_input, test_serializer, expected",
     [
-        (Halte, HALTE_TEST, HalteSerializer, 'H1: test'),
-        (Parkeerplaats, PARKEERPLAATS_TEST, ParkeerplaatsSerializer, 'P1: test'),
-        (Doorrijhoogte, DOORRIJHOOGTE_TEST, DoorrijhoogteSerializer, 'Doorrijhoogte test'),
+        (Halte, HALTE_TEST, HalteSerializer, "H1: test"),
+        (Parkeerplaats, PARKEERPLAATS_TEST, ParkeerplaatsSerializer, "P1: test"),
+        (
+            Doorrijhoogte,
+            DOORRIJHOOGTE_TEST,
+            DoorrijhoogteSerializer,
+            "Doorrijhoogte test",
+        ),
     ],
 )
 def test_serialization_halte(test_model, test_input, test_serializer, expected):
@@ -161,13 +167,26 @@ def test_serialization_halte(test_model, test_input, test_serializer, expected):
     test_input.delete()
     assert test_model.objects.count() == 0
 
+
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "test_model, test_path, test_input, test_var, expected",
     [
-        (Halte, "/haltes" ,  HALTE_TEST, "lat", HALTE_TEST.lat),
-        (Parkeerplaats, "/parkeerplaatsen", PARKEERPLAATS_TEST, "meerInformatie", PARKEERPLAATS_TEST.info),
-        (Doorrijhoogte, "/doorrijhoogten", DOORRIJHOOGTE_TEST, "maximaleDoorrijhoogte", DOORRIJHOOGTE_TEST.maxheight),
+        (Halte, "/haltes", HALTE_TEST, "lat", HALTE_TEST.lat),
+        (
+            Parkeerplaats,
+            "/parkeerplaatsen",
+            PARKEERPLAATS_TEST,
+            "meerInformatie",
+            PARKEERPLAATS_TEST.info,
+        ),
+        (
+            Doorrijhoogte,
+            "/doorrijhoogten",
+            DOORRIJHOOGTE_TEST,
+            "maximaleDoorrijhoogte",
+            DOORRIJHOOGTE_TEST.maxheight,
+        ),
     ],
 )
 def test_get_halte(client, test_model, test_path, test_input, test_var, expected):

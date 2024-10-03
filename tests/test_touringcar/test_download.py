@@ -17,9 +17,9 @@ class TestDownload:
                 "haltes": [
                     {
                         "_links": {
-                            "schema": "https://schemas.data.amsterdam.nl/datasets/touringcars/dataset#haltes",
+                            "schema": urljoin(API_URL, "haltes/schema"),
                             "self": {
-                                "href": "/v1/touringcars/haltes/1/",
+                                "href": urljoin(API_URL, "haltes/1/"),
                                 "title": "H7: Spui",
                                 "id": 1,
                             },
@@ -43,9 +43,9 @@ class TestDownload:
                 "parkeerplaatsen": [
                     {
                         "_links": {
-                            "schema": "https://schemas.data.amsterdam.nl/datasets/touringcars/dataset#parkeerplaatsen",
+                            "schema": urljoin(API_URL, "parkeerplaatsen/schema"),
                             "self": {
-                                "href": "/v1/touringcars/parkeerplaatsen/1/",
+                                "href": urljoin(API_URL, "parkeerplaatsen/1/"),
                                 "title": "P1: P+R Zeeburg",
                                 "id": 1,
                             },
@@ -108,6 +108,8 @@ class TestDownload:
         assert halte.text == "H7"
 
     def test_parkeerplaats_formats_text(self):
-        halte = Parkeerplaats_data_api(self.api_responses[2]["_embedded"]["parkeerplaatsen"][0])
+        halte = Parkeerplaats_data_api(
+            self.api_responses[2]["_embedded"]["parkeerplaatsen"][0]
+        )
 
         assert halte.text == "P+R Zeeburg"
