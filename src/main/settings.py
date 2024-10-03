@@ -107,9 +107,13 @@ if ADMIN_ENABLED:
 
 BASE_URL = os.getenv("BASE_URL", "")
 
-CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = [
     "GET",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    BASE_URL,
+    f"https://admin.{BASE_URL.split('//')[-1]}",
 ]
 
 ## OpenId Connect settings ##
