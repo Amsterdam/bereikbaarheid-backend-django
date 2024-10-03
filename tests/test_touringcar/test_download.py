@@ -19,7 +19,7 @@ class TestDownload:
                         "_links": {
                             "schema": "https://schemas.data.amsterdam.nl/datasets/touringcars/dataset#haltes",
                             "self": {
-                                "href": "https://api.data.amsterdam.nl/v1/touringcars/haltes/1/",
+                                "href": "/v1/touringcars/haltes/1/",
                                 "title": "H7: Spui",
                                 "id": 1,
                             },
@@ -45,7 +45,7 @@ class TestDownload:
                         "_links": {
                             "schema": "https://schemas.data.amsterdam.nl/datasets/touringcars/dataset#parkeerplaatsen",
                             "self": {
-                                "href": "https://api.data.amsterdam.nl/v1/touringcars/parkeerplaatsen/1/",
+                                "href": "/v1/touringcars/parkeerplaatsen/1/",
                                 "title": "P1: P+R Zeeburg",
                                 "id": 1,
                             },

@@ -5,7 +5,7 @@ from urllib.parse import urljoin
 import requests
 from pyproj import Transformer
 
-API_URL = "https://api.data.amsterdam.nl/v1/touringcars/"
+API_URL = "/v1/touringcars/"
 
 
 class _Stop:
