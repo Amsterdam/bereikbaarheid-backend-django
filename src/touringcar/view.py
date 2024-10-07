@@ -58,12 +58,15 @@ class CsvView(APIView):
             )
 
             writer = csv.writer(response)
-            for entry in fetch_data():
+            for entry in fetch_data():  # Ensure fetch_data is not raising an error
                 writer.writerow(entry.to_row())
         except Exception as err:
-            log.info(str(err))
+            log.exception(
+                "An error occurred while generating the CSV."
+            )  # Use log.exception to capture stack trace
             response = JsonResponse(
-                status=400, data={"error": "An error has occurred!"}
+                status=400,
+                data={"error": "An error has occurred!", "details": str(err)},
             )
         return response
 
@@ -72,6 +75,7 @@ class HalteList(APIView):
     def get(self, request):
         try:
             # "Geeft een lijst terug met alle haltes"
+            print("Asked!!!")
             serializer = HalteSerializer(Halte.objects.all(), many=True)
             return Response(serializer.data)
 

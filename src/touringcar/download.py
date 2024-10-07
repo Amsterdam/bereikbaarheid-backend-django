@@ -1,12 +1,9 @@
 from abc import abstractmethod
-from typing import Dict, List, Optional
-from urllib.parse import urljoin
+from typing import Dict, List
 
-import requests
-from django.conf import settings
 from pyproj import Transformer
 
-API_URL = urljoin(settings.BASE_URL, "v1/touringcar/")
+from touringcar.models import Halte, Parkeerplaats
 
 
 class _Stop:
@@ -48,20 +45,9 @@ class Parkeerplaats_data_api(_Stop):
         return "".join(self._omschrijving.split(":")[1:]).strip()
 
 
-def fetch_data() -> List[_Stop]:
-    def _get_all(url: str, data_type: str, data: Optional[list] = None) -> Dict:
-        data = [] if data is None else data
+def fetch_data() -> List:
+    # Fetch all haltes and parkeerplaatsen from the database
+    haltes = [Halte_data_api(h) for h in Halte.objects.all()]
+    parkeerplaatsen = [Parkeerplaats_data_api(p) for p in Parkeerplaats.objects.all()]
 
-        response = requests.get(url).json()
-        data = data + response["_embedded"][data_type]
-
-        if "next" in response["_links"].keys():
-            data = _get_all(response["_links"]["next"]["href"], data_type, data)
-        return data
-
-    haltes = [Halte_data_api(x) for x in _get_all(urljoin(API_URL, "haltes"), "haltes")]
-    parkeerplaatsen = [
-        Parkeerplaats_data_api(x)
-        for x in _get_all(urljoin(API_URL, "parkeerplaatsen"), "parkeerplaatsen")
-    ]
     return haltes + parkeerplaatsen
