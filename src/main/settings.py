@@ -111,9 +111,12 @@ CORS_ALLOW_METHODS = [
     "GET",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", False)
+
 CORS_ALLOWED_ORIGINS = [
-    BASE_URL,
-    f"https://admin.{BASE_URL.split('//')[-1]}",
+    # BASE_URL,
+    # f"https://admin.{BASE_URL.split('//')[-1]}",
+    'https://debugging.cors.with-wrong-url.com'
 ]
 
 ## OpenId Connect settings ##
