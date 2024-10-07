@@ -5,6 +5,7 @@ from unittest import mock
 import geojson
 import pytest
 import pytz
+from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
@@ -81,27 +82,23 @@ def test_get_bericht_noparam(client, bericht_today):
     ] == bericht_today.startdate.strftime("%Y-%m-%d")
 
 
+@pytest.mark.django_db
 def test_serves_csv(client):
-    with mock.patch("touringcar.view.fetch_data") as fetch_data:
-        fetch_data.return_value = [
-            Halte_data_api(
-                {
-                    "omschrijving": "H7: Spui",
-                    "geometry": {
-                        "coordinates": [121180.61543053293, 487116.3467369651]
-                    },
-                }
-            ),
-            Parkeerplaats_data_api(
-                {
-                    "omschrijving": "P1: P+R Zeeburg",
-                    "geometry": {
-                        "coordinates": [126035.35254910096, 487121.07517851336]
-                    },
-                }
-            ),
-        ]
-        response = client.get("/api/v1/touringcar/downloads/csv")
+    # Create mock instances of Halte and Parkeerplaats
+    halte = Halte.objects.create(
+        name="H7: Spui",
+        geometry=Point(121180.61543053293, 487116.3467369651),
+        location="Nieuwezijds Voorburgwal 355",
+        capacity=1,
+    )
+    parkeerplaats = Parkeerplaats.objects.create(
+        name="P1: P+R Zeeburg",
+        geometry=Point(126035.35254910096, 487121.07517851336),
+        location="Zuiderzeeweg 46A.",
+        capacity=20,
+    )
+
+    response = client.get("/api/v1/touringcar/downloads/csv")
 
     assert response.status_code == 200
     assert (

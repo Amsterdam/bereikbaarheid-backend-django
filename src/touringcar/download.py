@@ -15,9 +15,7 @@ class _Stop:
         wgs_coordinates = self.transformer.transform(entry.geometry.x, entry.geometry.y)
         self.latitude = wgs_coordinates[1]  # Latitude is the second element
         self.longitude = wgs_coordinates[0]  # Longitude is the first element
-        self._omschrijving = entry.name.split(":")[
-            0
-        ]  # Use the name field directly from the model
+        self._omschrijving = entry.name  # Use the name field directly from the model
 
     @property
     @abstractmethod
