@@ -19,10 +19,6 @@ class _Stop:
     @abstractmethod
     def text(self) -> str: ...
 
-    @property
-    def stop_type(self) -> str:
-        raise NotImplementedError("Subclasses must define stop_type.")
-
     def to_row(self) -> List[str]:
         return [self.latitude, self.longitude, self.text, self.stop_type]
 
