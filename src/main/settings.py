@@ -18,6 +18,7 @@ from pathlib import Path
 from azure.identity import WorkloadIdentityCredential
 from django.http.request import urljoin
 from opencensus.trace import config_integration
+from corsheaders.defaults import default_headers
 
 from .azure_settings import Azure
 
@@ -72,6 +73,10 @@ CORS_ALLOWED_ORIGINS = [
     # BASE_URL,
     # f"https://admin.{BASE_URL.split('//')[-1]}",
     'https://debugging.cors.with-wrong-url.com'
+]
+
+CORS_ALLOW_HEADERS = [
+    *default_headers,
 ]
 
 # Application definition
