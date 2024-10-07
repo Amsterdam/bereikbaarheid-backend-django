@@ -16,9 +16,9 @@ import sys
 from pathlib import Path
 
 from azure.identity import WorkloadIdentityCredential
+from corsheaders.defaults import default_headers
 from django.http.request import urljoin
 from opencensus.trace import config_integration
-from corsheaders.defaults import default_headers
 
 from .azure_settings import Azure
 
@@ -62,7 +62,7 @@ ADMIN_ENABLED = os.getenv("ADMIN_ENABLED", "false").lower() == "true"
 ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
 
 # Admin excel exports should sanitize formulaes to prevent injection attacks
-IMPORT_EXPORT_ESCAPE_FORMULAE_ON_EXPORT=True
+IMPORT_EXPORT_ESCAPE_FORMULAE_ON_EXPORT = True
 
 
 CORS_ALLOW_METHODS = [
@@ -72,7 +72,7 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOWED_ORIGINS = [
     # BASE_URL,
     # f"https://admin.{BASE_URL.split('//')[-1]}",
-    'https://debugging.cors.with-wrong-url.com'
+    "https://debugging.cors.with-wrong-url.com"
 ]
 
 CORS_ALLOW_HEADERS = [
