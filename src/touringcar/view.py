@@ -72,7 +72,6 @@ class HalteList(APIView):
     def get(self, request):
         try:
             # "Geeft een lijst terug met alle haltes"
-            print("Asked!!!")
             serializer = HalteSerializer(Halte.objects.all(), many=True)
             return Response(serializer.data)
 
