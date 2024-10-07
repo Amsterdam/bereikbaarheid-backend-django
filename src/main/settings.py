@@ -64,6 +64,16 @@ ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
 IMPORT_EXPORT_ESCAPE_FORMULAE_ON_EXPORT=True
 
 
+CORS_ALLOW_METHODS = [
+    "GET",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    # BASE_URL,
+    # f"https://admin.{BASE_URL.split('//')[-1]}",
+    'https://debugging.cors.with-wrong-url.com'
+]
+
 # Application definition
 DJANGO_APPS = [
     "django.contrib.auth",
@@ -107,17 +117,6 @@ if ADMIN_ENABLED:
 
 BASE_URL = os.getenv("BASE_URL", "")
 
-CORS_ALLOW_METHODS = [
-    "GET",
-]
-
-CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", False)
-
-CORS_ALLOWED_ORIGINS = [
-    # BASE_URL,
-    # f"https://admin.{BASE_URL.split('//')[-1]}",
-    'https://debugging.cors.with-wrong-url.com'
-]
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
