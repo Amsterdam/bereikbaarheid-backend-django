@@ -10,12 +10,10 @@ class _Stop:
     transformer = Transformer.from_crs("EPSG:28992", "EPSG:4326", always_xy=True)
 
     def __init__(self, entry) -> None:
-        print(entry.geometry)
-        # Extract coordinates from the geometry field of the model instance
         wgs_coordinates = self.transformer.transform(entry.geometry.x, entry.geometry.y)
-        self.latitude = wgs_coordinates[1]  # Latitude is the second element
-        self.longitude = wgs_coordinates[0]  # Longitude is the first element
-        self._omschrijving = entry.name  # Use the name field directly from the model
+        self.latitude = wgs_coordinates[1]
+        self.longitude = wgs_coordinates[0]
+        self._omschrijving = entry.name
 
     @property
     @abstractmethod
@@ -30,7 +28,7 @@ class _Stop:
 
 
 class Halte_data_api(_Stop):
-    stop_type = "halte"  # Explicitly set the stop type
+    stop_type = "halte"
 
     @property
     def text(self) -> str:
@@ -38,7 +36,7 @@ class Halte_data_api(_Stop):
 
 
 class Parkeerplaats_data_api(_Stop):
-    stop_type = "parkeerplaats"  # Explicitly set the stop type
+    stop_type = "parkeerplaats"
 
     @property
     def text(self) -> str:

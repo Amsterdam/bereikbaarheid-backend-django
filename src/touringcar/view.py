@@ -58,15 +58,12 @@ class CsvView(APIView):
             )
 
             writer = csv.writer(response)
-            for entry in fetch_data():  # Ensure fetch_data is not raising an error
+            for entry in fetch_data():
                 writer.writerow(entry.to_row())
         except Exception as err:
-            log.exception(
-                "An error occurred while generating the CSV."
-            )  # Use log.exception to capture stack trace
+            log.info(str(err))
             response = JsonResponse(
-                status=400,
-                data={"error": "An error has occurred!", "details": str(err)},
+                status=400, data={"error": "An error has occurred!"}
             )
         return response
 

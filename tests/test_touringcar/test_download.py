@@ -1,5 +1,6 @@
 from unittest import mock
 
+from django.contrib.gis.geos import Point
 from django.test import TestCase
 
 from touringcar.download import (
@@ -17,7 +18,7 @@ class TestDownload(TestCase):
             name="H7: Spui",
             location="Nieuwezijds Voorburgwal 355",
             capacity=1,
-            geometry=DEFAULT_GEOM,
+            geometry=Point(121180.61543053293, 487116.3467369651),
         )
         self.parkeerplaats = Parkeerplaats.objects.create(
             name="P1: P+R Zeeburg",
@@ -25,7 +26,7 @@ class TestDownload(TestCase):
             capacity=20,
             info="http://www.amsterdam.nl/parkeren",
             url="http://www.amsterdam.nl/parkeren",
-            geometry=DEFAULT_GEOM,
+            geometry=Point(126035.35254910096, 487121.07517851336),
         )
 
     @mock.patch("touringcar.models.Halte.objects.all")
@@ -44,9 +45,8 @@ class TestDownload(TestCase):
     def test_stop_converts_location_data_rdw_to_wgs(self):
         stop = _Stop(self.halte)
 
-        # Verify latitude and longitude are as expected (converted from RDW to WGS)
-        self.assertAlmostEqual(stop.latitude, 52.380983037141235, places=6)
-        self.assertAlmostEqual(stop.longitude, 4.902911287841951, places=6)
+        self.assertAlmostEqual(stop.latitude, 52.37088300414084, places=6)
+        self.assertAlmostEqual(stop.longitude, 4.8906110012279225, places=6)
 
     def test_halte_formats_text(self):
         halte_data_api = Halte_data_api(self.halte)
