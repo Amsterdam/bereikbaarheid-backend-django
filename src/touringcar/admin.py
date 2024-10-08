@@ -89,10 +89,11 @@ class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAd
         ),
     ]
 
+
 @admin.register(Halte)
 class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     tmp_storage_class = CacheStorage
-    readonly_fields = ['code']
+    readonly_fields = ["code"]
     list_display = [
         "name",
         "code",
@@ -115,7 +116,7 @@ class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 @admin.register(Parkeerplaats)
 class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     tmp_storage_class = CacheStorage
-    readonly_fields = ['code']
+    readonly_fields = ["code"]
     list_display = [
         "name",
         "code",
@@ -132,8 +133,8 @@ class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
     def get_import_formats(self):
         """Returns available import formats."""
-        return [GEOJSON]    
-    
+        return [GEOJSON]
+
 
 @admin.register(Doorrijhoogte)
 class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
@@ -147,10 +148,10 @@ class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     ]
     list_filter = ["maxheight", "created_at", "updated_at"]
     resource_classes = [DoorrijhoogteResource]
-    ordering = ("name","-id")
+    ordering = ("name", "-id")
     search_help_text = "zoek naar trefwoord in name"
     search_fields = ["name"]
 
     def get_import_formats(self):
         """Returns available import formats."""
-        return [GEOJSON]        
+        return [GEOJSON]

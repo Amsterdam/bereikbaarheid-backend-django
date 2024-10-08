@@ -5,6 +5,7 @@ from unittest import mock
 import geojson
 import pytest
 import pytz
+from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
@@ -81,27 +82,23 @@ def test_get_bericht_noparam(client, bericht_today):
     ] == bericht_today.startdate.strftime("%Y-%m-%d")
 
 
+@pytest.mark.django_db
 def test_serves_csv(client):
-    with mock.patch("touringcar.view.fetch_data") as fetch_data:
-        fetch_data.return_value = [
-            Halte_data_api(
-                {
-                    "omschrijving": "H7: Spui",
-                    "geometry": {
-                        "coordinates": [121180.61543053293, 487116.3467369651]
-                    },
-                }
-            ),
-            Parkeerplaats_data_api(
-                {
-                    "omschrijving": "P1: P+R Zeeburg",
-                    "geometry": {
-                        "coordinates": [126035.35254910096, 487121.07517851336]
-                    },
-                }
-            ),
-        ]
-        response = client.get("/api/v1/touringcar/downloads/csv")
+    # Create mock instances of Halte and Parkeerplaats
+    halte = Halte.objects.create(
+        name="H7: Spui",
+        geometry=Point(121180.61543053293, 487116.3467369651),
+        location="Nieuwezijds Voorburgwal 355",
+        capacity=1,
+    )
+    parkeerplaats = Parkeerplaats.objects.create(
+        name="P1: P+R Zeeburg",
+        geometry=Point(126035.35254910096, 487121.07517851336),
+        location="Zuiderzeeweg 46A.",
+        capacity=20,
+    )
+
+    response = client.get("/api/v1/touringcar/downloads/csv")
 
     assert response.status_code == 200
     assert (
@@ -115,41 +112,47 @@ def test_serves_csv(client):
     )
 
 
-HALTE_TEST =  Halte(
-        name = "H1: test", 
-        lat = 52.37088300,
-        lon = 4.890611,
-        geometry = DEFAULT_GEOM,
-        location = "test test",
-        capacity = 5
-        )
+HALTE_TEST = Halte(
+    name="H1: test",
+    lat=52.37088300,
+    lon=4.890611,
+    geometry=DEFAULT_GEOM,
+    location="test test",
+    capacity=5,
+)
 
 
-PARKEERPLAATS_TEST =  Parkeerplaats(
-        name = "P1: test", 
-        lat = 52.97088300,
-        lon = 4.890611,
-        geometry = DEFAULT_GEOM,
-        location = "test test",
-        capacity = 5,
-        info = 'testtest',
-        )
+PARKEERPLAATS_TEST = Parkeerplaats(
+    name="P1: test",
+    lat=52.97088300,
+    lon=4.890611,
+    geometry=DEFAULT_GEOM,
+    location="test test",
+    capacity=5,
+    info="testtest",
+)
 
-DOORRIJHOOGTE_TEST =  Doorrijhoogte(
-        name = "Doorrijhoogte test", 
-        lat = 52.47088300,
-        lon = 4.890611,
-        geometry = DEFAULT_GEOM,
-        maxheight = '4m',
-        )
+DOORRIJHOOGTE_TEST = Doorrijhoogte(
+    name="Doorrijhoogte test",
+    lat=52.47088300,
+    lon=4.890611,
+    geometry=DEFAULT_GEOM,
+    maxheight="4m",
+)
+
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "test_model, test_input, test_serializer, expected",
     [
-        (Halte, HALTE_TEST, HalteSerializer, 'H1: test'),
-        (Parkeerplaats, PARKEERPLAATS_TEST, ParkeerplaatsSerializer, 'P1: test'),
-        (Doorrijhoogte, DOORRIJHOOGTE_TEST, DoorrijhoogteSerializer, 'Doorrijhoogte test'),
+        (Halte, HALTE_TEST, HalteSerializer, "H1: test"),
+        (Parkeerplaats, PARKEERPLAATS_TEST, ParkeerplaatsSerializer, "P1: test"),
+        (
+            Doorrijhoogte,
+            DOORRIJHOOGTE_TEST,
+            DoorrijhoogteSerializer,
+            "Doorrijhoogte test",
+        ),
     ],
 )
 def test_serialization_halte(test_model, test_input, test_serializer, expected):
@@ -161,13 +164,26 @@ def test_serialization_halte(test_model, test_input, test_serializer, expected):
     test_input.delete()
     assert test_model.objects.count() == 0
 
+
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "test_model, test_path, test_input, test_var, expected",
     [
-        (Halte, "/haltes" ,  HALTE_TEST, "lat", HALTE_TEST.lat),
-        (Parkeerplaats, "/parkeerplaatsen", PARKEERPLAATS_TEST, "meerInformatie", PARKEERPLAATS_TEST.info),
-        (Doorrijhoogte, "/doorrijhoogten", DOORRIJHOOGTE_TEST, "maximaleDoorrijhoogte", DOORRIJHOOGTE_TEST.maxheight),
+        (Halte, "/haltes", HALTE_TEST, "lat", HALTE_TEST.lat),
+        (
+            Parkeerplaats,
+            "/parkeerplaatsen",
+            PARKEERPLAATS_TEST,
+            "meerInformatie",
+            PARKEERPLAATS_TEST.info,
+        ),
+        (
+            Doorrijhoogte,
+            "/doorrijhoogten",
+            DOORRIJHOOGTE_TEST,
+            "maximaleDoorrijhoogte",
+            DOORRIJHOOGTE_TEST.maxheight,
+        ),
     ],
 )
 def test_get_halte(client, test_model, test_path, test_input, test_var, expected):

@@ -1,27 +1,19 @@
 from abc import abstractmethod
-from typing import Dict, List, Optional
-from urllib.parse import urljoin
+from typing import List
 
-import requests
 from pyproj import Transformer
 
-API_URL = "https://api.data.amsterdam.nl/v1/touringcars/"
+from touringcar.models import Halte, Parkeerplaats
 
 
 class _Stop:
     transformer = Transformer.from_crs("EPSG:28992", "EPSG:4326", always_xy=True)
 
-    latitude: float
-    longitude: float
-    text: str
-    stop_type: str
-
-    def __init__(self, entry: Dict) -> None:
-        rdw_coordinates = entry["geometry"]["coordinates"]
-        wgs_coordinates = self.transformer.transform(*rdw_coordinates)
+    def __init__(self, entry) -> None:
+        wgs_coordinates = self.transformer.transform(entry.geometry.x, entry.geometry.y)
         self.latitude = wgs_coordinates[1]
         self.longitude = wgs_coordinates[0]
-        self._omschrijving = entry["omschrijving"]
+        self._omschrijving = entry.name
 
     @property
     @abstractmethod
@@ -48,19 +40,8 @@ class Parkeerplaats_data_api(_Stop):
 
 
 def fetch_data() -> List[_Stop]:
-    def _get_all(url: str, data_type: str, data: Optional[list] = None) -> Dict:
-        data = [] if data is None else data
+    # Fetch all haltes and parkeerplaatsen from the database
+    haltes = [Halte_data_api(h) for h in Halte.objects.all()]
+    parkeerplaatsen = [Parkeerplaats_data_api(p) for p in Parkeerplaats.objects.all()]
 
-        response = requests.get(url).json()
-        data = data + response["_embedded"][data_type]
-
-        if "next" in response["_links"].keys():
-            data = _get_all(response["_links"]["next"]["href"], data_type, data)
-        return data
-
-    haltes = [Halte_data_api(x) for x in _get_all(urljoin(API_URL, "haltes"), "haltes")]
-    parkeerplaatsen = [
-        Parkeerplaats_data_api(x)
-        for x in _get_all(urljoin(API_URL, "parkeerplaatsen"), "parkeerplaatsen")
-    ]
     return haltes + parkeerplaatsen

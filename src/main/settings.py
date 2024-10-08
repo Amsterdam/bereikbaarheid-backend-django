@@ -61,7 +61,7 @@ ADMIN_ENABLED = os.getenv("ADMIN_ENABLED", "false").lower() == "true"
 ADMIN_PATH = make_url_path(os.getenv("ADMIN_PATH", "admin"))
 
 # Admin excel exports should sanitize formulaes to prevent injection attacks
-IMPORT_EXPORT_ESCAPE_FORMULAE_ON_EXPORT=True
+IMPORT_EXPORT_ESCAPE_FORMULAE_ON_EXPORT = True
 
 
 # Application definition

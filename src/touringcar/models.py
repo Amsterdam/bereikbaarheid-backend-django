@@ -90,7 +90,8 @@ def calc_lat_lon_from_geometry(geom: PointField) -> dict:
 
 
 class TouringcarBase(TimeStampMixin):
-    """ Base model for data halte, parkeerplaatsen en doorrijhoogte"""
+    """Base model for data halte, parkeerplaatsen en doorrijhoogte"""
+
     class Meta:
         abstract = True
 
@@ -119,77 +120,100 @@ class TouringcarBase(TimeStampMixin):
         return super().save(*args, **kwargs)
 
 
-
 class Halte(TouringcarBase):
-    """   Touringcar: haltes   """
+    """Touringcar: haltes"""
+
     class Meta:
         constraints = [
-                models.UniqueConstraint(
-                    fields=["name",],
-                    name="halte_name_unique"),
+            models.UniqueConstraint(
+                fields=[
+                    "name",
+                ],
+                name="halte_name_unique",
+            ),
         ]
 
-    code = models.IntegerField(blank=True)    
+    code = models.IntegerField(blank=True)
     location = models.CharField(max_length=150, help_text="bijzonderheden")
     capacity = models.IntegerField(help_text="plaatsen")
 
     def clean(self):
-        check_code = self.name.split(':')[0]
-        if ( check_code[0:1] != 'H' or not check_code[1:].isnumeric()):
-            raise ValidationError({"name": ("name moet beginnen met een 'H' gevolgd door een <nummer> en ':' ")})
+        check_code = self.name.split(":")[0]
+        if check_code[0:1] != "H" or not check_code[1:].isnumeric():
+            raise ValidationError(
+                {
+                    "name": (
+                        "name moet beginnen met een 'H' gevolgd door een <nummer> en ':' "
+                    )
+                }
+            )
 
     def save(self, *args, **kwargs):
         self.full_clean()
         # set numeric code from given name
-        self.code =  int(self.name.split(':')[0][1:])
+        self.code = int(self.name.split(":")[0][1:])
 
         return super().save(*args, **kwargs)
 
 
-
 class Parkeerplaats(TouringcarBase):
-    """   Touringcar: parkeerplaats (P+R)   """
+    """Touringcar: parkeerplaats (P+R)"""
+
     class Meta:
         verbose_name_plural = "Parkeerplaatsen"
         constraints = [
-                models.UniqueConstraint(
-                    fields=["name",],
-                    name="parkeerplaats_name_unique"),
+            models.UniqueConstraint(
+                fields=[
+                    "name",
+                ],
+                name="parkeerplaats_name_unique",
+            ),
         ]
+
     code = models.IntegerField(blank=True)
     location = models.CharField(max_length=200, help_text="bijzonderheden")
     capacity = models.IntegerField(help_text="plaatsen")
-    info = models.CharField(max_length=100, help_text="meerInformatie", blank=True, null=True)
+    info = models.CharField(
+        max_length=100, help_text="meerInformatie", blank=True, null=True
+    )
     url = models.URLField(blank=True, null=True)
 
     def clean(self):
-        check_code = self.name.split(':')[0]
-        if ( check_code[0:1] != 'P' or not check_code[1:].isnumeric()):
-            raise ValidationError({"name": ("name moet beginnen met een 'P' gevolgd door een <nummer> en ':' ")})
+        check_code = self.name.split(":")[0]
+        if check_code[0:1] != "P" or not check_code[1:].isnumeric():
+            raise ValidationError(
+                {
+                    "name": (
+                        "name moet beginnen met een 'P' gevolgd door een <nummer> en ':' "
+                    )
+                }
+            )
 
     def save(self, *args, **kwargs):
         self.full_clean()
         # set numeric code from given name
-        self.code =  int(self.name.split(':')[0][1:])
+        self.code = int(self.name.split(":")[0][1:])
 
         return super().save(*args, **kwargs)
 
 
 class Doorrijhoogte(TouringcarBase):
-    """   Touringcar: borden Doorrijhoogte """
+    """Touringcar: borden Doorrijhoogte"""
+
     class Meta:
         constraints = [
-                models.UniqueConstraint(
-                    fields=["name", "lat", "lon"],
-                    name="doorrijhoogte_name_lat_lon_unique"),
-        ]    
+            models.UniqueConstraint(
+                fields=["name", "lat", "lon"], name="doorrijhoogte_name_lat_lon_unique"
+            ),
+        ]
+
     maxheight = models.CharField(
-        max_length=5, 
-        help_text="maximaleDoorrijhoogte", 
+        max_length=5,
+        help_text="maximaleDoorrijhoogte",
         validators=[
             RegexValidator(
-                regex=r'^\d+[,]{0,1}\d{0,}m$',
+                regex=r"^\d+[,]{0,1}\d{0,}m$",
                 message="format voor maximaledoorijhoogte is: <cijfer>,<cijfer> gevolgd door 'm'",
             )
-        ]
+        ],
     )

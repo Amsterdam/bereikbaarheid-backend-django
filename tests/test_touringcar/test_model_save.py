@@ -5,37 +5,33 @@ from model_bakery import baker
 
 from touringcar.models import DEFAULT_GEOM, Doorrijhoogte
 
-GEO_NONE =  Doorrijhoogte(
-        name = "geo_none", 
-        lat = None,
-        lon = None,
-        geometry = None,
-        maxheight = "4m"
-        )
+GEO_NONE = Doorrijhoogte(
+    name="geo_none", lat=None, lon=None, geometry=None, maxheight="4m"
+)
 
 CALC_LAT_LON = Doorrijhoogte(
-        name ="calc_lat_lon", 
-        lat = 52.000000,
-        lon = 4.0000000,
-        geometry= "SRID=28992;POINT (121278.2906402176 487150.7277812314)",
-        maxheight = "4,1m"
-        ) 
+    name="calc_lat_lon",
+    lat=52.000000,
+    lon=4.0000000,
+    geometry="SRID=28992;POINT (121278.2906402176 487150.7277812314)",
+    maxheight="4,1m",
+)
 
 GEODEFAULT = Doorrijhoogte(
-        name ="geomdefault", 
-        lat = 52.371198,
-        lon = 4.892042,
-        geometry= DEFAULT_GEOM,
-        maxheight = "4,25m"
-        )       
+    name="geomdefault",
+    lat=52.371198,
+    lon=4.892042,
+    geometry=DEFAULT_GEOM,
+    maxheight="4,25m",
+)
 
 GEOM = Doorrijhoogte(
-        name ="geom", 
-        lat = None,
-        lon = None,
-        geometry= "SRID=28992;POINT (121278.2906402176 487150.7277812314)",
-        maxheight = "40,1m"
-        )    
+    name="geom",
+    lat=None,
+    lon=None,
+    geometry="SRID=28992;POINT (121278.2906402176 487150.7277812314)",
+    maxheight="40,1m",
+)
 
 
 class TestModelSave:
@@ -68,8 +64,9 @@ class TestModelSave:
         assert Doorrijhoogte.objects.last().lat == lat_org
         assert Doorrijhoogte.objects.last().lon == lon_org
         assert Doorrijhoogte.objects.last().geometry.equals_exact(
-                GEOSGeometry("SRID=28992;POINT (121278.3042605289 487150.7276881739)"), tolerance=0.005
-            )  # because of decimals == comparing not true
+            GEOSGeometry("SRID=28992;POINT (121278.3042605289 487150.7276881739)"),
+            tolerance=0.005,
+        )  # because of decimals == comparing not true
 
         GEODEFAULT.delete()
         assert Doorrijhoogte.objects.count() == 0
@@ -98,7 +95,7 @@ class TestModelSave:
     @pytest.mark.django_db
     def test_save_maxdoorrijhoogte(self, testheight):
         with pytest.raises(ValidationError) as excinfo:
-            test = baker.prepare(Doorrijhoogte, maxheight = testheight)
+            test = baker.prepare(Doorrijhoogte, maxheight=testheight)
             test.full_clean()
 
         assert "format voor maximaledoorijhoogte" in str(excinfo.value)

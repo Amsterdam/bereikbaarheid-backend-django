@@ -48,7 +48,7 @@ class TouringcarBaseResource(ModelResource):
         dataset.headers = [x.strip().lower() for x in dataset.headers]
         # mapping of the model.py columnnames
         dataset.headers = [col_mapping.get(item, item) for item in dataset.headers]
-        
+
         # trim leading and trailing spaces
         name_clean = [x.strip() for x in dataset["name"]]
         del dataset["name"]
@@ -57,12 +57,11 @@ class TouringcarBaseResource(ModelResource):
         # Rename the column
         dataset.headers[dataset.headers.index("geom")] = "geometry"
 
-
     def before_import_row(self, row, **kwargs):
         geom = GEOSGeometry(str(row["geometry"]))
         row["lat"] = geom.y
         row["lon"] = geom.x
-        
+
         if geom.srid == 4326:
             row["geometry"] = calc_geometry_from_wgs(geom.y, geom.x)
         else:
@@ -74,10 +73,7 @@ class TouringcarBaseResource(ModelResource):
 
 class HalteResource(TouringcarBaseResource):
     def before_import(self, dataset, **kwargs):
-        col_mapping = {
-            "bijzonderheden": "location",
-            "plaatsen": "capacity"
-        }
+        col_mapping = {"bijzonderheden": "location", "plaatsen": "capacity"}
         return super().before_import(dataset, col_mapping, **kwargs)
 
     class Meta:
@@ -113,8 +109,8 @@ class DoorrijhoogteResource(TouringcarBaseResource):
 
         super().before_import(dataset, col_mapping, **kwargs)
         # add for use in import_id_fields
-        dataset.headers.append('lat')
-        dataset.headers.append('lon')
+        dataset.headers.append("lat")
+        dataset.headers.append("lon")
 
     class Meta:
         model = Doorrijhoogte
