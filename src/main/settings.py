@@ -16,8 +16,11 @@ import sys
 from pathlib import Path
 
 from azure.identity import WorkloadIdentityCredential
+from corsheaders.defaults import default_headers
 from django.http.request import urljoin
 from opencensus.trace import config_integration
+
+from main.utils import str_to_bool
 
 from .azure_settings import Azure
 
@@ -34,18 +37,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG", False))
+DEBUG = str_to_bool(os.getenv("DEBUG", "false"))
 
-ALLOWED_HOSTS = ["*"]
-X_FRAME_OPTIONS = "ALLOW-FROM *"
+DEFAULT_ALLOWED_HOSTS = "admin.bereikbaarheid.amsterdam.nl,bereikbaarheid.amsterdam.nl"
+ALLOWED_HOSTS_FROM_ENV = os.getenv("ALLOWED_HOSTS", DEFAULT_ALLOWED_HOSTS)
+ALLOWED_HOSTS = [host for host in ALLOWED_HOSTS_FROM_ENV.split(",") if host]
+if DEBUG:
+    ALLOWED_HOSTS = [*ALLOWED_HOSTS, "localhost", "127.0.0.1", "[::1]"]
+
+if CORS_DOMAINS := os.getenv("CORS_DOMAINS", None):
+    CORS_ALLOWED_ORIGINS = [domain for domain in CORS_DOMAINS.split(",") if domain]
+    CORS_ALLOW_METHODS = ("GET",)
+    CORS_ALLOW_HEADERS = [
+        *default_headers,
+    ]
+
+X_FRAME_OPTIONS = "DENY"
 INTERNAL_IPS = ("127.0.0.1", "0.0.0.0")
 
-_setting = DEBUG
-# flip in development = True, production = False
-_setting ^= _setting
-CSRF_COOKIE_SECURE = _setting
-SESSION_COOKIE_SECURE = _setting
-SECURE_SSL_REDIRECT = _setting
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
 
 
 def make_url_path(url_path):
@@ -106,11 +118,6 @@ if ADMIN_ENABLED:
     MIDDLEWARE += ("mozilla_django_oidc.middleware.SessionRefresh",)
 
 BASE_URL = os.getenv("BASE_URL", "")
-
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_METHODS = [
-    "GET",
-]
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
