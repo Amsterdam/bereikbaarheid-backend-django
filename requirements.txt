@@ -744,7 +744,3 @@ wrapt==1.16.0
     #   opencensus-ext-requests
 xmltodict==0.14.1
     # via azure-cli
-
-# The following packages are considered to be unsafe in a requirements file:
-setuptools==75.1.0
-    # via azure-cli
