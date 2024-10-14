@@ -80,11 +80,13 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_gis",
     "storages",
+    "csp",
 ]
 LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
+    "csp.middleware.CSPMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -111,6 +113,14 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = [
     "GET",
 ]
+
+CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
+
+CSP_FRAME_ANCESTORS = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_IMG_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
