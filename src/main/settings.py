@@ -62,6 +62,12 @@ CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 SECURE_SSL_REDIRECT = not DEBUG
 
+CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
+CSP_FRAME_ANCESTORS = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_IMG_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
 
 def make_url_path(url_path):
     """
@@ -95,12 +101,14 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_gis",
     "storages",
+    "csp",
 ]
 LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "csp.middleware.CSPMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
