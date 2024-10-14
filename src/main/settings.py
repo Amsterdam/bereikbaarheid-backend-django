@@ -114,17 +114,13 @@ CORS_ALLOW_METHODS = [
     "GET",
 ]
 
-CSP_REPORT_ONLY = True  # Set to False when ready for production
-CSP_DEFAULT_SRC = ("'none'",)  # Block all content by default
-CSP_SCRIPT_SRC = ("'self'",)  # Allow scripts only from the same origin
-CSP_STYLE_SRC = ("'self'",)  # Allow styles only from the same origin
-CSP_IMG_SRC = ("'self'",)  # Allow images only from the same origin
-CSP_CONNECT_SRC = ("'self'",)  # Allow AJAX/fetch requests only to the same origin
-CSP_REPORT_URI = "/csp-report/"  # Reporting endpoint for violations
-# CSP_SCRIPT_SRC = ("'self'", "https://static.amsterdam.nl")  # Allow scripts from your domain
-# CSP_STYLE_SRC = ("'self'", "https://static.amsterdam.nl/fonts/fonts.css")  # Allow styles from your domain
-# CSP_IMG_SRC = ("'self'", "data:", "https://static.amsterdam.nl")  # Allow images from your domain
-# CSP_REPORT_URI = '/csp-report/'  # Ensure this matches your view
+CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
+
+CSP_FRAME_ANCESTORS = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_IMG_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
