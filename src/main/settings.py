@@ -45,10 +45,13 @@ ALLOWED_HOSTS = [host for host in ALLOWED_HOSTS_FROM_ENV.split(",") if host]
 if DEBUG:
     ALLOWED_HOSTS = [*ALLOWED_HOSTS, "localhost", "127.0.0.1", "[::1]"]
 
-DEFAULT_CORS_ORIGINS = (
-    "https://admin.bereikbaarheid.amsterdam.nl,https://bereikbaarheid.amsterdam.nl"
-)
-if CORS_DOMAINS := os.getenv("CORS_DOMAINS", DEFAULT_CORS_ORIGINS):
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    DEFAULT_CORS_ORIGINS = (
+        "https://admin.bereikbaarheid.amsterdam.nl,https://bereikbaarheid.amsterdam.nl"
+    )
+    CORS_DOMAINS = os.getenv("CORS_DOMAINS", DEFAULT_CORS_ORIGINS)
     CORS_ALLOWED_ORIGINS = [domain for domain in CORS_DOMAINS.split(",") if domain]
     CORS_ALLOW_METHODS = ("GET",)
     CORS_ALLOW_HEADERS = [
