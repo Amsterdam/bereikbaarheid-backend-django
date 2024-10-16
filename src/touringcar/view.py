@@ -70,9 +70,12 @@ class CsvView(APIView):
 
 class HalteList(APIView):
     def get(self, request):
+        print("trying1")
         try:
+            print("trying2")
             # "Geeft een lijst terug met alle haltes"
             serializer = HalteSerializer(Halte.objects.all(), many=True)
+            print("trying3")
             return Response(serializer.data)
 
         except Exception as err:
