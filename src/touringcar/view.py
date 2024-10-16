@@ -23,20 +23,23 @@ log = logging.getLogger(__name__)
 
 class BerichtList(APIView):
     def get(self, request):
+        print("trying4")
         try:
+            print("trying5")
             _params = extract_parameters(request)
             serialized_data = BerichtFilterSerializer().load(_params)
-
+            print("trying6")
             # "Geeft een lijst terug met de berichten voor een dag"
             berichten = Bericht.objects.filter(
                 startdate__lte=serialized_data["datum"],
                 enddate__gte=serialized_data["datum"],
                 is_live=True,
             )
+            print("trying7")
             serializer = BerichtSerializer(
                 berichten, many=True, context={"request": request}
             )
-
+            print("trying8")
             return Response(serializer.data)
 
         except ValidationError as err:
