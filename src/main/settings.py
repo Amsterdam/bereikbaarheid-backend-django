@@ -39,38 +39,35 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str_to_bool(os.getenv("DEBUG", "false"))
 
-DEFAULT_ALLOWED_HOSTS = "admin.bereikbaarheid.amsterdam.nl,bereikbaarheid.amsterdam.nl"
-ALLOWED_HOSTS_FROM_ENV = os.getenv("ALLOWED_HOSTS", DEFAULT_ALLOWED_HOSTS)
-ALLOWED_HOSTS = [host for host in ALLOWED_HOSTS_FROM_ENV.split(",") if host]
-if DEBUG:
-    ALLOWED_HOSTS = [*ALLOWED_HOSTS, "localhost", "127.0.0.1", "[::1]"]
 
 if DEBUG:
-    CORS_ORIGIN_ALLOW_ALL = True
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+    CORS_ALLOW_ALL_ORIGINS = True
 else:
-    DEFAULT_CORS_ORIGINS = (
-        "https://admin.bereikbaarheid.amsterdam.nl,https://bereikbaarheid.amsterdam.nl"
-    )
-    CORS_DOMAINS = os.getenv("CORS_DOMAINS", DEFAULT_CORS_ORIGINS)
-    CORS_ALLOWED_ORIGINS = [domain for domain in CORS_DOMAINS.split(",") if domain]
+    ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS").split(",") if host]
+
+    CORS_ALLOWED_ORIGINS = [
+        domain for domain in os.getenv("CORS_DOMAINS", "").split(",") if domain
+    ]
     CORS_ALLOW_METHODS = ("GET",)
     CORS_ALLOW_HEADERS = [
         *default_headers,
     ]
 
-X_FRAME_OPTIONS = "DENY"
-INTERNAL_IPS = ("127.0.0.1", "0.0.0.0")
+    CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
+    CSP_FRAME_ANCESTORS = ("'self'",)
+    CSP_SCRIPT_SRC = ("'self'",)
+    CSP_IMG_SRC = ("'self'",)
+    CSP_STYLE_SRC = ("'self'",)
+    CSP_CONNECT_SRC = ("'self'",)
 
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 SECURE_SSL_REDIRECT = not DEBUG
 
-CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
-CSP_FRAME_ANCESTORS = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_IMG_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'",)
-CSP_CONNECT_SRC = ("'self'",)
+X_FRAME_OPTIONS = "DENY"
+INTERNAL_IPS = ("127.0.0.1", "0.0.0.0")
+
 
 def make_url_path(url_path):
     """

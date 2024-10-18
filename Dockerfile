@@ -33,6 +33,7 @@ ARG SECRET_KEY=not-used
 ARG OIDC_RP_CLIENT_ID=not-used
 ARG OIDC_RP_CLIENT_SECRET=not-used
 ARG ADMIN_ENABLED=true
+ARG ALLOWED_HOSTS=not-used
 RUN python manage.py collectstatic --no-input
 
 USER datapunt
