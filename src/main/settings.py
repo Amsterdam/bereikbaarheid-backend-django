@@ -56,9 +56,9 @@ else:
 
     CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
     CSP_FRAME_ANCESTORS = ("'self'",)
-    CSP_SCRIPT_SRC = ("'self'",)
+    CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")
     CSP_IMG_SRC = ("'self'",)
-    CSP_STYLE_SRC = ("'self'",)
+    CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
     CSP_CONNECT_SRC = ("'self'",)
 
 CSRF_COOKIE_SECURE = not DEBUG
