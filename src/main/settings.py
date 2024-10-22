@@ -16,8 +16,11 @@ import sys
 from pathlib import Path
 
 from azure.identity import WorkloadIdentityCredential
+from corsheaders.defaults import default_headers
 from django.http.request import urljoin
 from opencensus.trace import config_integration
+
+from main.utils import str_to_bool
 
 from .azure_settings import Azure
 
@@ -34,18 +37,36 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG", False))
+DEBUG = str_to_bool(os.getenv("DEBUG", "false"))
 
-ALLOWED_HOSTS = ["*"]
-X_FRAME_OPTIONS = "ALLOW-FROM *"
+
+if DEBUG:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS").split(",") if host]
+
+    CORS_ALLOWED_ORIGINS = [
+        domain for domain in os.getenv("CORS_DOMAINS", "").split(",") if domain
+    ]
+    CORS_ALLOW_METHODS = ("GET",)
+    CORS_ALLOW_HEADERS = [
+        *default_headers,
+    ]
+
+    CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
+    CSP_FRAME_ANCESTORS = ("'self'",)
+    CSP_SCRIPT_SRC = ("'self'",)
+    CSP_IMG_SRC = ("'self'",)
+    CSP_STYLE_SRC = ("'self'",)
+    CSP_CONNECT_SRC = ("'self'",)
+
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+
+X_FRAME_OPTIONS = "DENY"
 INTERNAL_IPS = ("127.0.0.1", "0.0.0.0")
-
-_setting = DEBUG
-# flip in development = True, production = False
-_setting ^= _setting
-CSRF_COOKIE_SECURE = _setting
-SESSION_COOKIE_SECURE = _setting
-SECURE_SSL_REDIRECT = _setting
 
 
 def make_url_path(url_path):
@@ -86,9 +107,9 @@ LOCAL_APPS = ["main", "bereikbaarheid", "touringcar"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
     "csp.middleware.CSPMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -108,21 +129,6 @@ if ADMIN_ENABLED:
     MIDDLEWARE += ("mozilla_django_oidc.middleware.SessionRefresh",)
 
 BASE_URL = os.getenv("BASE_URL", "")
-
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_METHODS = [
-    "GET",
-]
-
-CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
-
-CSP_FRAME_ANCESTORS = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_IMG_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https://static.amsterdam.nl/fonts/fonts.css")
-CSP_STYLE_SRC_ELEM = ("'self'", "'unsafe-inline'",)
-CSP_FONT_SRC = ("'self'",)
-CSP_CONNECT_SRC = ("'self'",)
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
