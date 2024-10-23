@@ -56,10 +56,11 @@ else:
 
     CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
     CSP_FRAME_ANCESTORS = ("'self'",)
-    CSP_SCRIPT_SRC = ("'self'", "'sha256-vGlb0vPIvSgsNdOziIzd2EF58eisIgH2CHJHTAKasBQ='", "'sha256-MK0KKJ7BxrnUYFaAjHjP05N8JSzYchAni67pWYryqDg='")
+    CSP_SCRIPT_SRC = ("'self'",)
     CSP_IMG_SRC = ("'self'", "data:", "https://t1.data.amsterdam.nl")
-    CSP_STYLE_SRC = ("'self'", "'sha256-xafqNQy2aD9Z5OoxqeZkzZxfzEUgR8Xtxeot/wTjGOk='", "'sha256-RXDW8vX5YeJUwf1I5GWBBiXkx3/JS08eiDAKJBROTTo='")
+    CSP_STYLE_SRC = ("'self'",)
     CSP_CONNECT_SRC = ("'self'",)
+    CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
 
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
@@ -119,7 +120,8 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    "main.auth.OIDCAuthenticationBackend",
+    # "main.auth.OIDCAuthenticationBackend",
+    'django.contrib.auth.backends.ModelBackend'
 ]
 
 # Only enabled the plugin if admin is enabled
