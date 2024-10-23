@@ -56,9 +56,9 @@ else:
 
     CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
     CSP_FRAME_ANCESTORS = ("'self'",)
-    CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")
+    CSP_SCRIPT_SRC = ("'self'", "'sha256-vGlb0vPIvSgsNdOziIzd2EF58eisIgH2CHJHTAKasBQ='", "'sha256-MK0KKJ7BxrnUYFaAjHjP05N8JSzYchAni67pWYryqDg='")
     CSP_IMG_SRC = ("'self'", "data:", "https://t1.data.amsterdam.nl")
-    CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
+    CSP_STYLE_SRC = ("'self'", "'sha256-xafqNQy2aD9Z5OoxqeZkzZxfzEUgR8Xtxeot/wTjGOk='", "'sha256-RXDW8vX5YeJUwf1I5GWBBiXkx3/JS08eiDAKJBROTTo='")
     CSP_CONNECT_SRC = ("'self'",)
 
 CSRF_COOKIE_SECURE = not DEBUG
