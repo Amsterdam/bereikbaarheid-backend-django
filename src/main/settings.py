@@ -121,7 +121,6 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = [
     "main.auth.OIDCAuthenticationBackend",
-    #'django.contrib.auth.backends.ModelBackend'
 ]
 
 # Only enabled the plugin if admin is enabled
