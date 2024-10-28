@@ -57,9 +57,10 @@ else:
     CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
     CSP_FRAME_ANCESTORS = ("'self'",)
     CSP_SCRIPT_SRC = ("'self'",)
-    CSP_IMG_SRC = ("'self'",)
+    CSP_IMG_SRC = ("'self'", "data:", "https://t1.data.amsterdam.nl")
     CSP_STYLE_SRC = ("'self'",)
     CSP_CONNECT_SRC = ("'self'",)
+    CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
 
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
