@@ -21,7 +21,6 @@ djangorestframework-gis
 django-csp
 
 # Azure
-azure-cli
 azure-core
 azure-identity
 azure-keyvault
@@ -31,3 +30,5 @@ opencensus-ext-azure
 opencensus-ext-postgresql
 opencensus-ext-logging
 opencensus-ext-requests
+
+setuptools
