@@ -53,7 +53,7 @@ pytest-django==4.9.0
     # via -r requirements_dev.in
 sqlparse==0.5.2
     # via django
-tomli==2.1.0
+tomli==2.2.1
     # via
     #   autoflake
     #   black
