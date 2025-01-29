@@ -8,6 +8,7 @@ pandas
 Pillow
 requests
 pyproj
+uwsgi
 
 # Django
 Django
