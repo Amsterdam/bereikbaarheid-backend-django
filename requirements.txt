@@ -36,7 +36,7 @@ azure-storage-blob==12.24.1
     # via django-storages
 cachetools==5.5.1
     # via google-auth
-certifi==2024.12.14
+certifi==2025.1.31
     # via
     #   pyproj
     #   requests
@@ -178,7 +178,7 @@ pyproj==3.7.0
     # via -r requirements.in
 python-dateutil==2.9.0.post0
     # via pandas
-pytz==2024.2
+pytz==2025.1
     # via
     #   -r requirements.in
     #   pandas
