@@ -1,13 +1,8 @@
-version: "3.7"
-
 x-app: &app
   ports:
     - "8000:8000"
   volumes:
-    - ./src:/src
-    - ./tests:/tests
-    - ./deploy:/deploy
-    - ./pyproject.toml:/pyproject.toml
+    - .:/app
   environment: &base-app-env
     SECRET_KEY: "insecure"
     DEBUG: "true"
@@ -19,7 +14,8 @@ x-app: &app
     ADMIN_PATH: /admin
     API_PATH: /api
   depends_on:
-    - database
+    database:
+      condition: service_healthy
 
 services:
   database:
@@ -30,6 +26,11 @@ services:
       POSTGRES_USER: bereikbaarheid
       POSTGRES_PASSWORD: insecure
     image: kartoza/postgis:15-3.4
+    healthcheck:
+      test: pg_isready -U bereikbaarheid -d bereikbaarheid
+      interval: 10s
+      timeout: 1s
+      retries: 5
 
   app:
     <<: *app
@@ -46,7 +47,6 @@ services:
       target: dev
     environment:
       <<: *base-app-env
-    entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       python manage.py runserver 0.0.0.0:8000
 
@@ -60,9 +60,13 @@ services:
       DJANGO_SETTINGS_MODULE: "main.settings"
       OIDC_RP_CLIENT_ID: tests
       OIDC_RP_CLIENT_SECRET: tests
-    entrypoint: /deploy/wait-for-it.sh database:5432 --
     command:
       pytest
 
-
-
+  linting:
+    build:
+      context: .
+      target: linting
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests

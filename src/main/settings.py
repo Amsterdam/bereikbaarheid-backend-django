@@ -60,7 +60,7 @@ else:
     CSP_IMG_SRC = ("'self'", "data:", "https://t1.data.amsterdam.nl")
     CSP_STYLE_SRC = ("'self'",)
     CSP_CONNECT_SRC = ("'self'",)
-    CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
+    CSP_INCLUDE_NONCE_IN = ["script-src", "style-src"]
 
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG

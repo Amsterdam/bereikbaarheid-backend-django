@@ -8,3 +8,5 @@ jobs:
   linting-and-tests:
     name: Templates
     uses: amsterdam/github-workflows/.github/workflows/CI.yml@v1
+    with:
+      check_linting: true
