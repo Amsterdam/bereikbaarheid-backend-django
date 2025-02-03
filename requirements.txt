@@ -74,7 +74,7 @@ django-csp==3.8
     # via -r requirements.in
 django-filter==24.3
     # via djangorestframework-gis
-django-import-export[xlsx]==4.3.4
+django-import-export[xlsx]==4.3.5
     # via -r requirements.in
 django-leaflet==0.31.0
     # via -r requirements.in
