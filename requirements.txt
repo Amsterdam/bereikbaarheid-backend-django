@@ -36,7 +36,7 @@ azure-storage-blob==12.24.1
     # via django-storages
 cachetools==5.5.1
     # via google-auth
-certifi==2024.12.14
+certifi==2025.1.31
     # via
     #   pyproj
     #   requests
@@ -74,7 +74,7 @@ django-csp==3.8
     # via -r requirements.in
 django-filter==24.3
     # via djangorestframework-gis
-django-import-export[xlsx]==4.3.4
+django-import-export[xlsx]==4.3.5
     # via -r requirements.in
 django-leaflet==0.31.0
     # via -r requirements.in
@@ -178,7 +178,7 @@ pyproj==3.7.0
     # via -r requirements.in
 python-dateutil==2.9.0.post0
     # via pandas
-pytz==2024.2
+pytz==2025.1
     # via
     #   -r requirements.in
     #   pandas
