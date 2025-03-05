@@ -108,7 +108,7 @@ def test_serves_csv(client):
     assert response.headers["Content-Type"] == "text/csv"
     assert (
         response.content
-        == b"52.37088300414084,4.8906110012279225,H7,halte\r\n52.37120300414078,4.961894001299134,P+R Zeeburg,parkeerplaats\r\n"
+        == b"52.37088300414085,4.8906110012279225,H7,halte\r\n52.371203004140796,4.961894001299135,P+R Zeeburg,parkeerplaats\r\n"
     )
 
 
