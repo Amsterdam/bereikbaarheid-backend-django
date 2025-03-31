@@ -6,6 +6,8 @@ x-app: &app
   environment: &base-app-env
     SECRET_KEY: "insecure"
     DEBUG: "true"
+    LOG_LEVEL: "DEBUG"
+    DJANGO_LOG_LEVEL: "DEBUG"
     OIDC_BASE_URL: "https://login.microsoftonline.com/72fca1b1-2c2e-4376-a445-294d80196804"
     OIDC_RP_CLIENT_ID: null
     OIDC_RP_CLIENT_SECRET: null
@@ -47,8 +49,7 @@ services:
       target: dev
     environment:
       <<: *base-app-env
-    command:
-      python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
 
   test:
     <<: *app
@@ -60,8 +61,7 @@ services:
       DJANGO_SETTINGS_MODULE: "main.settings"
       OIDC_RP_CLIENT_ID: tests
       OIDC_RP_CLIENT_SECRET: tests
-    command:
-      pytest
+    command: pytest
 
   linting:
     build:

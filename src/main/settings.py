@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import json
 import os
-import sys
 from pathlib import Path
 
 from azure.identity import WorkloadIdentityCredential
@@ -284,11 +283,14 @@ base_log_fmt = {"time": "%(asctime)s", "name": "%(name)s", "level": "%(levelname
 log_fmt = base_log_fmt.copy()
 log_fmt["message"] = "%(message)s"
 
+LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
+DJANGO_LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", "WARNING").upper()
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "root": {
-        "level": "INFO",
+        "level": LOG_LEVEL,
         "handlers": ["console"],
     },
     "formatters": {
@@ -296,37 +298,35 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": "INFO",
+            "level": LOG_LEVEL,
             "class": "logging.StreamHandler",
             "formatter": "json",
         },
     },
     "loggers": {
         "bereikbaarheid": {
-            "level": "WARNING",
+            "level": LOG_LEVEL,
             "handlers": ["console"],
             "propagate": False,
         },
         "touringcar": {
-            "level": "WARNING",
+            "level": LOG_LEVEL,
             "handlers": ["console"],
             "propagate": False,
         },
         "main": {
-            "level": "WARNING",
+            "level": LOG_LEVEL,
             "handlers": ["console"],
             "propagate": False,
         },
         "django": {
             "handlers": ["console"],
-            "level": os.getenv(
-                "DJANGO_LOG_LEVEL", "ERROR" if "pytest" in sys.argv[0] else "INFO"
-            ).upper(),
+            "level": DJANGO_LOG_LEVEL,
             "propagate": False,
         },
         # Log all unhandled exceptions
         "django.request": {
-            "level": "ERROR",
+            "level": DJANGO_LOG_LEVEL,
             "handlers": ["console"],
             "propagate": False,
         },
@@ -353,7 +353,7 @@ if APPLICATIONINSIGHTS_CONNECTION_STRING := os.getenv(
     }
     config_integration.trace_integrations(["logging"])
     LOGGING["handlers"]["azure"] = {
-        "level": "DEBUG",
+        "level": LOG_LEVEL,
         "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
         "connection_string": APPLICATIONINSIGHTS_CONNECTION_STRING,
         "formatter": "json",
