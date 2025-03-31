@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import json
 import os
-import sys
 from pathlib import Path
 
 from azure.identity import WorkloadIdentityCredential
