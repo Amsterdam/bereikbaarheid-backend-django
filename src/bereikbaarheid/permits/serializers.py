@@ -95,11 +95,11 @@ class PermitSerializer(Schema):
     voertuig_type = fields.String(required=True, data_key="vehicleType")
 
     @validates("voertuig_type")
-    def allowed_vehicle_types(self, value):
+    def allowed_vehicle_types(self, value: str, data_key: str) -> None:
         allowed_vehicle_types(value)
 
     @post_load
-    def voertuigs_type(self, data: dict, **kwargs) -> dict:
+    def voertuigs_type(self, data: dict, **kwargs: dict) -> dict:
         """
         Post load to check the vehicle type to see if it is a "bedrijfsauto" or a bus
         Removes the "voertuig_type" key from the data
