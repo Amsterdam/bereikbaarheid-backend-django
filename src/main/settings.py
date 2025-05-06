@@ -16,6 +16,7 @@ from pathlib import Path
 
 from azure.identity import WorkloadIdentityCredential
 from corsheaders.defaults import default_headers
+from csp.constants import NONCE, SELF
 from django.http.request import urljoin
 from opencensus.trace import config_integration
 
@@ -53,13 +54,17 @@ else:
         *default_headers,
     ]
 
-    CSP_DEFAULT_SRC = ("'self'",)  # Block all content from other sources
-    CSP_FRAME_ANCESTORS = ("'self'",)
-    CSP_SCRIPT_SRC = ("'self'",)
-    CSP_IMG_SRC = ("'self'", "data:", "https://t1.data.amsterdam.nl")
-    CSP_STYLE_SRC = ("'self'",)
-    CSP_CONNECT_SRC = ("'self'",)
-    CSP_INCLUDE_NONCE_IN = ["script-src", "style-src"]
+    CONTENT_SECURITY_POLICY = {
+        "DIRECTIVES": {
+            "default-src": [SELF],
+            "frame-ancestors": [SELF],
+            "script-src": [SELF, NONCE],
+            "img-src": [SELF, "data:", "https://t1.data.amsterdam.nl"],
+            "style-src": [SELF, NONCE],
+            "connect-src": [SELF],
+        },
+    }
+
 
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
