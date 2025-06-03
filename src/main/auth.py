@@ -1,4 +1,4 @@
-import mozilla_django_oidc.auth
+import amsterdam_django_oidc
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.http import HttpResponseRedirect
@@ -11,7 +11,7 @@ def oidc_login(request, **kwargs):
     return HttpResponseRedirect(redirect)
 
 
-class OIDCAuthenticationBackend(mozilla_django_oidc.auth.OIDCAuthenticationBackend):
+class OIDCAuthenticationBackend(amsterdam_django_oidc.OIDCAuthenticationBackend):
     def verify_claims(self, claims):
         verified = super(OIDCAuthenticationBackend, self).verify_claims(claims)
         has_roles = claims.get("roles")

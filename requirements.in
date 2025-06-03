@@ -15,11 +15,13 @@ Django
 django-cors-headers
 django-import-export[xlsx]
 django-leaflet
-mozilla-django-oidc
 django-storages[azure]
 django-rest-framework
 djangorestframework-gis
 django-csp
+
+# Amsterdam packages
+amsterdam-django-oidc
 
 # Azure
 azure-core
