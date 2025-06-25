@@ -16,7 +16,7 @@ django-cors-headers
 django-import-export[xlsx]
 django-leaflet
 django-storages[azure]
-django-rest-framework
+djangorestframework
 djangorestframework-gis
 django-csp
 
