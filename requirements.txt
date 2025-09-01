@@ -20,7 +20,7 @@ azure-core==1.35.0
     #   azure-storage-blob
     #   django-storages
     #   opencensus-ext-azure
-azure-identity==1.23.1
+azure-identity==1.24.0
     # via
     #   -r requirements.in
     #   opencensus-ext-azure
@@ -38,15 +38,15 @@ azure-storage-blob==12.26.0
     # via django-storages
 cachetools==5.5.2
     # via google-auth
-certifi==2025.7.14
+certifi==2025.8.3
     # via
     #   pyproj
     #   requests
 cffi==1.17.1
     # via cryptography
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
-cryptography==45.0.5
+cryptography==45.0.6
     # via
     #   azure-identity
     #   azure-keyvault-keys
@@ -57,7 +57,7 @@ cryptography==45.0.5
     #   pyjwt
 diff-match-patch==20241021
     # via django-import-export
-django==5.2.4
+django==5.2.5
     # via
     #   -r requirements.in
     #   django-cors-headers
@@ -82,7 +82,7 @@ django-leaflet==0.32.0
     # via -r requirements.in
 django-storages[azure]==1.14.6
     # via -r requirements.in
-djangorestframework==3.16.0
+djangorestframework==3.16.1
     # via
     #   -r requirements.in
     #   djangorestframework-gis
@@ -106,7 +106,7 @@ isodate==0.7.2
     #   azure-storage-blob
 josepy==2.1.0
     # via mozilla-django-oidc
-marshmallow==4.0.0
+marshmallow==4.0.1
     # via -r requirements.in
 mozilla-django-oidc==4.0.1
     # via amsterdam-django-oidc
@@ -141,13 +141,13 @@ openpyxl==3.1.5
     # via tablib
 packaging==25.0
     # via django-csp
-pandas==2.3.1
+pandas==2.3.2
     # via -r requirements.in
 pillow==11.3.0
     # via -r requirements.in
 proto-plus==1.26.1
     # via google-api-core
-protobuf==6.31.1
+protobuf==6.32.0
     # via
     #   google-api-core
     #   googleapis-common-protos
@@ -170,7 +170,7 @@ pyjwt[crypto]==2.10.1
     # via
     #   msal
     #   pyjwt
-pyproj==3.7.1
+pyproj==3.7.2
     # via -r requirements.in
 python-dateutil==2.9.0.post0
     # via pandas
@@ -178,7 +178,7 @@ pytz==2025.2
     # via
     #   -r requirements.in
     #   pandas
-requests==2.32.4
+requests==2.32.5
     # via
     #   -r requirements.in
     #   azure-core
@@ -198,7 +198,7 @@ sqlparse==0.5.3
     # via django
 tablib[xlsx]==3.8.0
     # via django-import-export
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via
     #   azure-core
     #   azure-identity
@@ -212,5 +212,5 @@ urllib3==2.5.0
     # via requests
 uwsgi==2.0.30
     # via -r requirements.in
-wrapt==1.17.2
+wrapt==1.17.3
     # via opencensus-ext-requests
