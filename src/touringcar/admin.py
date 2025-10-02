@@ -143,7 +143,7 @@ class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Doorrijhoogte)
-class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
+class DoorrijhoogteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
