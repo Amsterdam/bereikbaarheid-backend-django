@@ -4,17 +4,17 @@
 #
 #    pip-compile --allow-unsafe --output-file=requirements_dev.txt requirements_dev.in
 #
-asgiref==3.9.2
+asgiref==3.10.0
     # via django
 bakery==1.0.0
     # via -r requirements_dev.in
-coverage[toml]==7.10.7
+coverage[toml]==7.11.0
     # via pytest-cov
 django==5.2.7
     # via model-bakery
 geojson==3.2.0
     # via -r requirements_dev.in
-iniconfig==2.1.0
+iniconfig==2.3.0
     # via pytest
 model-bakery==1.20.5
     # via -r requirements_dev.in
