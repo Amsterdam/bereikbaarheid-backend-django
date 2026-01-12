@@ -11,7 +11,7 @@ pyproj
 uwsgi
 
 # Django
-Django<6  # Do not upgrade to Django 6 yet!
+Django
 django-cors-headers
 django-import-export[xlsx]
 django-leaflet
