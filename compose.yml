@@ -20,7 +20,7 @@ x-app: &app
     ADMIN_ENABLED: true
     ADMIN_PATH: /admin
     API_PATH: /api
-  depends_on:
+  depends_on: &base-app-depends-on
     database:
       condition: service_healthy
 
@@ -39,12 +39,45 @@ services:
       timeout: 1s
       retries: 5
 
+  otel-collector:
+    build:
+      context: otel-collector
+    image: ${REGISTRY:-localhost:5000}/${REPOSITORY:-opdrachten/statistiekhub-otel-collector}:${VERSION:-latest}
+    volumes:
+      - ./otel-collector/config.local.yaml:/etc/otelcol-contrib/config.yaml
+    depends_on:
+      - jaeger
+    ports:
+      - "4317:4317"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+
+  jaeger:
+    image: jaegertracing/jaeger:2.8.0
+    ports:
+      # ui
+      - "16686:16686"
+      # grpc
+      - "14317:4317"
+    environment:
+      LOG_LEVEL: debug
+
   app:
     <<: *app
     build:
       context: .
       target: app
     image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
+    depends_on:
+      <<: *base-app-depends-on
+      otel-collector:
+        condition: service_started
     command: /deploy/docker-run.sh
 
   dev:
@@ -54,6 +87,10 @@ services:
       target: dev
     environment:
       <<: *base-app-env
+    depends_on:
+      <<: *base-app-depends-on
+      otel-collector:
+        condition: service_started
     command: python manage.py runserver 0.0.0.0:8000
 
   test:
@@ -66,6 +103,8 @@ services:
       DJANGO_SETTINGS_MODULE: "main.settings"
       OIDC_RP_CLIENT_ID: tests
       OIDC_RP_CLIENT_SECRET: tests
+      OTEL_EXPORTER: "none"
+      OTEL_SDK_DISABLED: true
     command: pytest
 
   linting:

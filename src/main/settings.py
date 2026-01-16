@@ -18,7 +18,6 @@ from azure.identity import WorkloadIdentityCredential
 from corsheaders.defaults import default_headers
 from csp.constants import NONCE, SELF
 from django.http.request import urljoin
-from opencensus.trace import config_integration
 
 from main.utils import str_to_bool
 
@@ -345,31 +344,28 @@ LOGGING = {
     },
 }
 
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.instrumentation.django import DjangoInstrumentor
+from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-if APPLICATIONINSIGHTS_CONNECTION_STRING := os.getenv(
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"
-):
-    MIDDLEWARE.append("opencensus.ext.django.middleware.OpencensusMiddleware")
+resource = Resource(attributes={"service.name": "fblocatielijst"})
 
-    service_prefix = "api"
-    if ADMIN_ENABLED:
-        service_prefix = "admin"
+trace.set_tracer_provider(TracerProvider(resource=resource))
+tracer = trace.get_tracer(__name__)
 
-    OPENCENSUS = {
-        "TRACE": {
-            "SAMPLER": "opencensus.trace.samplers.ProbabilitySampler(rate=1)",
-            "EXPORTER": f"""opencensus.ext.azure.trace_exporter.AzureExporter(
-                connection_string='{APPLICATIONINSIGHTS_CONNECTION_STRING}',
-                service_name='{service_prefix}-bereikbaarheid-backend' )""",
-        }
-    }
-    config_integration.trace_integrations(["logging"])
-    LOGGING["handlers"]["azure"] = {
-        "level": LOG_LEVEL,
-        "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
-        "connection_string": APPLICATIONINSIGHTS_CONNECTION_STRING,
-        "formatter": "json",
-    }
-    LOGGING["root"]["handlers"].append("azure")
-    for logger_name, logger_details in LOGGING["loggers"].items():
-        LOGGING["loggers"][logger_name]["handlers"].append("azure")
+exporter_name = os.environ.get("OTEL_EXPORTER", "otlp")
+if exporter_name == "otlp":
+    otlp_exporter = OTLPSpanExporter()
+    span_processor = BatchSpanProcessor(otlp_exporter)
+    trace.get_tracer_provider().add_span_processor(span_processor)
+else:
+    pass
+
+DjangoInstrumentor().instrument()
+Psycopg2Instrumentor().instrument()
+RequestsInstrumentor().instrument()
