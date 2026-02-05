@@ -53,7 +53,7 @@ app:
 dev: migrate
 	$(run) --name bereikbaarheid-backend-django-dev --service-ports dev
 
-test: lint							## Execute tests
+test:							## Execute tests
 	$(run) test pytest $(ARGS)
 
 loadtest: migrate
