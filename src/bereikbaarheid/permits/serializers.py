@@ -12,16 +12,12 @@ from bereikbaarheid.validation import (
 class PermitSerializer(Schema):
     lat = fields.Float(
         required=True,
-        validate=[
-            validate.Range(min=bbox_adam["lat"]["min"], max=bbox_adam["lat"]["max"])
-        ],
+        validate=[validate.Range(min=bbox_adam["lat"]["min"], max=bbox_adam["lat"]["max"])],
     )
 
     lon = fields.Float(
         required=True,
-        validate=[
-            validate.Range(min=bbox_adam["lon"]["min"], max=bbox_adam["lon"]["max"])
-        ],
+        validate=[validate.Range(min=bbox_adam["lon"]["min"], max=bbox_adam["lon"]["max"])],
     )
 
     permit_zone_milieu = fields.Boolean(required=True, data_key="permitLowEmissionZone")
@@ -55,19 +51,13 @@ class PermitSerializer(Schema):
     lengte = fields.Float(
         required=True,
         data_key="vehicleLength",
-        validate=[
-            validate.Range(min=voertuig["lengte"]["min"], max=voertuig["lengte"]["max"])
-        ],
+        validate=[validate.Range(min=voertuig["lengte"]["min"], max=voertuig["lengte"]["max"])],
     )
 
     breedte = fields.Float(
         required=True,
         data_key="vehicleWidth",
-        validate=[
-            validate.Range(
-                min=voertuig["breedte"]["min"], max=voertuig["breedte"]["max"]
-            )
-        ],
+        validate=[validate.Range(min=voertuig["breedte"]["min"], max=voertuig["breedte"]["max"])],
     )
 
     max_massa = fields.Integer(

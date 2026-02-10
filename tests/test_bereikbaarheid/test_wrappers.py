@@ -25,9 +25,7 @@ class TestWrappers:
         return data
 
     def test_validate_data(self):
-        request = RequestFactory().post(
-            "/", data={"message": "test", "code": 111}, content_type="application/json"
-        )
+        request = RequestFactory().post("/", data={"message": "test", "code": 111}, content_type="application/json")
         response = self.fake_view_post(request)
         assert response.status_code == 200
 

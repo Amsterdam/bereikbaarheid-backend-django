@@ -30,7 +30,7 @@ def allowed_vehicle_types(vehicle_type):
     Lowercase values are also allowed, because when preparing database
     query parameters the vehicle type is checked in the same way
     """
-    if not vehicle_type.casefold() in map(str.casefold, voertuig["types"]):
+    if vehicle_type.casefold() not in map(str.casefold, voertuig["types"]):
         raise ValidationError("Moet één zijn van: " + ", ".join(voertuig["types"]))
 
 

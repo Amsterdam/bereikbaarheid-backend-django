@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("touringcar", "0005_alter_bericht_image_url"),
     ]
@@ -48,16 +47,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bericht",
             name="body_en",
-            field=models.TextField(
-                blank=True, help_text="engels: onderwerp", null=True
-            ),
+            field=models.TextField(blank=True, help_text="engels: onderwerp", null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="body_es",
-            field=models.TextField(
-                blank=True, help_text="spaans: onderwerp", null=True
-            ),
+            field=models.TextField(blank=True, help_text="spaans: onderwerp", null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
@@ -72,29 +67,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bericht",
             name="title_de",
-            field=models.CharField(
-                blank=True, help_text="duits: titel", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="duits: titel", max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="title_en",
-            field=models.CharField(
-                blank=True, help_text="engels: titel", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="engels: titel", max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="title_es",
-            field=models.CharField(
-                blank=True, help_text="spaans: titel", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="spaans: titel", max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="title_fr",
-            field=models.CharField(
-                blank=True, help_text="frans: titel", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="frans: titel", max_length=255, null=True),
         ),
     ]

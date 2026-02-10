@@ -8,7 +8,8 @@ class Migration(migrations.Migration):
         ("bereikbaarheid", "0003_vma_directed_view"),
     ]
 
-    operations = [migrations.RunSQL("""
+    operations = [
+        migrations.RunSQL("""
             CREATE MATERIALIZED VIEW bereikbaarheid_out_vma_node AS SELECT DISTINCT x.node,
                 st_transform(x.geom, 4326)::geometry(Point,4326) AS geom,
                 st_transform(x.geom, 28992)::geometry(Point,28992) AS geom_28992
@@ -19,4 +20,5 @@ class Migration(migrations.Migration):
                      SELECT bereikbaarheid_out_vma_directed.target AS node,
                         st_endpoint(st_linemerge(bereikbaarheid_out_vma_directed.geom)) AS geom
                        FROM bereikbaarheid_out_vma_directed) x;
-    """)]
+    """)
+    ]

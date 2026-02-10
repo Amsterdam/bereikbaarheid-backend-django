@@ -7,7 +7,7 @@ from django.urls import reverse
 
 def oidc_login(request, **kwargs):
     oidc_authentication_init = reverse("oidc_authentication_init")
-    redirect = f'{oidc_authentication_init}?next={request.GET.get("next", "")}'
+    redirect = f"{oidc_authentication_init}?next={request.GET.get('next', '')}"
     return HttpResponseRedirect(redirect)
 
 
@@ -35,7 +35,8 @@ class OIDCAuthenticationBackend(amsterdam_django_oidc.OIDCAuthenticationBackend)
         """
 
         with transaction.atomic():
-            # standard zero permissions shows only home-admin-page with mention: You don’t have permission to view or edit anything.
+            # standard zero permissions shows only home-admin-page with mention:
+            # You don’t have permission to view or edit anything.
             user.groups.clear()
             user.is_staff = True
             user.is_superuser = False

@@ -52,36 +52,26 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bericht",
             name="is_live",
-            field=models.BooleanField(
-                default=True, help_text="Publiceren op Tour Buzz"
-            ),
+            field=models.BooleanField(default=True, help_text="Publiceren op Tour Buzz"),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="title_de",
-            field=models.CharField(
-                blank=True, help_text="duits", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="duits", max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="title_en",
-            field=models.CharField(
-                blank=True, help_text="engels", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="engels", max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="title_es",
-            field=models.CharField(
-                blank=True, help_text="spaans", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="spaans", max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name="bericht",
             name="title_fr",
-            field=models.CharField(
-                blank=True, help_text="frans", max_length=255, null=True
-            ),
+            field=models.CharField(blank=True, help_text="frans", max_length=255, null=True),
         ),
     ]

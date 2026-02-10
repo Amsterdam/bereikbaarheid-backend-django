@@ -170,9 +170,7 @@ def _transform_results(result: tuple) -> dict:
         return {
             "id": result[0],  # id
             "attributes": {
-                "heavy_goods_vehicle_zone": convert_to_bool(
-                    result[2]
-                ),  # zone_7_5_boolean
+                "heavy_goods_vehicle_zone": convert_to_bool(result[2]),  # zone_7_5_boolean
                 "in_amsterdam": convert_to_bool(result[4]),  # boolean_in_amsterdam
                 "low_emission_zone": convert_to_bool(result[1]),  # miliezone_boolean
                 "rvv_permit_needed": convert_to_bool(result[3]),  # rvv_boolean

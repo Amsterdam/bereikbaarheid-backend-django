@@ -7,9 +7,7 @@ def convert_to_bool(value: Union[str, int]) -> bool:
     return value in ["true", 1, "y", "yes", "True"]
 
 
-def django_query_db(
-    raw_query_string: str, parameters: dict, single=False
-) -> Union[list[tuple], tuple]:
+def django_query_db(raw_query_string: str, parameters: dict, single=False) -> Union[list[tuple], tuple]:
     """
     Query the database with a raw query
     :param raw_query_string:

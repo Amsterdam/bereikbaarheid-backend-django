@@ -45,9 +45,7 @@ if DEBUG:
 else:
     ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS").split(",") if host]
 
-    CORS_ALLOWED_ORIGINS = [
-        domain for domain in os.getenv("CORS_DOMAINS", "").split(",") if domain
-    ]
+    CORS_ALLOWED_ORIGINS = [domain for domain in os.getenv("CORS_DOMAINS", "").split(",") if domain]
     CORS_ALLOW_METHODS = ("GET",)
     CORS_ALLOW_HEADERS = [
         *default_headers,
@@ -276,9 +274,7 @@ LEAFLET_CONFIG = {
         (
             "Amsterdam",
             "https://t1.data.amsterdam.nl/topo_wm_light/{z}/{x}/{y}.png",
-            {
-                "attribution": 'Kaartgegevens &copy; <a href="https://data.amsterdam.nl/">Gemeente Amsterdam </a>'
-            },
+            {"attribution": 'Kaartgegevens &copy; <a href="https://data.amsterdam.nl/">Gemeente Amsterdam </a>'},
         ),
     ],
     "DEFAULT_CENTER": (4.9020727, 52.3717204),

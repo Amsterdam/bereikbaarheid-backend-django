@@ -123,9 +123,7 @@ class LastbeperkingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
 
 
 @admin.register(VerkeersBord)
-class VerkeersBordAdmin(
-    ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin
-):
+class VerkeersBordAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
@@ -146,9 +144,7 @@ class VerkeersBordAdmin(
 
 
 @admin.register(VerkeersPaal)
-class VerkeersPalenAdmin(
-    ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin
-):
+class VerkeersPalenAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
     map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
@@ -324,7 +320,7 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
                         *args,
                         raise_errors=False,
                         rollback_on_validation_errors=True,
-                        **kwargs
+                        **kwargs,
                     )
                     if not result.has_errors() and not result.has_validation_errors():
                         return self.process_result(result, request)
@@ -332,13 +328,9 @@ class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
                         context["result"] = result
 
         else:
-            res_kwargs = self.get_import_resource_kwargs(
-                request, form=import_form, **kwargs
-            )
+            res_kwargs = self.get_import_resource_kwargs(request, form=import_form, **kwargs)
             resource_classes = self.get_import_resource_classes(request)
-            resources = [
-                resource_class(**res_kwargs) for resource_class in resource_classes
-            ]
+            resources = [resource_class(**res_kwargs) for resource_class in resource_classes]
 
         context.update(self.admin_site.each_context(request))
 

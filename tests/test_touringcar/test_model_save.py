@@ -5,9 +5,7 @@ from model_bakery import baker
 
 from touringcar.models import DEFAULT_GEOM, Doorrijhoogte
 
-GEO_NONE = Doorrijhoogte(
-    name="geo_none", lat=None, lon=None, geometry=None, maxheight="4m"
-)
+GEO_NONE = Doorrijhoogte(name="geo_none", lat=None, lon=None, geometry=None, maxheight="4m")
 
 CALC_LAT_LON = Doorrijhoogte(
     name="calc_lat_lon",
@@ -77,7 +75,7 @@ class TestModelSave:
         geom_org = GEOM.geometry
 
         GEOM.save()
-        assert Doorrijhoogte.objects.last().lat == None
+        assert Doorrijhoogte.objects.last().lat is None
         assert Doorrijhoogte.objects.last().geometry == geom_org
         GEOM.delete()
         assert Doorrijhoogte.objects.count() == 0

@@ -97,9 +97,7 @@ class Migration(migrations.Migration):
                 (
                     "dagen",
                     django.contrib.postgres.fields.ArrayField(
-                        base_field=models.CharField(
-                            blank=True, max_length=10, null=True
-                        ),
+                        base_field=models.CharField(blank=True, max_length=10, null=True),
                         size=None,
                     ),
                 ),
@@ -146,9 +144,7 @@ class Migration(migrations.Migration):
                 ("panorama", models.CharField(blank=True, max_length=500, null=True)),
                 (
                     "geometry",
-                    django.contrib.gis.db.models.fields.PointField(
-                        blank=True, srid=28992
-                    ),
+                    django.contrib.gis.db.models.fields.PointField(blank=True, srid=28992),
                 ),
             ],
             options={
@@ -171,9 +167,7 @@ class Migration(migrations.Migration):
                 ("link_nr", models.IntegerField(help_text="linknr")),
                 (
                     "paal_nr",
-                    models.CharField(
-                        blank=True, help_text="paalnummer", max_length=255, null=True
-                    ),
+                    models.CharField(blank=True, help_text="paalnummer", max_length=255, null=True),
                 ),
                 (
                     "verkeersbord",
@@ -181,9 +175,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "dagen",
-                    django.contrib.postgres.fields.ArrayField(
-                        base_field=models.CharField(max_length=10), size=None
-                    ),
+                    django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=10), size=None),
                 ),
                 ("begin_tijd", models.TimeField()),
                 ("eind_tijd", models.TimeField()),
@@ -382,9 +374,7 @@ class Migration(migrations.Migration):
                 ("wegtype_ba", models.CharField(blank=True, max_length=50, null=True)),
                 (
                     "geom",
-                    django.contrib.gis.db.models.fields.MultiLineStringField(
-                        srid=28992
-                    ),
+                    django.contrib.gis.db.models.fields.MultiLineStringField(srid=28992),
                 ),
             ],
             options={

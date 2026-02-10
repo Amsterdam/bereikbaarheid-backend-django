@@ -27,7 +27,6 @@ QUERY_RESULT = [
         )
     ],
     [],
-    None,
 ]
 
 
@@ -39,7 +38,7 @@ class TestBollards:
         expected_results = [i[0] for i in query_results]
         assert result == expected_results
 
-    def test_transform_results(self):
+    def test_transform_results_none(self):
         assert _transform_results(None) == []
 
     @pytest.mark.django_db

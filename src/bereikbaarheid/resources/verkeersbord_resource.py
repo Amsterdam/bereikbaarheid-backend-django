@@ -23,9 +23,7 @@ class VerkeersBordResource(ModelResource):
         if row["tekst_waarde"] == "NULL":
             row["tekst_waarde"] = ""
 
-        row["geometry"] = GEOSGeometry(
-            "POINT(%s %s)" % (row["rd_x"], row["rd_y"]), srid=28992
-        )
+        row["geometry"] = GEOSGeometry("POINT(%s %s)" % (row["rd_x"], row["rd_y"]), srid=28992)
 
     def before_save_instance(self, instance, row, **kwargs):
         # import_export Version 4 change: param dry-run passed in kwargs
