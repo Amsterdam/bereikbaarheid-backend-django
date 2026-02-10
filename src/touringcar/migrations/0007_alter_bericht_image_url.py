@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("touringcar", "0006_alter_bericht_advice_alter_bericht_advice_de_and_more"),
     ]
@@ -13,8 +12,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bericht",
             name="image_url",
-            field=models.ImageField(
-                blank=True, null=True, upload_to="touringcar-images"
-            ),
+            field=models.ImageField(blank=True, null=True, upload_to="touringcar-images"),
         ),
     ]

@@ -8,7 +8,8 @@ class Migration(migrations.Migration):
         ("bereikbaarheid", "0002_vma_undirected_view"),
     ]
 
-    operations = [migrations.RunSQL("""
+    operations = [
+        migrations.RunSQL("""
          CREATE MATERIALIZED VIEW bereikbaarheid_out_vma_directed AS SELECT netwerk.link_nr AS id,
             netwerk.name,
             netwerk.source,
@@ -131,4 +132,5 @@ class Migration(migrations.Migration):
                     1 AS c10
                 FROM bereikbaarheid_verkeersbord vb
                 WHERE vb.rvv_modelnummer::text = 'C10'::text AND vb.geldigheid::text = 'verbod'::text) bordc10 ON netwerk.link_nr = bordc10.link_gevalideerd;
-                """)]
+                """)
+    ]

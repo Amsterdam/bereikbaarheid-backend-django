@@ -33,9 +33,7 @@ class BerichtList(APIView):
                 enddate__gte=serialized_data["datum"],
                 is_live=True,
             )
-            serializer = BerichtSerializer(
-                berichten, many=True, context={"request": request}
-            )
+            serializer = BerichtSerializer(berichten, many=True, context={"request": request})
 
             return Response(serializer.data)
 
@@ -52,9 +50,7 @@ class CsvView(APIView):
         try:
             response = HttpResponse(
                 content_type="text/csv",
-                headers={
-                    "Content-Disposition": 'attachment; filename="touringcar.csv"'
-                },
+                headers={"Content-Disposition": 'attachment; filename="touringcar.csv"'},
             )
 
             writer = csv.writer(response)
@@ -62,9 +58,7 @@ class CsvView(APIView):
                 writer.writerow(entry.to_row())
         except Exception as err:
             log.info(str(err))
-            response = JsonResponse(
-                status=400, data={"error": "An error has occurred!"}
-            )
+            response = JsonResponse(status=400, data={"error": "An error has occurred!"})
         return response
 
 

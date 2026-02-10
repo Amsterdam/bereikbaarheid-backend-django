@@ -22,24 +22,16 @@ class Bericht(TimeStampMixin):
     title = models.CharField(max_length=255, help_text="titel")
     body = models.TextField(blank=True, null=True, help_text="onderwerp")
     advice = models.TextField(blank=True, null=True, help_text="advies")
-    title_en = models.CharField(
-        max_length=255, blank=True, null=True, help_text="engels: titel"
-    )
+    title_en = models.CharField(max_length=255, blank=True, null=True, help_text="engels: titel")
     body_en = models.TextField(blank=True, null=True, help_text="engels: onderwerp")
     advice_en = models.TextField(blank=True, null=True, help_text="engels: advies")
-    title_fr = models.CharField(
-        max_length=255, blank=True, null=True, help_text="frans: titel"
-    )
+    title_fr = models.CharField(max_length=255, blank=True, null=True, help_text="frans: titel")
     body_fr = models.TextField(blank=True, null=True, help_text="frans: onderwerp")
     advice_fr = models.TextField(blank=True, null=True, help_text="frans: advies")
-    title_de = models.CharField(
-        max_length=255, blank=True, null=True, help_text="duits: titel"
-    )
+    title_de = models.CharField(max_length=255, blank=True, null=True, help_text="duits: titel")
     body_de = models.TextField(blank=True, null=True, help_text="duits: onderwerp")
     advice_de = models.TextField(blank=True, null=True, help_text="duits: advies")
-    title_es = models.CharField(
-        max_length=255, blank=True, null=True, help_text="spaans: titel"
-    )
+    title_es = models.CharField(max_length=255, blank=True, null=True, help_text="spaans: titel")
     body_es = models.TextField(blank=True, null=True, help_text="spaans: onderwerp")
     advice_es = models.TextField(blank=True, null=True, help_text="spaans: advies")
     startdate = models.DateField(help_text="Publicatie startdatum")
@@ -47,9 +39,7 @@ class Bericht(TimeStampMixin):
     category = models.CharField(max_length=55, blank=True, null=True)
     link = models.URLField(max_length=200, blank=True, null=True)
     image_url = models.ImageField(upload_to="touringcar-images", blank=True, null=True)
-    important = models.BooleanField(
-        help_text="Belangrijk bericht (Komt bovenaan de lijst te staan)"
-    )
+    important = models.BooleanField(help_text="Belangrijk bericht (Komt bovenaan de lijst te staan)")
     is_live = models.BooleanField(default=True, help_text="Publiceren op Tour Buzz")
     lat = models.FloatField(help_text="Latitude", blank=True, null=True)
     lon = models.FloatField(help_text="Longitude", blank=True, null=True)
@@ -76,14 +66,20 @@ class Bericht(TimeStampMixin):
 
 
 def calc_geometry_from_wgs(lat: float, lon: float) -> PointField:
-    """Calculate geometry in srid=28992 (RD-coordinates) from given latitude and longitude (srid=4326; WGS coordinates)"""
+    """
+    Calculate geometry in srid=28992 (RD-coordinates) from given latitude
+    and longitude (srid=4326; WGS coordinates)
+    """
     point_wgs84 = Point(lon, lat, srid=4326)
     point_rd = point_wgs84.transform(28992, clone=True)
     return point_rd
 
 
 def calc_lat_lon_from_geometry(geom: PointField) -> dict:
-    """Calculate Point latitude and longitude (srid=4326; WGS coordinates) from given geometry in srid=28992 (RD-coordinates)"""
+    """
+    Calculate Point latitude and longitude (srid=4326; WGS coordinates)
+    from given geometry in srid=28992 (RD-coordinates)
+    """
     point_rd = Point(geom.x, geom.y, srid=28992)
     point_wgs84 = point_rd.transform(4326, clone=True)
     return {"lat": point_wgs84.y, "lon": point_wgs84.x}
@@ -140,13 +136,7 @@ class Halte(TouringcarBase):
     def clean(self):
         check_code = self.name.split(":")[0]
         if check_code[0:1] != "H" or not check_code[1:].isnumeric():
-            raise ValidationError(
-                {
-                    "name": (
-                        "name moet beginnen met een 'H' gevolgd door een <nummer> en ':' "
-                    )
-                }
-            )
+            raise ValidationError({"name": ("name moet beginnen met een 'H' gevolgd door een <nummer> en ':' ")})
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -173,21 +163,13 @@ class Parkeerplaats(TouringcarBase):
     code = models.IntegerField(blank=True)
     location = models.CharField(max_length=200, help_text="bijzonderheden")
     capacity = models.IntegerField(help_text="plaatsen")
-    info = models.CharField(
-        max_length=100, help_text="meerInformatie", blank=True, null=True
-    )
+    info = models.CharField(max_length=100, help_text="meerInformatie", blank=True, null=True)
     url = models.URLField(blank=True, null=True)
 
     def clean(self):
         check_code = self.name.split(":")[0]
         if check_code[0:1] != "P" or not check_code[1:].isnumeric():
-            raise ValidationError(
-                {
-                    "name": (
-                        "name moet beginnen met een 'P' gevolgd door een <nummer> en ':' "
-                    )
-                }
-            )
+            raise ValidationError({"name": ("name moet beginnen met een 'P' gevolgd door een <nummer> en ':' ")})
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -202,9 +184,7 @@ class Doorrijhoogte(TouringcarBase):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["name", "lat", "lon"], name="doorrijhoogte_name_lat_lon_unique"
-            ),
+            models.UniqueConstraint(fields=["name", "lat", "lon"], name="doorrijhoogte_name_lat_lon_unique"),
         ]
 
     maxheight = models.CharField(

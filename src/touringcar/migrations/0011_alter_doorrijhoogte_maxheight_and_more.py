@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("touringcar", "0010_doorrijhoogte_alter_parkeerplaats_options"),
     ]
@@ -27,20 +26,14 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="doorrijhoogte",
-            constraint=models.UniqueConstraint(
-                fields=("name", "lat", "lon"), name="doorrijhoogte_name_lat_lon_unique"
-            ),
+            constraint=models.UniqueConstraint(fields=("name", "lat", "lon"), name="doorrijhoogte_name_lat_lon_unique"),
         ),
         migrations.AddConstraint(
             model_name="halte",
-            constraint=models.UniqueConstraint(
-                fields=("name",), name="halte_name_unique"
-            ),
+            constraint=models.UniqueConstraint(fields=("name",), name="halte_name_unique"),
         ),
         migrations.AddConstraint(
             model_name="parkeerplaats",
-            constraint=models.UniqueConstraint(
-                fields=("name",), name="parkeerplaats_name_unique"
-            ),
+            constraint=models.UniqueConstraint(fields=("name",), name="parkeerplaats_name_unique"),
         ),
     ]

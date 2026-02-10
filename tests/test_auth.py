@@ -16,7 +16,6 @@ def django_group_touringcar():
 
 
 class Test_auth:
-
     @pytest.mark.parametrize(
         "key, test_claims, expected",
         [

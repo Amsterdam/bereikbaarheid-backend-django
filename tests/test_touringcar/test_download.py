@@ -9,7 +9,7 @@ from touringcar.download import (
     _Stop,
     fetch_data,
 )
-from touringcar.models import DEFAULT_GEOM, Halte, Parkeerplaats
+from touringcar.models import Halte, Parkeerplaats
 
 
 class TestDownload(TestCase):
@@ -31,9 +31,7 @@ class TestDownload(TestCase):
 
     @mock.patch("touringcar.models.Halte.objects.all")
     @mock.patch("touringcar.models.Parkeerplaats.objects.all")
-    def test_fetch_data_returns_haltes_parkeerplaatsen(
-        self, mock_parkeerplaats, mock_halte
-    ):
+    def test_fetch_data_returns_haltes_parkeerplaatsen(self, mock_parkeerplaats, mock_halte):
         mock_halte.return_value = [self.halte]
         mock_parkeerplaats.return_value = [self.parkeerplaats]
 

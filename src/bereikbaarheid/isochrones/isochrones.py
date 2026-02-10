@@ -1,7 +1,7 @@
 from bereikbaarheid.utils import django_query_db
 
 raw_query = """
-select 
+select
     abs(sub.id) as id,
     min(totalcost)::int as totalcost,
     geom::json as geometry

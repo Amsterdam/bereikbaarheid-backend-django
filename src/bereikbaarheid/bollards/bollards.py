@@ -216,9 +216,7 @@ def prepare_pgr_dijkstra_cost_query(day_of_the_week, time_from, time_to):
     }
 
     with connection.cursor() as cursor:
-        result = cursor.mogrify(
-            pgr_dijkstra_cost_query, pgr_dijkstra_cost_query_params
-        ).decode("utf-8")
+        result = cursor.mogrify(pgr_dijkstra_cost_query, pgr_dijkstra_cost_query_params).decode("utf-8")
 
     return result
 
@@ -259,9 +257,7 @@ def get_bollards(data: dict):
     results = django_query_db(
         raw_query,
         {
-            "pgr_dijkstra_cost_query": prepare_pgr_dijkstra_cost_query(
-                _day_of_the_week, _time_from, _time_to
-            ),
+            "pgr_dijkstra_cost_query": prepare_pgr_dijkstra_cost_query(_day_of_the_week, _time_from, _time_to),
             "lat": _lat,
             "lon": _lon,
             "day_of_the_week": _day_of_the_week,

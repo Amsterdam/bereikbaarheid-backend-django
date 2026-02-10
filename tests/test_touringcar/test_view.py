@@ -1,6 +1,4 @@
-import json
 from datetime import datetime
-from unittest import mock
 
 import geojson
 import pytest
@@ -9,7 +7,6 @@ from django.contrib.gis.geos import Point
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
-from touringcar.download import Halte_data_api, Parkeerplaats_data_api
 from touringcar.models import DEFAULT_GEOM, Bericht, Doorrijhoogte, Halte, Parkeerplaats
 from touringcar.serializer import (
     BerichtSerializer,
@@ -34,9 +31,7 @@ def bericht_today():
 
 @pytest.fixture
 def bericht_error():
-    return baker.prepare(
-        Bericht, is_live=True, startdate="2023-11-15", enddate="2023-11-04"
-    )
+    return baker.prepare(Bericht, is_live=True, startdate="2023-11-15", enddate="2023-11-04")
 
 
 @pytest.mark.django_db
@@ -51,7 +46,7 @@ def test_serialization(bericht_today):
     bericht_today.save()
     serializer = BerichtSerializer(bericht_today)
     data = serializer.data
-    assert data["properties"]["is_live"] == True
+    assert data["properties"]["is_live"]
 
 
 @pytest.mark.django_db
@@ -77,21 +72,19 @@ def test_get_bericht_noparam(client, bericht_today):
     bericht_today.save()
     response = client.get(api_path + "touringcar/berichten")
     result = geojson.loads(response.content.decode("utf-8"))
-    assert result["features"][0]["properties"][
-        "startdate"
-    ] == bericht_today.startdate.strftime("%Y-%m-%d")
+    assert result["features"][0]["properties"]["startdate"] == bericht_today.startdate.strftime("%Y-%m-%d")
 
 
 @pytest.mark.django_db
 def test_serves_csv(client):
     # Create mock instances of Halte and Parkeerplaats
-    halte = Halte.objects.create(
+    Halte.objects.create(
         name="H7: Spui",
         geometry=Point(121180.61543053293, 487116.3467369651),
         location="Nieuwezijds Voorburgwal 355",
         capacity=1,
     )
-    parkeerplaats = Parkeerplaats.objects.create(
+    Parkeerplaats.objects.create(
         name="P1: P+R Zeeburg",
         geometry=Point(126035.35254910096, 487121.07517851336),
         location="Zuiderzeeweg 46A.",
@@ -101,10 +94,7 @@ def test_serves_csv(client):
     response = client.get("/api/v1/touringcar/downloads/csv")
 
     assert response.status_code == 200
-    assert (
-        response.headers["Content-Disposition"]
-        == 'attachment; filename="touringcar.csv"'
-    )
+    assert response.headers["Content-Disposition"] == 'attachment; filename="touringcar.csv"'
     assert response.headers["Content-Type"] == "text/csv"
     assert (
         response.content

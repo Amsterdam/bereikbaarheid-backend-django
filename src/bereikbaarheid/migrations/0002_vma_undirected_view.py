@@ -8,7 +8,8 @@ class Migration(migrations.Migration):
         ("bereikbaarheid", "0001_initial"),
     ]
 
-    operations = [migrations.RunSQL("""
+    operations = [
+        migrations.RunSQL("""
         CREATE MATERIALIZED VIEW bereikbaarheid_out_vma_undirected AS SELECT v.link_nr::integer AS link_nr,
             v.name,
             v.anode::integer AS source,
@@ -59,4 +60,5 @@ class Migration(migrations.Migration):
              LEFT JOIN bereikbaarheid_gebied p ON st_dwithin(p.geom, v.geom, 50::double precision) = true
              LEFT JOIN bereikbaarheid_verrijking b ON v.link_nr = b.link_nr::double precision
           WHERE st_intersects(p.geom, v.geom) = true AND (v.wegtypeab::text <> ALL (ARRAY['voedingslink'::character varying, 'BTM'::character varying, 'loop en fietsveer'::character varying, 'trein'::character varying, 'loopverbinding_halte'::character varying, 'tram'::character varying, 'loopverbinding_knoop'::character varying]::text[])) OR st_intersects(p.geom, v.geom) = true AND (v.wegtypeba::text <> ALL (ARRAY['voedingslink'::character varying, 'BTM'::character varying, 'loop en fietsveer'::character varying, 'trein'::character varying, 'loopverbinding_halte'::character varying, 'tram'::character varying, 'loopverbinding_knoop'::character varying]::text[]));
-          """)]
+          """)
+    ]

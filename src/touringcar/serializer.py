@@ -34,7 +34,6 @@ class GeometryMixin(GeoFeatureModelSerializer):
 
 
 class BerichtSerializer(GeometryMixin):
-
     image_url = serializers.ImageField(use_url=False)
     nl = serializers.SerializerMethodField()
     en = serializers.SerializerMethodField()
@@ -87,7 +86,6 @@ class BerichtSerializer(GeometryMixin):
 
 
 class BerichtFilterSerializer(Schema):
-
     datum = fields.Date(
         format="%Y-%m-%d",
         load_default=datetime.today().astimezone(tz_amsterdam),

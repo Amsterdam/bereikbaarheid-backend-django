@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "id",
-                    models.BigAutoField(
-                        help_text="Id", primary_key=True, serialize=False
-                    ),
+                    models.BigAutoField(help_text="Id", primary_key=True, serialize=False),
                 ),
                 ("title", models.CharField(max_length=255)),
                 ("body", models.TextField(blank=True, null=True)),
@@ -43,9 +41,7 @@ class Migration(migrations.Migration):
                 ("image_url", models.ImageField(blank=True, null=True, upload_to="")),
                 (
                     "important",
-                    models.BooleanField(
-                        help_text="Belangrijk bericht (Komt bovenaan de lijst te staan)"
-                    ),
+                    models.BooleanField(help_text="Belangrijk bericht (Komt bovenaan de lijst te staan)"),
                 ),
                 ("is_live", models.BooleanField(help_text="Publiceren op Tour Buzz")),
                 ("lat", models.FloatField(blank=True, help_text="Latitude", null=True)),

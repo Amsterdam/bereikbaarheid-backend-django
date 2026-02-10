@@ -53,9 +53,7 @@ class TrafficSignsSerializer(Schema):
     lengte = fields.Float(
         required=True,
         data_key="vehicleLength",
-        validate=[
-            validate.Range(min=voertuig["lengte"]["min"], max=voertuig["lengte"]["max"])
-        ],
+        validate=[validate.Range(min=voertuig["lengte"]["min"], max=voertuig["lengte"]["max"])],
     )
 
     max_massa = fields.Integer(
@@ -85,11 +83,7 @@ class TrafficSignsSerializer(Schema):
     breedte = fields.Float(
         required=True,
         data_key="vehicleWidth",
-        validate=[
-            validate.Range(
-                min=voertuig["breedte"]["min"], max=voertuig["breedte"]["max"]
-            )
-        ],
+        validate=[validate.Range(min=voertuig["breedte"]["min"], max=voertuig["breedte"]["max"])],
     )
 
     @validates("voertuig_type")

@@ -15,7 +15,7 @@ omit = [
 ]
 
 [tool.coverage.report]
-fail_under = 50  # Bring to 80% when we have more tests
+fail_under = 86
 skip_covered = true
 show_missing = true
 sort = "Cover"
@@ -24,6 +24,7 @@ sort = "Cover"
 line-length = 120
 
 [tool.ruff.lint]
+ignore = ["W293", ]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -31,3 +32,8 @@ select = [
     "I",   # isort
 ]
 ignore-init-module-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"src/main/settings.py" = ["E402"]
+"tests/**.py" = ["E501"]
+"src/*/migrations/**.py" = ["E501"]

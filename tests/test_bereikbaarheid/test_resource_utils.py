@@ -129,9 +129,7 @@ class TestUtils:
         """Value with format %d/%m/%y %H:%M of %Y-%m-%d %H:%M:%S.%f, can be converted to datetime format"""
         assert convert_to_date(test_input) == expected
 
-    @pytest.mark.parametrize(
-        "test_input, expected", [("22-03-17", "verkeerd"), ("test", "verkeerd")]
-    )
+    @pytest.mark.parametrize("test_input, expected", [("22-03-17", "verkeerd"), ("test", "verkeerd")])
     def test_convert_to_date_exception(self, test_input, expected):
         """Raise an exception if value can't be converted to datetime format"""
         with pytest.raises(ValueError) as e:
@@ -150,9 +148,7 @@ class TestUtils:
         """Raise an exception if string can't be converted to needed time format"""
         assert convert_to_time(test_input) == expected
 
-    @pytest.mark.parametrize(
-        "test_input, expected", [("test", "verkeerd"), ("10.05", "verkeerd")]
-    )
+    @pytest.mark.parametrize("test_input, expected", [("test", "verkeerd"), ("10.05", "verkeerd")])
     def test_convert_to_time_exception(self, test_input, expected):
         """Raise an exception if string can't be converted to needed time format"""
         with pytest.raises(ValueError) as e:
@@ -227,10 +223,7 @@ class TestUtils:
         sc = SCSV()
         with pytest.raises(ValidationError) as e:
             sc.create_dataset(csv_file)
-        assert (
-            str(e.value)
-            == "['file is using `,` delimiter, but semicolon_csv format is with `;` delimiter']"
-        )
+        assert str(e.value) == "['file is using `,` delimiter, but semicolon_csv format is with `;` delimiter']"
 
     def test_SCSV(self, csv_file_semicolon):
         sc = SCSV()
@@ -244,7 +237,7 @@ class TestUtils:
         verrijking.save()
         refresh_materialized("bereikbaarheid_out_vma_undirected")
 
-        raw_query = f"""
+        raw_query = """
             SELECT count(*) FROM bereikbaarheid_out_vma_undirected GROUP BY name
             """
         result = django_query_db(raw_query, {})

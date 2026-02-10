@@ -159,9 +159,7 @@ class Verrijking(TimeStampMixin):
         null=True,
         max_length=255,
     )
-    tunnelcategorie_gevaarlijke_stoffen = models.CharField(
-        max_length=29, blank=True, null=True
-    )
+    tunnelcategorie_gevaarlijke_stoffen = models.CharField(max_length=29, blank=True, null=True)
     tunnelnamen = models.CharField(max_length=29, blank=True, null=True)
     route_gevaarlijke_stoffen = models.CharField(max_length=29, blank=True, null=True)
     beleidsnet_auto = models.CharField(max_length=29, blank=True, null=True)
@@ -169,9 +167,7 @@ class Verrijking(TimeStampMixin):
     beleidsnet_fiets = models.CharField(max_length=29, blank=True, null=True)
     beleidsnet_lopen = models.CharField(max_length=29, blank=True, null=True)
     hoofdroute_taxi = models.CharField(max_length=29, blank=True, null=True)
-    touringcar_aanbevolen_routes = models.CharField(
-        max_length=29, blank=True, null=True
-    )
+    touringcar_aanbevolen_routes = models.CharField(max_length=29, blank=True, null=True)
     wettelijke_snelheid_actueel = models.IntegerField(blank=True, null=True)
     wettelijke_snelheid_wens = models.IntegerField(blank=True, null=True)
     wegcategorie_actueel = models.CharField(blank=True, null=True, max_length=29)
@@ -228,9 +224,7 @@ class VerkeersPaal(TimeStampMixin):
         verbose_name_plural = "Verkeerspalen"
 
     link_nr = models.IntegerField(help_text="linknr")
-    paal_nr = models.CharField(
-        max_length=255, blank=True, null=True, help_text="paalnummer"
-    )
+    paal_nr = models.CharField(max_length=255, blank=True, null=True, help_text="paalnummer")
     verkeersbord = models.CharField(max_length=255, blank=True, null=True)
     dagen = ArrayField(models.CharField(max_length=10))
     begin_tijd = models.TimeField()

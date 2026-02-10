@@ -23,7 +23,7 @@ select
             'traffic_type', t2."type_verkeer",
             'year', t2.jaar
         ) order by t2.jaar desc)
-        end as traffic_counts 
+        end as traffic_counts
 from bereikbaarheid_out_vma_undirected t1
 
 left join bereikbaarheid_verkeerstelling t2

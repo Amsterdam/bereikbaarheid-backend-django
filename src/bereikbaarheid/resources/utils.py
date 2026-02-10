@@ -25,7 +25,7 @@ class GEOJSON(TablibFormat):
 
         try:
             crs = data["crs"]
-        except:  # if not in Geojson -> default crs RD
+        except Exception:  # if not in Geojson -> default crs RD
             crs = {
                 "type": "name",
                 "properties": {"name": "urn:ogc:def:crs:EPSG::28992"},
@@ -66,8 +66,7 @@ class SCSV(CSV):
 
         if delimiter != ";":
             raise ValidationError(
-                f"file is using `{delimiter}` delimiter,"
-                + " but semicolon_csv format is with `;` delimiter"
+                f"file is using `{delimiter}` delimiter," + " but semicolon_csv format is with `;` delimiter"
             )
         kwargs["delimiter"] = delimiter
         kwargs["format"] = "csv"
@@ -145,10 +144,8 @@ def convert_to_date(date: str = None) -> datetime:
         except ValueError:
             pass
 
-    if _date == None:
-        raise ValueError(
-            f"verkeerd datumformat voor {date}, toegestane formats zijn {formats_allowed}"
-        )
+    if _date is None:
+        raise ValueError(f"verkeerd datumformat voor {date}, toegestane formats zijn {formats_allowed}")
     else:
         return _date
 
@@ -166,10 +163,8 @@ def convert_to_time(in_time: str = None):
             tlist.append(0)  # aanvullen seconden
 
         _time = datetime.time(*map(int, tlist))
-    except:
-        raise ValueError(
-            f"verkeerd datumformat voor {in_time}, gewenst format is H:M:S of H:M"
-        )
+    except Exception:
+        raise ValueError(f"verkeerd datumformat voor {in_time}, gewenst format is H:M:S of H:M")
 
     return _time
 
