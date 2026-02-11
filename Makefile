@@ -50,7 +50,7 @@ app:
 	$(dc) up app
 
 # the name option is explicitly set, so the back- and frontend can communicate
-# with eachother while on the same docker network. The frontend docker-compose
+# with each-other while on the same docker network. The frontend docker-compose
 # file contains a reference to the set name
 dev: migrate
 	$(run) --name bereikbaarheid-backend-django-dev --service-ports dev
