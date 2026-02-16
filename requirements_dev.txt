@@ -16,7 +16,7 @@ geojson==3.2.0
     # via -r requirements_dev.in
 iniconfig==2.3.0
     # via pytest
-model-bakery==1.23.2
+model-bakery==1.23.3
     # via -r requirements_dev.in
 packaging==26.0
     # via pytest
@@ -24,14 +24,16 @@ pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
-pytest==7.4.4
+pygments==2.19.2
+    # via pytest
+pytest==9.0.2
     # via
     #   -r requirements_dev.in
     #   pytest-cov
     #   pytest-django
 pytest-cov==7.0.0
     # via -r requirements_dev.in
-pytest-django==4.11.1
+pytest-django==4.12.0
     # via -r requirements_dev.in
 sqlparse==0.5.5
     # via django
