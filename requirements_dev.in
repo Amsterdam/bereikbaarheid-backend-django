@@ -1,4 +1,4 @@
-pytest<8  # 8 breaks pytest-django with error on /root/__init__.py
+pytest<10  # 8 breaks pytest-django with error on /root/__init__.py
 pytest-cov
 pytest-django
 bakery
