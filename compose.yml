@@ -78,7 +78,6 @@ services:
       <<: *base-app-depends-on
       otel-collector:
         condition: service_started
-    command: /deploy/docker-run.sh
     user: 1000:1000
 
   dev:
