@@ -27,7 +27,6 @@ class BerichtenForm(forms.ModelForm):
 
 @admin.register(Bericht)
 class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     form = BerichtenForm
     tmp_storage_class = CacheStorage
@@ -94,7 +93,6 @@ class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAd
 
 @admin.register(Halte)
 class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
     readonly_fields = ["code"]
@@ -119,7 +117,6 @@ class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
 @admin.register(Parkeerplaats)
 class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
     readonly_fields = ["code"]
@@ -144,7 +141,6 @@ class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
 @admin.register(Doorrijhoogte)
 class DoorrijhoogteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
     list_display = [

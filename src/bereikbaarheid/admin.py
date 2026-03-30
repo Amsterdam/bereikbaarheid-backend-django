@@ -98,7 +98,6 @@ class VenstertijdWegAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
 
 @admin.register(Gebied)
 class GebiedAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
     list_display = ["id"]
@@ -124,7 +123,6 @@ class LastbeperkingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
 
 @admin.register(VerkeersBord)
 class VerkeersBordAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
     list_display = [
@@ -145,7 +143,6 @@ class VerkeersBordAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.Mo
 
 @admin.register(VerkeersPaal)
 class VerkeersPalenAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
     list_display = [
@@ -223,7 +220,6 @@ class VerrijkingAdmin(ImportExportFormatsMixin, admin.ModelAdmin):
 
 @admin.register(Vma)
 class VmaAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-    map_template = "leaflet/admin/custom_widget.html"
 
     tmp_storage_class = CacheStorage
     list_display = ["id", "link_nr", "name"]
