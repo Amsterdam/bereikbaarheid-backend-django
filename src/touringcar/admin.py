@@ -27,7 +27,6 @@ class BerichtenForm(forms.ModelForm):
 
 @admin.register(Bericht)
 class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-
     form = BerichtenForm
     tmp_storage_class = CacheStorage
     list_display = [
@@ -93,7 +92,6 @@ class BerichtAdmin(ImportExportFormatsMixin, LeafletGeoAdminMixin, admin.ModelAd
 
 @admin.register(Halte)
 class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-
     tmp_storage_class = CacheStorage
     readonly_fields = ["code"]
     list_display = [
@@ -117,7 +115,6 @@ class HalteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
 @admin.register(Parkeerplaats)
 class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-
     tmp_storage_class = CacheStorage
     readonly_fields = ["code"]
     list_display = [
@@ -141,7 +138,6 @@ class ParkeerplaatsAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
 
 @admin.register(Doorrijhoogte)
 class DoorrijhoogteAdmin(ImportMixin, LeafletGeoAdminMixin, admin.ModelAdmin):
-
     tmp_storage_class = CacheStorage
     list_display = [
         "name",
