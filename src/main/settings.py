@@ -277,7 +277,7 @@ LEAFLET_CONFIG = {
             {"attribution": 'Kaartgegevens &copy; <a href="https://data.amsterdam.nl/">Gemeente Amsterdam </a>'},
         ),
     ],
-    "DEFAULT_CENTER": (4.9020727, 52.3717204),
+    "DEFAULT_CENTER": (52.3717204, 4.9020727),
     "DEFAULT_ZOOM": 12,
     "MIN_ZOOM": 11,
     "MAX_ZOOM": 21,
