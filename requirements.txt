@@ -75,7 +75,7 @@ django-leaflet==0.33.0
     # via -r requirements.in
 django-storages[azure]==1.14.6
     # via -r requirements.in
-djangorestframework==3.16.1
+djangorestframework==3.17.1
     # via
     #   -r requirements.in
     #   djangorestframework-gis
