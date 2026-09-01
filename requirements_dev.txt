@@ -8,9 +8,9 @@ asgiref==3.12.1
     # via django
 bakery==1.0.0
     # via -r requirements_dev.in
-coverage[toml]==7.15.2
+coverage[toml]==7.16.0
     # via pytest-cov
-django==6.0.7
+django==6.1
     # via model-bakery
 geojson==3.3.0
     # via -r requirements_dev.in
@@ -18,13 +18,13 @@ iniconfig==2.3.0
     # via pytest
 model-bakery==1.24.0
     # via -r requirements_dev.in
-packaging==26.2
+packaging==26.3
     # via pytest
 pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
-pygments==2.20.0
+pygments==2.21.0
     # via pytest
 pytest==9.1.1
     # via
@@ -33,7 +33,7 @@ pytest==9.1.1
     #   pytest-django
 pytest-cov==7.1.0
     # via -r requirements_dev.in
-pytest-django==4.12.0
+pytest-django==4.14.0
     # via -r requirements_dev.in
 sqlparse==0.6.0
     # via django
