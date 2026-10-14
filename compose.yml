@@ -45,7 +45,7 @@ services:
   otel-collector:
     build:
       context: otel-collector
-    image: ${REGISTRY:-localhost:5000}/${REPOSITORY:-opdrachten/statistiekhub-otel-collector}:${VERSION:-latest}
+    image: ${REGISTRY:-localhost:5000}/${REPOSITORY:-ams-opdr/statistiekhub-otel-collector}:${VERSION:-latest}
     volumes:
       - ./otel-collector/config.local.yaml:/etc/otelcol-contrib/config.yaml
     depends_on:
@@ -76,7 +76,7 @@ services:
     build:
       context: .
       target: app
-    image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-opdrachten/bereikbaarheid-backend-django}:${VERSION:-latest}
+    image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-ams-opdr/bereikbaarheid-backend-django}:${VERSION:-latest}
     depends_on:
       <<: *base-app-depends-on
       otel-collector:
