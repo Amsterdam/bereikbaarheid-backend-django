@@ -45,7 +45,6 @@ services:
   otel-collector:
     build:
       context: otel-collector
-    image: ${REGISTRY:-localhost:5000}/${REPOSITORY:-ams-opdr/statistiekhub-otel-collector}:${VERSION:-latest}
     volumes:
       - ./otel-collector/config.local.yaml:/etc/otelcol-contrib/config.yaml
     depends_on:
