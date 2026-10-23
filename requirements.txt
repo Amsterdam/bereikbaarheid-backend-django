@@ -171,7 +171,7 @@ packaging==26.3
     #   opentelemetry-instrumentation
 pandas==3.0.5
     # via -r requirements.in
-pillow==12.3.0
+pillow==13.0.0
     # via -r requirements.in
 protobuf==7.36.1
     # via
