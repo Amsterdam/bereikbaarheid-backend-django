@@ -131,7 +131,7 @@ if ADMIN_ENABLED:
     THIRD_PARTY_APPS += ("mozilla_django_oidc",)
     MIDDLEWARE += ("mozilla_django_oidc.middleware.SessionRefresh",)
 
-BASE_URL = os.getenv("BASE_URL", "")
+BASE_URL = os.getenv("BASE_URL", "").rstrip("/")
 
 ## OpenId Connect settings ##
 LOGIN_URL = "oidc_authentication_init"
